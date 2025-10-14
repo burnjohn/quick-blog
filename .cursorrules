@@ -1,0 +1,326 @@
+# Quick Blog - Cursor Rules
+
+## Project Overview
+A full-stack blog application with admin panel built using the MERN stack (MongoDB, Express, React, Node.js).
+
+### Tech Stack
+**Frontend:**
+- React 19 with Vite
+- React Router for routing
+- Tailwind CSS for styling
+- Motion for animations
+- Quill for rich text editing
+- Axios for API calls
+- React Hot Toast for notifications
+
+**Backend:**
+- Node.js + Express
+- MongoDB with Mongoose
+- JWT for authentication
+- Multer for file uploads
+- ImageKit for image storage
+- Google Gemini API for AI features
+
+**Deployment:** Vercel (separate deployments for client and server)
+
+## Project Structure
+```
+/client                    # React frontend (Vite)
+  /src/components         # Reusable React components
+  /src/pages             # Page components
+  /src/context           # React Context for state management
+  /src/assets            # Static assets
+
+/server                   # Express backend
+  /controllers           # Business logic
+  /routes               # API route definitions
+  /models               # MongoDB/Mongoose schemas
+  /middleware           # Auth, multer, validation
+  /configs              # DB, ImageKit, Gemini configs
+```
+
+---
+
+## Code Style and Structure
+
+### General JavaScript
+- Write concise, technical JavaScript code with accurate examp`les
+- Use functional and declarative programming patterns; avoid classes
+- Prefer iteration and modularization over code duplication
+- Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError)
+- Use 2 space indentation
+- No semicolons (unless required to disambiguate statements)
+- Use single quotes for strings except to avoid escaping
+- No unused variables
+- Always use === instead of ==
+- Add a space after keywords and before function declaration parentheses
+- Keep else statements on the same line as their curly braces
+- Always handle the err function parameter in callbacks
+
+### File Structure
+- Structure files: exported component, subcomponents, helpers, static content
+- Use lowercase with dashes for directories (e.g., components/blog-card)
+- Favor named exports for components
+
+### Naming Conventions
+- Use camelCase for variables and functions
+- Use PascalCase for React components and constructors
+- Components: PascalCase files (e.g., `BlogCard.jsx`, `Navbar.jsx`)
+- Utilities/configs: camelCase (e.g., `db.js`, `gemini.js`)
+- Routes/Controllers: camelCase with suffix (e.g., `blogRoutes.js`, `adminController.js`)
+
+---
+
+## Frontend (React + Vite + Tailwind)
+
+### React Best Practices
+- Use functional components with hooks (no class components)
+- Use .jsx file extension for all React components
+- Use the "function" keyword for component definitions
+- Implement hooks correctly: useState, useEffect, useContext, useReducer, useMemo, useCallback
+- Follow the Rules of Hooks (only call at top level, only from React functions)
+- Create custom hooks to extract reusable component logic
+- Use React.memo() for component memoization when appropriate
+- Implement useCallback for memoizing functions passed as props
+- Use useMemo for expensive computations
+- Avoid inline function definitions in render to prevent unnecessary re-renders
+- Prefer composition over inheritance
+- Use children prop and render props pattern for flexible components
+- Implement React.lazy() and Suspense for code splitting
+- Use refs sparingly and mainly for DOM access
+- Prefer controlled components over uncontrolled components
+- Use cleanup functions in useEffect to prevent memory leaks
+- Use short-circuit evaluation and ternary operators for conditional rendering
+
+### State Management
+- Use React Context API for global state (AppContext)
+- Lift state up when needed to share state between components
+- Use context for intermediate state sharing when prop drilling becomes cumbersome
+- Keep components small and focused (single responsibility)
+
+### UI and Styling (Tailwind CSS)
+- Use Tailwind CSS for all styling
+- Implement responsive design with mobile-first approach
+- Use Tailwind utility classes directly in JSX
+- Leverage Tailwind's spacing, color, and typography scales
+- Use Tailwind's dark mode utilities if needed
+- Combine classes logically (layout, spacing, colors, typography)
+- Never use the @apply directive
+
+### Forms and Validation
+- Use controlled components for form inputs
+- Implement form validation (client-side and server-side)
+- Handle loading states during form submission
+- Use React Hot Toast for user feedback
+
+### Performance Optimization
+- Minimize unnecessary useEffect and useState
+- Use dynamic loading for non-critical components
+- Optimize images: use appropriate formats, implement lazy loading
+- Minimize re-renders with proper memoization
+
+### Error Handling
+- Prioritize error handling and edge cases
+- Handle errors at the beginning of functions
+- Use early returns for error conditions
+- Use guard clauses to handle preconditions early
+- Display user-friendly error messages with React Hot Toast
+- Log errors to console for debugging
+
+---
+
+## Backend (Node.js + Express + MongoDB)
+
+### Express Best Practices
+- Use ES6+ module syntax (type: "module" in package.json)
+- Use async/await with try-catch for error handling
+- Always return appropriate HTTP status codes
+- Use middleware for authentication, validation, and file uploads
+- Keep controllers thin - extract business logic when needed
+- Use environment variables for sensitive data (.env)
+- Follow RESTful API conventions
+
+### API Routes
+- Use plural nouns for resources (e.g., `/api/blogs`, `/api/comments`)
+- Use proper HTTP methods (GET, POST, PUT, DELETE)
+- Prefix admin routes with `/admin`
+- Always validate input data
+
+### API Response Format
+```javascript
+// Success
+res.json({ success: true, data: result })
+
+// Error
+res.json({ success: false, message: 'Error description' })
+```
+
+### Error Handling
+- Use try-catch blocks in all async functions
+- Return meaningful error messages to the client
+- Log errors on the server side for debugging
+- Don't expose sensitive information in error messages
+- Handle errors at the beginning of functions
+- Use early returns for error conditions
+
+### Database (MongoDB/Mongoose)
+- Use Mongoose schemas with proper validation
+- Define indexes for frequently queried fields
+- Use lean() for read-only queries to improve performance
+- Handle connection errors gracefully
+- Use transactions for multi-document operations when needed
+
+### Authentication & Security
+- Use JWT for authentication
+- Store JWT in httpOnly cookies or localStorage (client)
+- Auth middleware validates tokens on protected routes
+- Never commit `.env` files
+- Validate and sanitize all user inputs
+- Use CORS properly
+- Hash sensitive data (passwords, tokens)
+
+### Image Handling
+- Use ImageKit for image uploads and optimization
+- Validate file types and sizes before upload
+- Use multer middleware for file handling
+- Store only image URLs in the database
+
+---
+
+## Common Patterns
+
+### Frontend API Calls (Axios)
+```javascript
+const fetchData = async () => {
+  try {
+    const response = await axios.get('/api/blogs')
+    if (response.data.success) {
+      setData(response.data.data)
+    }
+  } catch (error) {
+    toast.error(error.response?.data?.message || 'Something went wrong')
+  }
+}
+```
+
+### Authentication Flow
+- JWT stored in localStorage on client
+- Auth middleware validates tokens on protected routes
+- Redirect to login if unauthorized
+- Admin routes protected with authentication middleware
+
+### Admin Panel
+- Separate admin routes and components
+- Protected with authentication middleware
+- CRUD operations for blogs and comments
+
+---
+
+## Best Practices
+
+### When Adding New Features
+1. Check if similar functionality exists before creating new code
+2. Update both frontend and backend if needed
+3. Test API endpoints before integrating with frontend
+4. Update error handling for new routes
+5. Consider mobile responsiveness for UI changes
+6. Use Tailwind utilities for consistent styling
+
+### When Fixing Bugs
+1. Identify root cause before making changes
+2. Test the fix thoroughly
+3. Check for similar issues elsewhere in the codebase
+4. Update error handling if needed
+
+### When Refactoring
+1. Maintain backward compatibility with existing APIs
+2. Update all dependent components/routes
+3. Test thoroughly after changes
+4. Keep commits focused and atomic
+
+---
+
+## Environment Variables
+
+### Server (.env)
+```
+MONGODB_URI=<mongodb-connection-string>
+JWT_SECRET=<jwt-secret-key>
+IMAGEKIT_PUBLIC_KEY=<imagekit-public-key>
+IMAGEKIT_PRIVATE_KEY=<imagekit-private-key>
+IMAGEKIT_URL_ENDPOINT=<imagekit-url-endpoint>
+GEMINI_API_KEY=<google-gemini-api-key>
+PORT=5000
+```
+
+### Client (.env)
+```
+VITE_BACKEND_URL=<backend-api-url>
+```
+
+---
+
+## AI Assistant Preferences
+
+### When Writing Code
+- Provide complete, working solutions
+- Include proper error handling
+- Follow the code style defined above (2 spaces, no semicolons, single quotes)
+- Use functional components with hooks
+- Use Tailwind CSS for styling
+- Don't use TypeScript (this is a JavaScript project)
+- Don't use class components
+- Add brief comments only for complex logic
+
+### When Explaining
+- Be concise but thorough
+- Provide code examples when helpful
+- Explain trade-offs when multiple approaches exist
+
+### When Debugging
+- Check both frontend and backend
+- Look at network requests/responses in browser DevTools
+- Verify environment variables are set
+- Check database connections and queries
+- Check console logs for errors
+
+### What NOT to Do
+- Don't add unnecessary dependencies
+- Don't over-engineer simple solutions
+- Don't break existing functionality
+- Don't ignore error handling
+- Don't use class components in React
+- Don't commit sensitive data or credentials
+- Don't use semicolons
+- Don't use TypeScript
+- Don't use CSS-in-JS or styled-components (use Tailwind)
+- Don't use @apply directive in CSS
+
+---
+
+## Testing & Deployment
+
+### Testing Approach
+- Manual testing for now
+- Test all CRUD operations
+- Verify authentication flows
+- Check responsive design on multiple devices
+- Test image uploads with various file types
+- Test API endpoints with tools like Postman
+
+### Deployment (Vercel)
+- Frontend deployed from `/client` directory
+- Backend deployed from `/server` directory
+- Separate vercel.json configs for each
+- Environment variables set in Vercel dashboard
+- Ensure CORS is properly configured for production URLs
+
+---
+
+## Additional Context
+- This is a learning/portfolio project
+- Focus on clean, readable code over premature optimization
+- Prioritize user experience and intuitive UI
+- Keep the admin panel simple but functional
+- Use modern JavaScript features (ES6+)
+- Maintain consistent code style throughout the project
