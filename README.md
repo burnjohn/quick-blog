@@ -18,13 +18,18 @@ For the full feature list, see `server/README.md`.
 ### Quickstart
 See `server/README.md` and `client/README.md` for detailed steps. Briefly:
 
-Server
+**Server**
 - Copy `server/.env.example` to `server/.env` and fill values
-- `cd server && npm install && npm run server`
+- `cd server && npm install && npm run setup` (starts DB + seeds data)
+- `npm run server`
 
-Client
+**Client**
 - Copy `client/.env.example` to `client/.env` and set `VITE_BASE_URL`
 - `cd client && npm install && npm run dev`
+
+**Admin Login** (after seeding)
+- Navigate to `/admin`
+- Email: `admin@quickblog.com` / Password: `admin123`
 
 ### Environment Variables
 See per‑app READMEs. Server requires `MONGODB_URI`, `JWT_SECRET`, ImageKit keys, and `GEMINI_API_KEY`.

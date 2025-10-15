@@ -35,9 +35,19 @@ export const addBlog = async (req, res)=>{
 
         const image = optimizedImageUrl;
 
-        await Blog.create({title, subTitle, description, category, image, isPublished})
+        // Create blog with author information from authenticated user
+        const blog = await Blog.create({
+            title, 
+            subTitle, 
+            description, 
+            category, 
+            image, 
+            isPublished,
+            author: req.user.userId,
+            authorName: req.user.name
+        })
 
-        res.json({success: true, message: "Blog added successfully"})
+        res.json({success: true, message: "Blog added successfully", blog})
 
     } catch (error) {
         res.json({success: false, message: error.message})

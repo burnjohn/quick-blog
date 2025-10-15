@@ -1,17 +1,46 @@
 import jwt from 'jsonwebtoken'
 import Blog from '../models/Blog.js';
 import Comment from '../models/Comment.js';
+import User from '../models/User.js';
 
 export const adminLogin = async (req, res)=>{
     try {
         const {email, password} = req.body;
 
-        if(email !== process.env.ADMIN_EMAIL || password !== process.env.ADMIN_PASSWORD){
+        // Find user by email
+        const user = await User.findOne({ email, isActive: true });
+        
+        if (!user) {
             return res.json({success: false, message: "Invalid Credentials"})
         }
 
-        const token = jwt.sign({email}, process.env.JWT_SECRET)
-        res.json({success: true, token})
+        // Check password
+        const isPasswordValid = await user.comparePassword(password);
+        
+        if (!isPasswordValid) {
+            return res.json({success: false, message: "Invalid Credentials"})
+        }
+
+        // Create JWT with user info
+        const token = jwt.sign(
+            { 
+                userId: user._id, 
+                email: user.email, 
+                name: user.name,
+                role: user.role 
+            }, 
+            process.env.JWT_SECRET
+        )
+        
+        res.json({
+            success: true, 
+            token,
+            user: {
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
+        })
     } catch (error) {
         res.json({success: false, message: error.message})
     }

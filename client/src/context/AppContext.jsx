@@ -1,51 +1,63 @@
-import {createContext, useContext, useEffect, useState} from 'react'
-import axios from "axios";
-import {useNavigate} from 'react-router-dom'
-import toast from 'react-hot-toast';
+import { createContext, useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { axios, blogApi } from '../api'
+import toast from 'react-hot-toast'
+import { MESSAGES } from '../constants/messages'
 
+const AppContext = createContext()
 
-axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
-axios.defaults.withCredentials = true;
+export const AppProvider = ({ children }) => {
+  const navigate = useNavigate()
 
-const AppContext = createContext();
+  const [token, setToken] = useState(null)
+  const [blogs, setBlogs] = useState([])
+  const [input, setInput] = useState('')
 
-export const AppProvider = ({ children })=>{
-
-    const navigate = useNavigate()
-
-    const [token, setToken] = useState(null)
-    const [blogs, setBlogs] = useState([])
-    const [input, setInput] = useState("")
-
-    const fetchBlogs = async ()=>{
-        try {
-           const {data} = await axios.get('/api/blog/all');
-           data.success ? setBlogs(data.blogs) : toast.error(data.message)
-        } catch (error) {
-            toast.error(error.message)
-        }
+  const fetchBlogs = async () => {
+    try {
+      const response = await blogApi.getAll()
+      if (response.data.success) {
+        setBlogs(response.data.blogs)
+      } else {
+        toast.error(response.data.message || MESSAGES.ERROR_FETCH_BLOGS)
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message || MESSAGES.ERROR_FETCH_BLOGS)
     }
+  }
 
-    useEffect(()=>{
-        fetchBlogs();
-        const token = localStorage.getItem('token')
-        if(token){
-            setToken(token);
-            axios.defaults.headers.common['Authorization'] = `${token}`;
-        }
-    },[])
-
-    const value = {
-        axios, navigate, token, setToken, blogs, setBlogs, input, setInput
+  useEffect(() => {
+    fetchBlogs()
+    
+    const storedToken = localStorage.getItem('token')
+    if (storedToken) {
+      setToken(storedToken)
     }
+  }, [])
 
-    return (
-        <AppContext.Provider value={value}>
-            {children}
-        </AppContext.Provider>
-    )
+  const value = {
+    axios,
+    navigate,
+    token,
+    setToken,
+    blogs,
+    setBlogs,
+    input,
+    setInput,
+    fetchBlogs
+  }
+
+  return (
+    <AppContext.Provider value={value}>
+      {children}
+    </AppContext.Provider>
+  )
 }
 
-export const useAppContext = ()=>{
-    return useContext(AppContext)
-};
+export const useAppContext = () => {
+  const context = useContext(AppContext)
+  if (!context) {
+    throw new Error('useAppContext must be used within an AppProvider')
+  }
+  return context
+}

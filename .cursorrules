@@ -318,7 +318,6 @@ VITE_BACKEND_URL=<backend-api-url>
 ---
 
 ## Additional Context
-- This is a learning/portfolio project
 - Focus on clean, readable code over premature optimization
 - Prioritize user experience and intuitive UI
 - Keep the admin panel simple but functional
