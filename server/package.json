@@ -5,8 +5,8 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "server": "nodemon server.js",
-    "start": "node server.js",
+    "server": "NODE_ENV=development nodemon server.js",
+    "start": "NODE_ENV=production node server.js",
     "db:start": "docker-compose up -d",
     "db:stop": "docker-compose down",
     "db:restart": "docker-compose restart",
@@ -16,7 +16,7 @@
     "migrate:up": "migrate-mongo up -f migrations/migrate-mongo-config.cjs",
     "migrate:down": "migrate-mongo down -f migrations/migrate-mongo-config.cjs",
     "migrate:create": "migrate-mongo create -f migrations/migrate-mongo-config.cjs",
-    "seed": "node scripts/seed.js",
+    "seed": "NODE_ENV=development node scripts/seed.js",
     "setup": "npm run db:start && sleep 5 && npm run seed",
     "dev": "npm run db:start && npm run server"
   },

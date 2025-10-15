@@ -20,7 +20,11 @@ export const adminLogin = async (req, res)=>{
 export const getAllBlogsAdmin = async (req, res) =>{
     try {
         const blogs = await Blog.find({}).sort({createdAt: -1});
-        res.json({success: true, blogs})
+        res.json({
+            success: true,
+            count: blogs.length,
+            blogs
+        })
     } catch (error) {
         res.json({success: false, message: error.message})
     }
@@ -28,8 +32,12 @@ export const getAllBlogsAdmin = async (req, res) =>{
 
 export const getAllComments = async (req, res) =>{
     try {
-        const comments = await Comment.find({}).populate("blog").sort({createdAt: -1})
-        res.json({success: true, comments})
+        const comments = await Comment.find({}).populate('blog').sort({createdAt: -1})
+        res.json({
+            success: true,
+            count: comments.length,
+            comments
+        })
     } catch (error) {
         res.json({success: false, message: error.message})
     }

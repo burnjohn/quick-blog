@@ -7,7 +7,7 @@ Express server with blog CRUD, comments, admin auth, ImageKit uploads, and AI co
 - **Database:** MongoDB (local via Docker)
 - **Integrations:** ImageKit, Google Gemini AI
 - **Dev Tools:** migrate-mongo, Docker Compose
-- **Logging:** Custom database change tracker
+- **Logging:** HTTP requests/responses + Database changes
 
 > **Note:** This setup uses a **local MongoDB database** running in Docker. No cloud database needed for development!
 
@@ -20,9 +20,7 @@ Express server with blog CRUD, comments, admin auth, ImageKit uploads, and AI co
 
 npm install
 npm run setup    # Starts Docker + creates schema + seeds test data
-
-# Daily: Start the server
-npm run server   # Start the API server (port 5000)
+npm run server   # Start the API server (port 5001)
 ```
 
 ### Manual Step-by-Step
@@ -32,9 +30,12 @@ npm install
 
 # 2. Setup environment
 cp .env.example .env
-# Edit .env with your API keys (ImageKit, Gemini, JWT secret)
+# Edit .env with your credentials:
+# - Database credentials (MONGODB_USER, MONGODB_PASSWORD, MONGODB_DATABASE)
+# - API keys (ImageKit, Gemini)
+# - JWT secret
 
-# 3. Start MongoDB with Docker (init-db.js creates schema automatically)
+# 3. Start MongoDB with Docker (init scripts create schema automatically)
 npm run db:start
 
 # 4. Wait 5 seconds for DB to be ready, then seed test data
@@ -44,7 +45,7 @@ npm run seed    # Creates 2 users, 6 blogs, 9 comments
 npm run server
 ```
 
-> **Important:** The database schema, collections, and indexes are **automatically created** by `/init-scripts/init-db.js` when Docker starts. You don't need to run migrations for initial setup. Migrations are only for future schema changes.
+> **Important:** The database schema, collections, and indexes are **automatically created** by `/init-scripts/*.sh` scripts when Docker starts. These scripts use credentials from your `.env` file. You don't need to run migrations for initial setup. Migrations are only for future schema changes.
 
 ---
 
@@ -52,11 +53,15 @@ npm run server
 
 ### Setup (.env)
 ```bash
-# Local MongoDB (Docker)
-MONGODB_URI=mongodb://admin:admin123@localhost:27017
+# Local Database (used by Docker and application)
+MONGODB_USER=quickblog
+MONGODB_PASSWORD=quickblog123
+MONGODB_DATABASE=quickblog
+MONGODB_URI=mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@localhost:27017/${MONGODB_DATABASE}
 
 # Server
-PORT=5000
+PORT=5001
+CLIENT_URL=http://localhost:5173
 NODE_ENV=development
 
 # JWT Authentication
@@ -73,42 +78,9 @@ GEMINI_API_KEY=your_gemini_api_key_here
 
 ---
 
-## 🐳 Docker Local Database
-
-When you run `npm run db:start`, Docker starts **two containers**:
-
-1. **MongoDB** - Your actual database (required)
-2. **Mongo Express** - Web UI to view your data (optional, can be removed)
-
-Both run on your local machine. No cloud, no remote connections.
-
-### Commands
-```bash
-npm run db:start      # Start local MongoDB + Web UI
-npm run db:stop       # Stop (keeps your data)
-npm run db:restart    # Restart
-npm run db:logs       # View database logs
-npm run db:clean      # Delete everything (fresh start)
-```
-
-### Access
-- **API:** `http://localhost:5000`
-- **Database:** `mongodb://admin:admin123@localhost:27017/quickblog`
-- **Web UI:** `http://localhost:8081` (admin/admin123) ← View your data here
-- **Shell:** `docker exec -it quickblog-mongodb mongosh -u admin -p admin123`
-
-### Verify Setup
-```bash
-docker-compose ps      # Check containers status
-npm run db:logs        # View MongoDB logs
-curl http://localhost:5000/api/blog/all  # Test API (after starting server)
-```
-
----
-
 ## 📦 Database Migrations
 
-> **Note:** Initial database setup (collections, indexes) is handled automatically by `/init-scripts/init-db.js` when Docker starts. Use migrations only for **future schema changes**.
+> **Note:** Initial database setup (collections, indexes) is handled automatically by `/init-scripts/*.sh` scripts when Docker starts. These scripts read credentials from your `.env` file via Docker environment variables. Use migrations only for **future schema changes**.
 
 ### Migration Commands
 ```bash
@@ -119,7 +91,7 @@ npm run migrate:create    # Create new migration
 ```
 
 ### Current State
-The existing migration files (`20241014000001-add-blog-indexes.js`, etc.) are **examples only**. The indexes they create already exist via `init-db.js`, so they will fail if you try to run them. They're kept as reference for creating future migrations.
+The existing migration files (`20241014000001-add-blog-indexes.js`, etc.) are **examples only**. The indexes they create already exist via init scripts, so they will fail if you try to run them. They're kept as reference for creating future migrations.
 
 ### When to Use Migrations
 - Adding new fields to existing collections
@@ -136,7 +108,7 @@ The existing migration files (`20241014000001-add-blog-indexes.js`, etc.) are **
 
 2. **Edit `/migrations/TIMESTAMP-add-blog-views.js`:**
    ```javascript
-   import dbLogger from '../utils/dbLogger.js'
+   import dbLogger from '../src/utils/dbLogger.js'
    
    export async function up(db) {
      dbLogger.logMigration('add-blog-views', 'STARTING')
@@ -154,75 +126,24 @@ The existing migration files (`20241014000001-add-blog-indexes.js`, etc.) are **
    npm run migrate:up
    ```
 
-### Best Practices
-✅ Test on development first  
-✅ Implement both `up` and `down` functions  
-✅ One logical change per migration  
-✅ Use descriptive names  
-✅ Add logging with `dbLogger`  
-✅ Don't duplicate what's in `init-db.js`  
-
----
-
-## 📝 Database Logging
-
-All database changes are logged to `/logs/db-changes.log`
-
-### Usage
-```javascript
-import dbLogger from './utils/dbLogger.js'
-
-// CRUD operations
-dbLogger.logCreate('blogs', blogData)
-dbLogger.logUpdate('blogs', blogId, updates)
-dbLogger.logDelete('blogs', blogId)
-
-// Migrations
-dbLogger.logMigration('migration-name', 'SUCCESS', 'Details')
-
-// Errors
-dbLogger.logError('operation-name', error)
-
-// Events
-dbLogger.logEvent('DATABASE_SEEDED', 'Added 100 test blogs')
-```
-
-### Log Format
-```
-2024-10-14T12:00:00.000Z | CREATE | blogs | ID: 507f... | Data: {...}
-2024-10-14T12:05:00.000Z | UPDATE | blogs | ID: 507f... | Updates: {...}
-2024-10-14T12:10:00.000Z | DELETE | blogs | ID: 507f...
-2024-10-14T12:15:00.000Z | MIGRATION | add-indexes | SUCCESS
-```
-
 ---
 
 ## 🗄️ View Your Local Database
+
+> **Note:** All credentials are configured in your `.env` file. Default values are `quickblog` / `quickblog123`.
 
 ### Option 1: Mongo Express (Web UI) ✨
 Built-in web interface to view and manage your data:
 1. Start Docker: `npm run db:start`
 2. Open browser: `http://localhost:8081`
-3. Login: `admin` / `admin123`
+3. Login with your `MONGODB_USER` / `MONGODB_PASSWORD` (default: `quickblog` / `quickblog123`)
 4. Browse your data visually
 
 ### Option 2: MongoDB Compass (Desktop App)
 Professional desktop application:
 1. Download: [mongodb.com/compass](https://www.mongodb.com/products/compass)
-2. Connect: `mongodb://admin:admin123@localhost:27017`
+2. Connect using your `MONGODB_URI` from `.env` (default: `mongodb://quickblog:quickblog123@localhost:27017`)
 3. View: `quickblog` database
-
-### Option 3: Command Line
-```bash
-# Enter database shell
-docker exec -it quickblog-mongodb mongosh -u admin -p admin123
-
-# Query your data
-use quickblog
-db.blogs.find().pretty()
-db.blogs.countDocuments()
-exit
-```
 
 ---
 
@@ -254,46 +175,46 @@ exit
 
 ### Response Format
 ```javascript
-// Success
-{ success: true, data: result }
+// Success with data
+{ success: true, count: 6, blogs: [...] }
+
+// Success with message
+{ success: true, message: 'Blog added successfully' }
 
 // Error
 { success: false, message: 'Error description' }
 ```
 
----
-
-## 💡 Daily Workflow
-
-### Start Your Day
-```bash
-npm run dev  # Starts DB + Server
-```
-
-### Reset Database
-```bash
-npm run db:clean      # Delete all data and volumes
-npm run db:start      # Fresh start (init-db.js runs automatically)
-npm run seed          # Add test data
-```
-
-### Check Status
-```bash
-docker-compose ps           # Container status
-npm run db:logs             # MongoDB logs
-tail -f logs/db-changes.log # Database changes
-```
+> **Note:** List endpoints (blogs, comments) now include a `count` field showing the number of items returned.
 
 ---
 
-## 🚀 Deployment Notes
+## 📝 Logging
 
-This setup is optimized for **local development**. For production:
+All HTTP requests/responses and database changes are automatically logged.
 
-1. Use a hosted database service (e.g., MongoDB Atlas, Railway, etc.)
-2. Update `MONGODB_URI` in your deployment environment
-3. Run migrations: `npm run migrate:up`
-4. Deploy to your platform (Vercel, etc.)
+### HTTP Logging
+- **Location:** `/logs/http.log`
+- **Console:** All requests and responses with emojis + metadata
+- **Format:** `[Timestamp] | [REQUEST/RESPONSE] | Method URL | Status | Duration | Metadata`
+- **Features:**
+  - ✅ Success (2xx)
+  - 🔄 Redirect (3xx)
+  - ⚠️  Client Error (4xx)
+  - ❌ Server Error (5xx)
+  - Shows response metadata (success, count)
+  - Sanitizes sensitive data (passwords, tokens)
+  
+**Example:**
+```
+📥 REQUEST  | GET /api/blog/all | IP: ::1
+✅ RESPONSE | GET /api/blog/all | Status: 200 | Duration: 15ms | success: true, count: 6
+```
+
+### Database Logging
+- **Location:** `/logs/db-changes.log`
+- **Tracks:** CREATE, UPDATE, DELETE, MIGRATIONS, EVENTS
+- **Format:** `[Timestamp] | [Operation] | Collection | Details`
 
 ---
 
@@ -303,12 +224,14 @@ This setup is optimized for **local development**. For production:
 
 **MongoDB Container** (Your Database):
 - Local database server on port `27017`
-- Username: `admin`, Password: `admin123`
-- Database: `quickblog`
+- Credentials configured via `.env` file (`MONGODB_USER`, `MONGODB_PASSWORD`)
+- Default: `quickblog` / `quickblog123`
+- Database: `quickblog` (or `MONGODB_DATABASE` from `.env`)
 - Data persists in Docker volumes
 
 **Mongo Express Container** (Optional Web UI):
 - Web interface on port `8081`
+- Uses same credentials from `.env`
 - View and manage your local data
 - Can be removed if you don't need it
 
@@ -324,213 +247,77 @@ This setup is optimized for **local development**. For production:
 
 ---
 
-## 🔧 Customization
-
-### Change Database Credentials
-1. Edit `docker-compose.yml`:
-   ```yaml
-   MONGO_INITDB_ROOT_USERNAME: your_username
-   MONGO_INITDB_ROOT_PASSWORD: your_password
-   ```
-
-2. Update `.env`:
-   ```bash
-   MONGODB_URI=mongodb://your_username:your_password@localhost:27017
-   ```
-
-### Change Ports
-Edit `docker-compose.yml`:
-```yaml
-ports:
-  - '27018:27017'  # Use port 27018 instead
-```
-
-### Remove Mongo Express (Optional)
-If you don't need the web UI, remove the `mongo-express` service from `docker-compose.yml`
-
----
-
-## 🐛 Troubleshooting
-
-### Connection Issues
-```bash
-npm run db:restart    # Restart containers
-docker-compose ps     # Check status
-npm run db:logs       # View errors
-```
-
-### Port Conflicts
-```bash
-lsof -i :27017  # Check what's using port
-lsof -i :8081   # Check Mongo Express port
-```
-
-### Migration Errors
-```bash
-npm run migrate:status  # Check current state
-npm run migrate:down    # Rollback
-# Fix migration file
-npm run migrate:up      # Try again
-```
-
-### Fresh Start
-```bash
-npm run db:clean    # Delete all data
-npm run db:start    # Restart (init-db.js creates schema)
-npm run seed        # Add test data
-```
-
-### Common Issues
-1. **Docker not running:** Start Docker Desktop
-2. **Port in use:** Stop conflicting services
-3. **Connection timeout:** Wait 5-10 seconds after `db:start`
-4. **Lost data:** Ran `db:clean` - data is gone
-
----
-
-## ✨ Why This Setup?
-
-### What You Get
-1. **Local MongoDB** - Database runs on your machine
-2. **Web UI** - Visual interface to view data
-3. **Migrations** - Version control for database changes
-4. **Logging** - Track all database operations
-5. **Docker** - Consistent setup across all machines
-
-### Benefits
-- ⚡ **Fast** - No network latency
-- 💰 **Free** - No cloud costs
-- 🔒 **Private** - Data stays on your computer
-- 🧪 **Easy Testing** - Reset anytime
-- 📦 **Portable** - Works on any machine with Docker
-- 🔄 **Reversible** - Undo with migrations
-
----
-
-## 📚 Additional Resources
-
-- **[migrations/README.md](./migrations/README.md)** - Migration documentation
-- **[.env.example](./.env.example)** - Environment template
-- [MongoDB Documentation](https://docs.mongodb.com/)
-- [migrate-mongo GitHub](https://github.com/seppevs/migrate-mongo)
-- [Docker Compose Docs](https://docs.docker.com/compose/)
-- [Mongoose Guide](https://mongoosejs.com/docs/guide.html)
-
----
 
 ## 📁 Project Structure
 
 ```
 server/
-├── configs/          # DB, ImageKit, Gemini configs
-├── controllers/      # Business logic
-├── fixtures/         # Test data (users, blogs, comments)
-├── init-scripts/     # DB initialization (runs on Docker start)
-├── middleware/       # Auth, multer, validation
-├── migrations/       # Database migrations (future changes)
-├── models/           # Mongoose schemas
-├── routes/           # API route definitions
-├── scripts/          # Seeding and utility scripts
-├── utils/            # Database logger
-├── logs/             # Database change logs
-├── docker-compose.yml
-├── .env.example
-└── server.js
+├── src/                      # 🎯 Application Code
+│   ├── configs/             # DB, ImageKit, Gemini configs
+│   ├── constants/           # Status codes, messages, enums
+│   ├── controllers/         # Route handlers (thin, delegate to services)
+│   ├── helpers/             # Response formatters, async handlers
+│   ├── middleware/          # Auth, error handling, validation
+│   ├── models/              # Mongoose schemas
+│   ├── routes/              # API route definitions
+│   ├── services/            # Business logic layer
+│   ├── utils/               # HTTP & Database loggers
+│   └── validators/          # Input validation middleware
+│
+├── fixtures/                # Test/seed data
+├── scripts/                 # Database seeding scripts
+├── migrations/              # Database migrations
+├── init-scripts/            # Docker initialization
+├── logs/                    # HTTP & Database logs (gitignored)
+├── docker-compose.yml       # Docker configuration
+├── .env.example             # Environment template
+└── server.js                # Application entry point
 ```
+
+### Key Structure Improvements
+- **Separation of Concerns**: All application code in `src/`, infrastructure at root
+- **Service Layer**: Business logic separated from controllers
+- **Response Helpers**: Consistent API responses via helper functions
+- **Constants**: Centralized messages and status codes
+- **Validators**: Input validation middleware for clean controllers
 
 ---
 
-**Ready to code!** 🚀
+## 🎯 Best Practices Implemented
 
-```bash
-npm run dev
-```
+### Architecture Patterns
+✅ **MVC Pattern** - Models, Views (JSON responses), Controllers
+✅ **Service Layer** - Business logic separated from HTTP layer
+✅ **Middleware Chain** - CORS → Body Parser → Cache Control → Logging → Routes → Error Handlers
+✅ **Centralized Error Handling** - 404 handler + global error handler
+✅ **Environment-Based Configuration** - Different behavior for dev/prod
 
-## 👥 Database Schema
+### Code Quality
+✅ **Consistent Response Format** - All endpoints return `{ success, ...data }`
+✅ **Response Metadata** - List endpoints include `count` field
+✅ **No Magic Strings** - Constants for messages and status codes
+✅ **Input Validation** - Middleware validates before hitting controllers
+✅ **Security** - CORS configuration, JWT authentication, input sanitization
 
-### Collections
+### Developer Experience
+✅ **Enhanced Logging** - HTTP requests show metadata (status, count, duration)
+✅ **Clean Imports** - All app code under `src/` namespace
+✅ **Documentation** - Comprehensive README and inline comments
+✅ **Database Seeding** - Quick setup with test data
+✅ **Hot Reload** - Nodemon for development
 
-#### 1. Users
-```javascript
-{
-  name: String (required)
-  email: String (required, unique)
-  password: String (required, hashed with bcrypt)
-  role: String (enum: ['admin', 'author'])
-  bio: String
-  avatar: String
-  isActive: Boolean
-  createdAt: Date
-  updatedAt: Date
-}
-```
-
-#### 2. Blogs
-```javascript
-{
-  title: String (required)
-  subTitle: String
-  description: String (required)
-  category: String (required)
-  author: ObjectId (ref: 'User', required)
-  authorName: String (required)
-  image: String (required)
-  isPublished: Boolean
-  createdAt: Date
-  updatedAt: Date
-}
-```
-
-#### 3. Comments
-```javascript
-{
-  blog: ObjectId (ref: 'Blog', required)
-  name: String (required)
-  content: String (required)
-  isApproved: Boolean
-  createdAt: Date
-  updatedAt: Date
-}
-```
+### Performance
+✅ **Cache Control** - Disabled in development for fresh data
+✅ **Optimized Images** - ImageKit transformations (WebP, compression)
+✅ **Lean Queries** - Mongoose query optimization
+✅ **Async/Await** - Non-blocking operations throughout
 
 ---
 
-## 🌱 Seeding Test Data
+## 📚 Additional Resources
 
-### Quick Setup
-```bash
-# Complete setup (start DB, run migrations, seed data)
-npm run setup
-```
-
-### Manual Steps
-```bash
-# 1. Start database
-npm run db:start
-
-# 2. Run migrations
-npm run migrate:up
-
-# 3. Seed test data
-npm run seed
-```
-
-### Test Credentials
-After seeding, use these credentials to login:
-
-**Admin Account:**
-- Email: `admin@quickblog.com`
-- Password: `admin123`
-
-**Author Account:**
-- Email: `sarah@quickblog.com`
-- Password: `sarah123`
-
-### What Gets Created
-- ✅ 2 test users (admin & author)
-- ✅ 6 blog posts with realistic content
-- ✅ 9 comments across multiple blogs
-- ✅ All passwords securely hashed
-
----
-
+- [MongoDB Documentation](https://docs.mongodb.com/)
+- [Express Best Practices](https://expressjs.com/en/advanced/best-practice-performance.html)
+- [Mongoose Guide](https://mongoosejs.com/docs/guide.html)
+- [Docker Compose Docs](https://docs.docker.com/compose/)
+- [migrate-mongo GitHub](https://github.com/seppevs/migrate-mongo)

@@ -5,8 +5,8 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Log file path
-const logDir = path.join(__dirname, '../logs')
+// Log file path (root level logs directory)
+const logDir = path.join(__dirname, '../../logs')
 const logFile = path.join(logDir, 'db-changes.log')
 
 // Ensure logs directory exists

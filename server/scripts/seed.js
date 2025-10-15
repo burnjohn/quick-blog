@@ -1,9 +1,9 @@
 import mongoose from 'mongoose'
 import 'dotenv/config'
-import User from '../models/User.js'
-import Blog from '../models/Blog.js'
-import Comment from '../models/Comment.js'
-import dbLogger from '../utils/dbLogger.js'
+import User from '../src/models/User.js'
+import Blog from '../src/models/Blog.js'
+import Comment from '../src/models/Comment.js'
+import dbLogger from '../src/utils/dbLogger.js'
 import { users } from '../fixtures/users.js'
 import { blogs } from '../fixtures/blogs.js'
 import { comments } from '../fixtures/comments.js'
@@ -11,7 +11,7 @@ import { comments } from '../fixtures/comments.js'
 // Connect to database
 const connectDB = async () => {
   try {
-    await mongoose.connect(`${process.env.MONGODB_URI}/quickblog`)
+    await mongoose.connect(process.env.MONGODB_URI)
     console.log('✅ Connected to MongoDB')
   } catch (error) {
     console.error('❌ MongoDB connection error:', error)

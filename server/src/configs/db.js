@@ -25,7 +25,7 @@ const connectDB = async () => {
     })
 
     // Connect to MongoDB
-    await mongoose.connect(`${process.env.MONGODB_URI}/quickblog`, {
+    await mongoose.connect(process.env.MONGODB_URI, {
       serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
     })
 

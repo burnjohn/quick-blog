@@ -9,7 +9,7 @@ React + Vite single‑page app for browsing blogs, reading posts, commenting, an
 Copy `.env.example` to `.env` and set:
 
 ```
-VITE_BASE_URL=http://localhost:3000
+VITE_BASE_URL=http://localhost:5001
 ```
 
 ### Run
