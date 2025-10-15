@@ -14,16 +14,17 @@ import auth from '../middleware/auth.js'
 
 const blogRouter = express.Router()
 
-// Public routes
 blogRouter.get('/all', getAllBlogs)
 blogRouter.get('/:blogId', getBlogById)
 blogRouter.post('/add-comment', addComment)
 blogRouter.post('/comments', getBlogComments)
 
-// Protected routes (require authentication)
-blogRouter.post('/add', upload.single('image'), auth, addBlog)
-blogRouter.post('/delete', auth, deleteBlogById)
-blogRouter.post('/toggle-publish', auth, togglePublish)
-blogRouter.post('/generate', auth, generateContent)
+// Apply auth middleware to all routes below this point
+blogRouter.use(auth)
+
+blogRouter.post('/add', upload.single('image'), addBlog)
+blogRouter.post('/delete', deleteBlogById)
+blogRouter.post('/toggle-publish', togglePublish)
+blogRouter.post('/generate', generateContent)
 
 export default blogRouter

@@ -11,14 +11,15 @@ import auth from '../middleware/auth.js'
 
 const adminRouter = express.Router()
 
-// Auth
 adminRouter.post('/login', adminLogin)
 
-// Protected routes (require authentication)
-adminRouter.get('/dashboard', auth, getDashboard)
-adminRouter.get('/blogs', auth, getAllBlogsAdmin)
-adminRouter.get('/comments', auth, getAllComments)
-adminRouter.post('/approve-comment', auth, approveCommentById)
-adminRouter.post('/delete-comment', auth, deleteCommentById)
+// Apply auth middleware to all routes below this point
+adminRouter.use(auth)
+
+adminRouter.get('/dashboard', getDashboard)
+adminRouter.get('/blogs', getAllBlogsAdmin)
+adminRouter.get('/comments', getAllComments)
+adminRouter.post('/approve-comment', approveCommentById)
+adminRouter.post('/delete-comment', deleteCommentById)
 
 export default adminRouter
