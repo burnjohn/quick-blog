@@ -1,7 +1,7 @@
 import React from 'react'
 import { classNames } from '../../utils/helpers'
 
-function Input({
+const Input = React.forwardRef(({
   label,
   error,
   className = '',
@@ -9,7 +9,7 @@ function Input({
   type = 'text',
   required = false,
   ...props
-}) {
+}, ref) => {
   return (
     <div className={classNames('w-full', containerClassName)}>
       {label && (
@@ -19,6 +19,7 @@ function Input({
         </label>
       )}
       <input
+        ref={ref}
         type={type}
         required={required}
         className={classNames(
@@ -35,7 +36,9 @@ function Input({
       )}
     </div>
   )
-}
+})
+
+Input.displayName = 'Input'
 
 export default Input
 
