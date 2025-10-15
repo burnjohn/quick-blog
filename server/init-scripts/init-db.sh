@@ -1,11 +1,16 @@
-// MongoDB initialization script
-// This runs when the Docker container first starts
+#!/bin/bash
+# MongoDB database initialization script
+# This runs when the Docker container first starts
+# Uses environment variables from Docker Compose
 
-db = db.getSiblingDB('quickblog')
+echo "Initializing database schema from environment variables..."
+
+mongosh --eval "
+db = db.getSiblingDB('${MONGO_INITDB_DATABASE}');
 
 // Schema validators
 const USER_VALIDATOR = {
-  $jsonSchema: {
+  \$jsonSchema: {
     bsonType: 'object',
     required: ['name', 'email', 'password', 'role'],
     properties: {
@@ -27,10 +32,10 @@ const USER_VALIDATOR = {
       }
     }
   }
-}
+};
 
 const BLOG_VALIDATOR = {
-  $jsonSchema: {
+  \$jsonSchema: {
     bsonType: 'object',
     required: ['title', 'description', 'category', 'author', 'authorName', 'image'],
     properties: {
@@ -60,10 +65,10 @@ const BLOG_VALIDATOR = {
       }
     }
   }
-}
+};
 
 const COMMENT_VALIDATOR = {
-  $jsonSchema: {
+  \$jsonSchema: {
     bsonType: 'object',
     required: ['name', 'content', 'blog'],
     properties: {
@@ -81,28 +86,32 @@ const COMMENT_VALIDATOR = {
       }
     }
   }
-}
+};
 
 // Create collections with validators
-db.createCollection('users', { validator: USER_VALIDATOR })
-db.createCollection('blogs', { validator: BLOG_VALIDATOR })
-db.createCollection('comments', { validator: COMMENT_VALIDATOR })
+db.createCollection('users', { validator: USER_VALIDATOR });
+db.createCollection('blogs', { validator: BLOG_VALIDATOR });
+db.createCollection('comments', { validator: COMMENT_VALIDATOR });
 
 // Create indexes
 // Users
-db.users.createIndex({ email: 1 }, { unique: true })
-db.users.createIndex({ role: 1 })
+db.users.createIndex({ email: 1 }, { unique: true });
+db.users.createIndex({ role: 1 });
 
 // Blogs
-db.blogs.createIndex({ title: 'text', description: 'text' })
-db.blogs.createIndex({ category: 1 })
-db.blogs.createIndex({ author: 1 })
-db.blogs.createIndex({ createdAt: -1 })
-db.blogs.createIndex({ author: 1, createdAt: -1 })
+db.blogs.createIndex({ title: 'text', description: 'text' });
+db.blogs.createIndex({ category: 1 });
+db.blogs.createIndex({ author: 1 });
+db.blogs.createIndex({ createdAt: -1 });
+db.blogs.createIndex({ author: 1, createdAt: -1 });
 
 // Comments
-db.comments.createIndex({ blog: 1 })
-db.comments.createIndex({ createdAt: -1 })
-db.comments.createIndex({ blog: 1, createdAt: -1 })
+db.comments.createIndex({ blog: 1 });
+db.comments.createIndex({ createdAt: -1 });
+db.comments.createIndex({ blog: 1, createdAt: -1 });
 
-print('✅ Database initialized successfully')
+print('✅ Database ${MONGO_INITDB_DATABASE} initialized successfully');
+"
+
+echo "✅ Database initialization complete"
+

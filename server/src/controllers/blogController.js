@@ -47,7 +47,11 @@ export const addBlog = async (req, res)=>{
 export const getAllBlogs = async (req, res)=>{
     try {
         const blogs = await Blog.find({isPublished: true})
-        res.json({success: true, blogs})
+        res.json({
+            success: true, 
+            count: blogs.length,
+            blogs
+        })
     } catch (error) {
         res.json({success: false, message: error.message})
     }
@@ -108,7 +112,11 @@ export const getBlogComments = async (req, res) =>{
     try {
         const {blogId } = req.body;
         const comments = await Comment.find({blog: blogId, isApproved: true}).sort({createdAt: -1});
-        res.json({success: true, comments})
+        res.json({
+            success: true,
+            count: comments.length,
+            comments
+        })
     } catch (error) {
         res.json({success: false, message: error.message})
     }
