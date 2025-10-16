@@ -1,0 +1,131 @@
+---
+alwaysApply: true
+---
+
+# Quick Blog - Code Style & Standards
+
+## General JavaScript Style
+
+### Core Principles
+- Write concise, technical JavaScript code with accurate examples
+- Use functional and declarative programming patterns; avoid classes
+- Prefer iteration and modularization over code duplication
+- Use descriptive variable names with auxiliary verbs (e.g., `isLoading`, `hasError`)
+
+### Formatting Rules
+- **Indentation**: 2 spaces (no tabs)
+- **Semicolons**: No semicolons (unless required to disambiguate statements)
+- **Quotes**: Single quotes for strings (except to avoid escaping)
+- **Spacing**: Add a space after keywords and before function declaration parentheses
+- **Braces**: Keep else statements on the same line as their curly braces
+
+### Code Quality
+- No unused variables
+- Always use `===` instead of `==`
+- Always handle the `err` function parameter in callbacks
+- Use early returns for error conditions
+- Use guard clauses to handle preconditions early
+
+## File Structure
+
+### Organization Pattern
+Structure files in this order:
+1. Imports
+2. Exported component/function
+3. Subcomponents (if any)
+4. Helper functions
+5. Static content/constants
+
+### Directory Naming
+- Use lowercase with dashes: `components/blog-card`, `utils/format-date`
+- Exception: React component directories may use PascalCase if they contain a single component file
+
+### Export Pattern
+- Favor **named exports** for components
+- Use default exports sparingly (only for pages/routes)
+
+## Naming Conventions
+
+### Variables & Functions
+- Use **camelCase**: `fetchBlogData`, `isLoading`, `hasError`
+- Use auxiliary verbs for booleans: `is`, `has`, `should`, `can`
+- Use verb prefixes for functions: `get`, `set`, `fetch`, `update`, `delete`
+
+### React Components
+- Use **PascalCase** for component names and files: `BlogCard.jsx`, `Navbar.jsx`
+- Component files must use `.jsx` extension
+- Use descriptive names that indicate purpose: `CommentForm`, `BlogGrid`, `CategoryFilter`
+
+### Backend Files
+- **Controllers**: camelCase with suffix → `blogController.js`, `adminController.js`
+- **Routes**: camelCase with suffix → `blogRoutes.js`, `adminRoutes.js`
+- **Models**: PascalCase → `Blog.js`, `User.js`, `Comment.js`
+- **Utilities**: camelCase → `db.js`, `gemini.js`, `formatters.js`
+- **Configs**: camelCase → `imageKit.js`, `db.js`
+
+## File Extensions
+
+- React components: `.jsx`
+- JavaScript utilities/configs: `.js`
+- No TypeScript in this project (`.ts`, `.tsx` not used)
+
+## Import Order
+
+Organize imports in this order:
+```javascript
+// 1. External dependencies
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+
+// 2. Internal utilities/configs
+import { formatDate } from '@/utils/formatters'
+
+// 3. Components
+import { Button, Card } from '@/components/ui'
+
+// 4. Assets
+import logo from '@/assets/logo.svg'
+```
+
+## Comments
+
+- Add brief comments **only** for complex logic
+- Prefer self-documenting code with clear naming
+- Use JSDoc for complex functions when helpful
+- Avoid obvious comments that just restate the code
+
+## Example: Well-Styled Code
+
+```javascript
+// Good
+const fetchBlogPosts = async (category) => {
+  if (!category) return []
+  
+  try {
+    const response = await axios.get('/api/blogs', {
+      params: { category }
+    })
+    return response.data.success ? response.data.data : []
+  } catch (error) {
+    console.error('Failed to fetch blog posts:', error)
+    return []
+  }
+}
+
+// Bad
+const fetch_blog_posts = async (category) => {
+  try {
+    const response = await axios.get("/api/blogs", {
+      params: { category },
+    });
+    if (response.data.success) {
+      return response.data.data;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error("Failed to fetch blog posts:", error);
+    return [];
+  }
+};
+```
