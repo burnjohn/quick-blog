@@ -15,11 +15,6 @@ export const adminApi = {
   // Get all blogs (admin view)
   getBlogs: async () => {
     return await axios.get(API_ENDPOINTS.ADMIN_BLOGS)
-  },
-
-  // Get all comments (admin view)
-  getComments: async () => {
-    return await axios.get(API_ENDPOINTS.ADMIN_COMMENTS)
   }
 }
 
