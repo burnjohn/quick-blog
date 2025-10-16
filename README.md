@@ -2,6 +2,16 @@
 
 QuickBlog is a simple full‑stack blog demo used to showcase Cursor's capabilities in web development. It includes a React + Vite client and an Express + MongoDB server, with ImageKit for image hosting and Google Gemini for optional AI‑assisted content generation.
 
+---
+
+[![Cursor & AI Development Workshop](workshop-banner.png)](https://gamma.app/docs/Cursor-AI-Development-Workshop-sk3zpe30t3tw2sz?mode=present#card-hajs9rr3zuclvbt)
+
+**[🎓 Workshop Slides](https://gamma.app/docs/Cursor-AI-Development-Workshop-sk3zpe30t3tw2sz?mode=present#card-hajs9rr3zuclvbt)** — Learn how to build features with Cursor AI through our comprehensive workshop covering key concepts, best practices, and development workflows.
+
+**[📚 Implementing Comments Feature Demo](DEMO-COMMENTS-FEATURE.md)** — Complete hands-on walkthrough showing how to use Cursor's planning mode with Figma designs to build a full admin comments management page.
+
+---
+
 ### Monorepo Structure
 - [`client/`](client/README.md) — React 19 app (Vite, Tailwind, React Router, Quill editor, Marked, React Hot Toast)
 - [`server/`](server/README.md) — Express 5 API (MongoDB/Mongoose via Docker, JWT auth, Multer, ImageKit, Gemini)
@@ -45,15 +55,5 @@ To view your data:
 
 ### Environment Variables
 See [`server/README.md`](server/README.md) and [`client/README.md`](client/README.md) for complete environment configuration. Server requires database credentials, `JWT_SECRET`, ImageKit keys, and `GEMINI_API_KEY`. Client only needs `VITE_BASE_URL`.
-
-### Demos & Workshop
-
-Learn how to build features with Cursor by following these resources:
-
-- **[Workshop Slides](https://gamma.app/docs/Cursor-AI-Development-Workshop-sk3zpe30t3tw2sz?mode=present#card-hajs9rr3zuclvbt)** — Cursor AI Development Workshop presentation covering key concepts, best practices, and development workflows.
-
-- **[Implementing Comments Feature](DEMO-COMMENTS-FEATURE.md)** — Complete walkthrough showing how to use Cursor's planning mode with Figma designs to build a full admin comments management page, integrate with backend APIs, and test the entire workflow from comment creation to approval.
-
-These demos showcase Cursor's AI capabilities including Figma integration, planning mode, code generation, and full-stack development.
 
 
