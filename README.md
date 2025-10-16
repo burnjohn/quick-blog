@@ -46,9 +46,11 @@ To view your data:
 ### Environment Variables
 See [`server/README.md`](server/README.md) and [`client/README.md`](client/README.md) for complete environment configuration. Server requires database credentials, `JWT_SECRET`, ImageKit keys, and `GEMINI_API_KEY`. Client only needs `VITE_BASE_URL`.
 
-### Demos
+### Demos & Workshop
 
-Learn how to build features with Cursor by following these interactive demos:
+Learn how to build features with Cursor by following these resources:
+
+- **[Workshop Slides](https://gamma.app/docs/Cursor-AI-Development-Workshop-sk3zpe30t3tw2sz?mode=present#card-hajs9rr3zuclvbt)** — Cursor AI Development Workshop presentation covering key concepts, best practices, and development workflows.
 
 - **[Implementing Comments Feature](DEMO-COMMENTS-FEATURE.md)** — Complete walkthrough showing how to use Cursor's planning mode with Figma designs to build a full admin comments management page, integrate with backend APIs, and test the entire workflow from comment creation to approval.
 
