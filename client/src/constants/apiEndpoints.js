@@ -16,6 +16,8 @@ export const API_ENDPOINTS = {
   ADMIN_LOGIN: '/api/admin/login',
   ADMIN_STATS: '/api/admin/stats',
   ADMIN_BLOGS: '/api/admin/blogs',
-  ADMIN_COMMENTS: '/api/admin/comments'
+  ADMIN_COMMENTS: '/api/admin/comments',
+  ADMIN_APPROVE_COMMENT: '/api/admin/approve-comment',
+  ADMIN_DELETE_COMMENT: '/api/admin/delete-comment'
 }
 

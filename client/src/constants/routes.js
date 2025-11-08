@@ -5,7 +5,7 @@ export const ROUTES = {
   ADMIN_DASHBOARD: '/admin',
   ADMIN_ADD_BLOG: '/admin/addBlog',
   ADMIN_LIST_BLOG: '/admin/listBlog',
-  ADMIN_COMMENTS: '/admin/comments'
+  ADMIN_LIST_COMMENTS: '/admin/listComments'
 }
 
 export const getBlogDetailPath = (id) => `/blog/${id}`

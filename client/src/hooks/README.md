@@ -17,14 +17,12 @@ hooks/
 │   │   ├── useBlogs.js
 │   │   ├── useComments.js
 │   │   ├── useAdminBlogs.js
-│   │   ├── useAdminComments.js
 │   │   ├── useAdminDashboard.js
 │   │   └── index.js
 │   ├── mutations/    # Data modification hooks (POST, PUT, DELETE)
 │   │   ├── useCreateBlog.js
 │   │   ├── useBlogGenerator.js
 │   │   ├── useBlogActions.js
-│   │   ├── useCommentActions.js
 │   │   └── index.js
 │   └── index.js
 ├── utils/            # Utility hooks
@@ -97,7 +95,6 @@ const deleteItem = async (id) => {
 - `useBlogs()` - Fetch all published blogs
 - `useComments(blogId)` - Fetch comments for a blog
 - `useAdminBlogs()` - Fetch all blogs (admin)
-- `useAdminComments()` - Fetch all comments (admin)
 - `useAdminDashboard()` - Fetch dashboard statistics
 
 **Common Return:**
@@ -117,7 +114,6 @@ const deleteItem = async (id) => {
 - `useCreateBlog()` - Create a new blog post
 - `useBlogGenerator()` - Generate blog content using AI
 - `useBlogActions()` - Delete or toggle publish status
-- `useCommentActions()` - Approve or delete comments
 
 **Common Return:**
 ```javascript

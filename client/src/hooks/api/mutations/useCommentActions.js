@@ -15,8 +15,8 @@ export function useCommentActions() {
     const result = await mutate(
       () => axios.post('/api/admin/approve-comment', { id: commentId }),
       {
-        successMessage: MESSAGES.SUCCESS_COMMENT_APPROVED,
-        errorMessage: MESSAGES.ERROR_GENERIC
+        successMessage: 'Comment approved successfully',
+        errorMessage: 'Failed to approve comment'
       }
     )
     
@@ -31,8 +31,8 @@ export function useCommentActions() {
       () => axios.post('/api/admin/delete-comment', { id: commentId }),
       {
         confirmMessage: 'Are you sure you want to delete this comment?',
-        successMessage: MESSAGES.SUCCESS_COMMENT_DELETED,
-        errorMessage: MESSAGES.ERROR_DELETE_COMMENT
+        successMessage: 'Comment deleted successfully',
+        errorMessage: 'Failed to delete comment'
       }
     )
     

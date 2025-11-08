@@ -20,6 +20,16 @@ export const adminApi = {
   // Get all comments (admin view)
   getComments: async () => {
     return await axios.get(API_ENDPOINTS.ADMIN_COMMENTS)
+  },
+
+  // Approve a comment
+  approveComment: async (id) => {
+    return await axios.post(API_ENDPOINTS.ADMIN_APPROVE_COMMENT, { id })
+  },
+
+  // Delete a comment
+  deleteComment: async (id) => {
+    return await axios.post(API_ENDPOINTS.ADMIN_DELETE_COMMENT, { id })
   }
 }
 
