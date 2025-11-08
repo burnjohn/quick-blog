@@ -22,6 +22,8 @@ import upload_area from './upload_area.svg'
 import user_icon from './user_icon.svg'
 import bin_icon from './bin_icon.svg'
 import comment_icon from './comment_icon.svg'
+import comment_approve from './comment_approve.svg'
+import comment_delete from './comment_delete.svg'
 import tick_icon from './tick_icon.svg'
 import star_icon from './star_icon.svg'
 import cross_icon from './cross_icon.svg'
@@ -47,6 +49,8 @@ export const assets = {
     user_icon,
     bin_icon,
     comment_icon,
+    comment_approve,
+    comment_delete,
     tick_icon,
     star_icon,
     home_icon,
