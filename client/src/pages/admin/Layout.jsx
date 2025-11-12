@@ -36,7 +36,7 @@ function Layout() {
       </div>
       <div className='flex h-[calc(100vh-70px)]'>
         <Sidebar />
-        <div className='flex-1 overflow-auto'>
+        <div className='flex-1 overflow-auto h-full'>
           <Outlet />
         </div>
       </div>
