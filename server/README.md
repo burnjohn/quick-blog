@@ -57,7 +57,7 @@ npm run server
 MONGODB_USER=quickblog
 MONGODB_PASSWORD=quickblog123
 MONGODB_DATABASE=quickblog
-MONGODB_URI=mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@localhost:27017/${MONGODB_DATABASE}
+MONGODB_URI=mongodb://quickblog:quickblog123@localhost:27017/quickblog
 
 # Server
 PORT=5001
