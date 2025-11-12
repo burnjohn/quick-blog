@@ -23,10 +23,6 @@ export class BlogService {
     })
   }
 
-  static async createBlog(blogData, imageUrl) {
-    return await Blog.create({ ...blogData, image: imageUrl })
-  }
-
   static async getPublishedBlogs() {
     return await Blog.find({ isPublished: true })
   }

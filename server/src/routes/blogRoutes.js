@@ -1,6 +1,5 @@
 import express from 'express'
 import { 
-  addBlog, 
   addComment, 
   deleteBlogById, 
   generateContent, 
@@ -22,7 +21,6 @@ blogRouter.post('/comments', getBlogComments)
 // Apply auth middleware to all routes below this point
 blogRouter.use(auth)
 
-blogRouter.post('/add', upload.single('image'), addBlog)
 blogRouter.post('/delete', deleteBlogById)
 blogRouter.post('/toggle-publish', togglePublish)
 blogRouter.post('/generate', generateContent)
