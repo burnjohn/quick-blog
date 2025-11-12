@@ -12,15 +12,6 @@ export const blogApi = {
     return await axios.get(API_ENDPOINTS.BLOG_BY_ID(id))
   },
 
-  // Create new blog
-  create: async (formData) => {
-    return await axios.post(API_ENDPOINTS.BLOG_CREATE, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-  },
-
   // Update blog
   update: async (id, formData) => {
     return await axios.put(API_ENDPOINTS.BLOG_UPDATE(id), formData, {
