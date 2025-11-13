@@ -10,6 +10,8 @@ QuickBlog is a simple full‑stack blog demo used to showcase Cursor's capabilit
 
 **[📚 Implementing Comments Feature Demo](DEMO-COMMENTS-FEATURE.md)** — Complete hands-on walkthrough showing how to use Cursor's planning mode with Figma designs to build a full admin comments management page.
 
+**[✍️ Implementing Blog Creation Demo](DEMO-BLOG-CREATION.md)** — Step-by-step guide to building a feature-rich blog creation page with Quill editor, ImageKit uploads, and AI content generation using Cursor's planning mode.
+
 ---
 
 ### Monorepo Structure
