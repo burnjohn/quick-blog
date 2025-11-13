@@ -87,73 +87,39 @@ This is where the magic happens! Follow these steps carefully:
 
 #### The Prompt
 
-Copy and paste this prompt into Cursor (feel free to modify as needed):
+**Important**: Feel free to write your prompt in your own style! The key is to attach the design image/screenshot and provide clear context. Here's an example prompt you can use or adapt:
 
 ```
-Implement the blog creation page with full functionality based on this design:
-https://www.figma.com/design/b0ILCMLfSEsx7NUclZAg3E/QuickBlog?node-id=37-304&t=osyxYXSbOYRVkpdS-4
+Implement the next design with functionality for creating a blog post.
 
-We have to implement both UI @client/src and server functionality @server/src
+We have to implement UI @client/src and server functionality @server/src
 
-UI Implementation:
-- Create a new separate page for blog creation at route `/admin/add-blog`
-- Check the current pages structure in @client/src/pages
-- Check the components structure in @client/src/components
-- Follow the project's code style guidelines (see project rules)
-- Use the rich text editor from @client/package.json (Quill is already in dependencies)
-- The page should include:
-  - Image upload field with thumbnail preview
-  - Blog title input field
-  - Sub title input field
-  - Rich text editor for blog description with formatting toolbar
-  - "Generate with AI" button inside the editor to auto-generate content based on title
-  - Category dropdown (use existing categories from @client/src/constants/categories.js)
-  - "Publish Now" checkbox
-  - "Add Blog" submit button
-- Use ImageKit for image uploads (check existing ImageKit usage in the codebase)
-- Handle all loading states (submitting, generating content)
-- Show appropriate success/error messages using React Hot Toast
-- Implement proper form validation for all required fields
-- Make the UI responsive and match the Figma design
+For UI:
+- It should be a separate page
+- Check current pages and components structure
+- Follow the code style guidelines
+- Use the rich text editor from our @package.json (Quill)
+- Use ImageKit from existing code for image uploads
 
-Backend Implementation:
-- Check existing routes structure in @server/src/routes
-- Follow the backend code style guidelines
-- Create/update the necessary API endpoint for blog creation (POST /api/blog/add)
-- The endpoint should:
-  - Accept multipart form data (blog JSON + image file)
-  - Validate required fields (title, subTitle, description, category, image)
-  - Upload the image to ImageKit using existing ImageKit configuration
-  - Save blog data to MongoDB using existing DB methods
-  - Return appropriate success/error responses
-- Create/update the API endpoint for AI content generation (POST /api/blog/generate)
-  - Accept a prompt (blog title) in the request body
-  - Use the existing Google Gemini AI integration
-  - Generate blog content in HTML format
-  - Return the generated content
-- Use existing middleware for authentication (JWT)
-- Follow the existing error handling patterns
-- Use the existing response helper functions
+For the backend:
+- Check existing routes structure @server/src/routes
+- Follow the code style guidelines
+- Use existing DB methods
 
-Additional Requirements:
-- Ensure the admin navigation sidebar includes a link to the blog creation page
-- Make sure all form fields are properly connected to state
-- Implement proper error handling for API failures
-- Test with different image formats and sizes
-- Ensure the rich text editor preserves HTML formatting
-- Make sure the "Generate with AI" feature works seamlessly
+Make sure to handle all loading states, form validation, and error cases properly.
 ```
+
+> **Tip**: Attach a screenshot or the Figma design link along with your prompt. Cursor's AI will understand the design and implement accordingly. The more context you provide through attached files (`@client/src`, `@server/src`), the better the results!
 
 ### 4. Review the Plan
 
 Cursor will generate a detailed implementation plan. Carefully review it and ensure:
 - ✅ All UI components are identified (page, form fields, editor)
-- ✅ Backend API endpoints are planned (create blog, generate content)
+- ✅ Backend API endpoints are planned (create blog)
 - ✅ ImageKit integration is included
 - ✅ Form validation is considered
 - ✅ Authentication middleware is included
 - ✅ Rich text editor (Quill) setup is planned
-- ✅ AI content generation is integrated
 - ✅ Error handling is comprehensive
 - ✅ Routing and navigation updates are included
 
@@ -188,7 +154,6 @@ Cursor will:
 - Integrate ImageKit for uploads
 - Create/update backend API routes
 - Add authentication middleware
-- Implement AI content generation
 - Update navigation and routing
 - Add proper error handling
 
@@ -227,23 +192,13 @@ Once implementation is complete, thoroughly test the feature:
    - Try the formatting options (bold, italic, lists, links)
    - Add some sample content
 
-#### 7.5 Test AI Content Generation
-
-1. Enter a blog title in the title field (e.g., "Machine Learning Basics")
-2. Leave the description editor empty
-3. Click the **"Generate with AI"** button inside the editor
-4. Wait for the AI to generate content (you'll see a loading indicator)
-5. Verify the generated HTML content appears in the editor
-6. Check that formatting is preserved
-7. You can edit the generated content before submitting
-
-#### 7.6 Complete the Form
+#### 7.5 Complete the Form
 
 1. **Blog Category**: Select a category from the dropdown (e.g., "Technology")
 2. **Publish Now**: Check or uncheck based on whether you want to publish immediately
 3. Review all fields to ensure everything is filled in correctly
 
-#### 7.7 Submit the Blog
+#### 7.6 Submit the Blog
 
 1. Click the **"Add Blog"** button
 2. You should see a loading state on the button
@@ -251,7 +206,7 @@ Once implementation is complete, thoroughly test the feature:
 4. The form should reset to empty state after successful submission
 5. If there are validation errors, appropriate error messages should appear
 
-#### 7.8 Verify Blog in Database
+#### 7.7 Verify Blog in Database
 
 1. Navigate to: `http://localhost:5173/admin/list-blog`
 2. Your newly created blog should appear in the list
@@ -261,7 +216,7 @@ Once implementation is complete, thoroughly test the feature:
    - Category is correct
    - Published status matches your selection
 
-#### 7.9 View Blog on Public Site
+#### 7.8 View Blog on Public Site
 
 1. If you published the blog, navigate to: `http://localhost:5173`
 2. Find your blog in the blog grid
@@ -273,7 +228,7 @@ Once implementation is complete, thoroughly test the feature:
    - Category is displayed
    - All HTML formatting is preserved
 
-#### 7.10 Test Edge Cases
+#### 7.9 Test Edge Cases
 
 **Test Form Validation**:
 - Try submitting without an image → Should show error
@@ -285,7 +240,6 @@ Once implementation is complete, thoroughly test the feature:
 **Test Error Handling**:
 - Disconnect internet and try to submit → Should show network error
 - Try uploading a very large image (>10MB) → Should handle gracefully
-- Try using AI generation without internet → Should show error
 - Log out and try to access the page → Should redirect to login
 
 **Test Rich Text Editor**:
@@ -303,12 +257,11 @@ After completing all steps, you should have:
 - ✅ A fully functional blog creation page matching the Figma design
 - ✅ Working image upload with ImageKit integration
 - ✅ Rich text editor with formatting toolbar
-- ✅ AI-powered content generation feature
 - ✅ Complete form validation with helpful error messages
-- ✅ Proper loading states during submission and generation
+- ✅ Proper loading states during submission
 - ✅ Success/error notifications using React Hot Toast
 - ✅ Responsive design that works on mobile and desktop
-- ✅ Backend API endpoints for blog creation and AI generation
+- ✅ Backend API endpoints for blog creation
 - ✅ Proper authentication and authorization
 - ✅ Database integration with MongoDB
 - ✅ Complete error handling throughout
