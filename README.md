@@ -1,6 +1,6 @@
 ## QuickBlog — Demo Project
 
-QuickBlog is a simple full‑stack blog demo used to showcase Cursor's capabilities in web development. It includes a React + Vite client and an Express + MongoDB server, with ImageKit for image hosting and Google Gemini for optional AI‑assisted content generation.
+QuickBlog is a simple full‑stack blog demo used to showcase Cursor's capabilities in web development. It includes a React + Vite client and an Express + MongoDB server, with local image storage and Google Gemini for optional AI‑assisted content generation.
 
 ---
 
@@ -10,52 +10,169 @@ QuickBlog is a simple full‑stack blog demo used to showcase Cursor's capabilit
 
 **[📚 Implementing Comments Feature Demo](DEMO-COMMENTS-FEATURE.md)** — Complete hands-on walkthrough showing how to use Cursor's planning mode with Figma designs to build a full admin comments management page.
 
-**[✍️ Implementing Blog Creation Demo](DEMO-BLOG-CREATION.md)** — Step-by-step guide to building a feature-rich blog creation page with Quill editor, ImageKit uploads, and AI content generation using Cursor's planning mode.
+**[✍️ Implementing Blog Creation Demo](DEMO-BLOG-CREATION.md)** — Step-by-step guide to building a feature-rich blog creation page with Quill editor, local image uploads, and AI content generation using Cursor's planning mode.
 
 ---
 
 ### Monorepo Structure
 - [`client/`](client/README.md) — React 19 app (Vite, Tailwind, React Router, Quill editor, Marked, React Hot Toast)
-- [`server/`](server/README.md) — Express 5 API (MongoDB/Mongoose via Docker, JWT auth, Multer, ImageKit, Gemini)
+- [`server/`](server/README.md) — Express 5 API (MongoDB/Mongoose via Docker, JWT auth, Multer, local image storage, Gemini)
 
 ### Design
 Figma reference: `https://www.figma.com/design/b0ILCMLfSEsx7NUclZAg3E/QuickBlog?node-id=0-1&m=dev&t=Jo8qI7kBgrtOqFZT-1`
 
 For the full feature list and API documentation, see [`server/README.md`](server/README.md).
 
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- **Node.js** 18+ installed
+- **Docker** installed and running
+- **npm** package manager
+
 ### First Run Order
-1) Start the Server (starts local MongoDB via Docker + seeds data)
-2) Start the Client
+1. Start the Server first (starts local MongoDB via Docker + seeds data)
+2. Then start the Client
 
-### Quickstart
-See [`server/README.md`](server/README.md) and [`client/README.md`](client/README.md) for detailed steps. Briefly:
+---
 
-**Server**
-- Copy `server/.env.example` to `server/.env` and fill in your credentials:
-  - Database credentials (`MONGODB_USER`, `MONGODB_PASSWORD`, `MONGODB_DATABASE`)
-  - JWT secret (`JWT_SECRET`)
-  - ImageKit keys (`IMAGEKIT_PUBLIC_KEY`, `IMAGEKIT_PRIVATE_KEY`, `IMAGEKIT_URL_ENDPOINT`)
-  - Gemini API key (`GEMINI_API_KEY`)
-- `cd server && npm install && npm run setup` (starts local MongoDB in Docker + creates schema + seeds test data)
-- `npm run server` (starts API on port 5001)
+### Step 1: Setup Server
 
-**Client**
-- Copy `client/.env.example` to `client/.env` and set:
-  - `VITE_BASE_URL=http://localhost:5001`
-- `cd client && npm install && npm run dev` (starts dev server on port 5173)
+```bash
+# Navigate to server directory
+cd server
 
-**Admin Login** (after seeding)
-- Navigate to `http://localhost:5173/admin`
-- Email: `admin@quickblog.com` / Password: `admin123`
+# Install dependencies
+npm install
 
-### Database
-This project uses a **local MongoDB database** running in Docker (no cloud database needed). The database is automatically set up when you run `npm run setup` in the server directory.
+# Create environment file from example
+cp .env.example .env
 
-To view your data:
-- **Mongo Express** (Web UI): `http://localhost:8081` (login with your `MONGODB_USER` / `MONGODB_PASSWORD`)
+# Start MongoDB (Docker) + seed database with test data
+npm run setup
+
+# Start the API server (runs on port 5001)
+npm run server
+```
+
+> **Note:** The `npm run setup` command starts Docker containers and seeds the database with sample users, blogs, and comments.
+
+### Step 2: Setup Client
+
+Open a **new terminal** and run:
+
+```bash
+# Navigate to client directory
+cd client
+
+# Install dependencies
+npm install
+
+# Create environment file from example
+cp .env.example .env
+
+# Start the dev server (runs on port 5173)
+npm run dev
+```
+
+### Step 3: Access the Application
+
+- **Public Blog**: http://localhost:5173
+- **Admin Panel**: http://localhost:5173/admin
+
+**Admin Login** (created by seed script):
+- Email: `admin@quickblog.com`
+- Password: `admin123`
+
+---
+
+## 📁 Environment Configuration
+
+### Server (`server/.env`)
+The server requires these environment variables (defaults work out of the box):
+
+```bash
+# Database (Docker)
+MONGODB_USER=quickblog
+MONGODB_PASSWORD=quickblog123
+MONGODB_DATABASE=quickblog
+MONGODB_URI=mongodb://quickblog:quickblog123@localhost:27017/quickblog
+
+# Server
+PORT=5001
+CLIENT_URL=http://localhost:5173
+NODE_ENV=development
+
+# Authentication
+JWT_SECRET=your_jwt_secret_key_change_this_in_production
+
+# AI Content Generation (optional)
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+### Client (`client/.env`)
+The client only needs the backend URL:
+
+```bash
+VITE_BASE_URL=http://localhost:5001
+```
+
+---
+
+## 🗄️ Database
+
+This project uses a **local MongoDB database** running in Docker (no cloud database needed).
+
+### Database Commands
+```bash
+cd server
+
+npm run db:start    # Start MongoDB containers
+npm run db:stop     # Stop containers (data persists)
+npm run db:restart  # Restart containers
+npm run db:clean    # Stop and DELETE all data
+npm run seed        # Re-seed database with test data
+```
+
+### View Your Data
+- **Mongo Express** (Web UI): http://localhost:8081
+  - Login: `quickblog` / `quickblog123`
 - **MongoDB Compass** (Desktop): Connect to `mongodb://quickblog:quickblog123@localhost:27017`
 
-### Environment Variables
-See [`server/README.md`](server/README.md) and [`client/README.md`](client/README.md) for complete environment configuration. Server requires database credentials, `JWT_SECRET`, ImageKit keys, and `GEMINI_API_KEY`. Client only needs `VITE_BASE_URL`.
+---
 
+## 🖼️ Image Storage
 
+Blog images are stored **locally** on the server in `server/public/uploads/`:
+- `uploads/blogs/` — User-uploaded blog images
+- `uploads/seed/` — Seed data images
+
+Images are served via the `/uploads` endpoint (e.g., `http://localhost:5001/uploads/seed/blog_pic_1.png`).
+
+---
+
+## 🔧 Troubleshooting
+
+### Images not loading?
+1. Make sure the server is running on port 5001
+2. Check that `VITE_BASE_URL=http://localhost:5001` is set in `client/.env`
+3. Verify images exist: `ls server/public/uploads/seed/`
+
+### Database connection failed?
+1. Ensure Docker is running: `docker ps`
+2. Clean and restart: `cd server && npm run db:clean && npm run setup`
+
+### Port already in use?
+1. Kill the process: `lsof -ti:5001 | xargs kill -9` (for server)
+2. Or change the port in `.env`
+
+---
+
+## 📚 More Documentation
+
+- [`server/README.md`](server/README.md) — Full API documentation, database setup, and architecture
+- [`client/README.md`](client/README.md) — Frontend setup and component documentation
+- [`DEMO-COMMENTS-FEATURE.md`](DEMO-COMMENTS-FEATURE.md) — Tutorial on implementing comments
+- [`DEMO-BLOG-CREATION.md`](DEMO-BLOG-CREATION.md) — Tutorial on implementing blog creation

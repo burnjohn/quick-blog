@@ -1,0 +1,8 @@
+# Ignore uploaded blog images but keep directory structure
+blogs/*
+!blogs/.gitkeep
+
+# Keep seed images in git
+!seed/
+
+

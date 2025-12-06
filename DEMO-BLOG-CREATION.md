@@ -1,13 +1,13 @@
 # Demo: Implementing Blog Creation Page with Cursor
 
-This guide demonstrates how to implement a complete blog creation feature in QuickBlog using Cursor's AI capabilities, Figma integration, and ImageKit for image uploads.
+This guide demonstrates how to implement a complete blog creation feature in QuickBlog using Cursor's AI capabilities, Figma integration, and local image uploads.
 
 ## Overview
 
 In this demo, you'll learn how to:
 - Use Cursor's **Planning Mode** to analyze and implement Figma designs
 - Create a full-featured blog creation page with rich text editor
-- Integrate ImageKit for image uploads and management
+- Handle image uploads with local storage
 - Build backend API endpoints for blog creation
 - Test the complete blog creation workflow
 
@@ -17,42 +17,6 @@ Before starting, ensure you have:
 - QuickBlog server running (`npm run server` in `server/`)
 - QuickBlog client running (`npm run dev` in `client/`)
 - MongoDB running via Docker
-- **ImageKit account** with API credentials (see setup below)
-
-### ImageKit Setup (Required)
-
-This feature uses ImageKit for image uploads. You'll need to register and get your API keys:
-
-1. **Create an ImageKit Account**:
-   - Go to [imagekit.io](https://imagekit.io/)
-   - Sign up for a free account
-   - Complete the onboarding process
-
-2. **Get Your API Credentials**:
-   - Navigate to **Developer Options** in the ImageKit dashboard
-   - Copy the following credentials:
-     - **Public Key** (e.g., `public_xxx...`)
-     - **Private Key** (e.g., `private_xxx...`)
-     - **URL Endpoint** (e.g., `https://ik.imagekit.io/your_imagekit_id`)
-
-3. **Configure Environment Variables**:
-   - Open `server/.env` file
-   - Add your ImageKit credentials:
-   
-   ```bash
-   # ImageKit (for image uploads)
-   IMAGEKIT_PUBLIC_KEY=your_imagekit_public_key
-   IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
-   IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_imagekit_id
-   ```
-
-4. **Restart the Server**:
-   ```bash
-   cd server
-   npm run server
-   ```
-
-> **Note**: Without ImageKit credentials, image uploads will fail. Make sure to configure these before testing the feature.
 
 ---
 
@@ -99,12 +63,13 @@ For UI:
 - Check current pages and components structure
 - Follow the code style guidelines
 - Use the rich text editor from our @package.json (Quill)
-- Use ImageKit from existing code for image uploads
+- Use local file upload for images
 
 For the backend:
 - Check existing routes structure @server/src/routes
 - Follow the code style guidelines
 - Use existing DB methods
+- Images are stored locally in public/uploads/blogs
 
 Make sure to handle all loading states, form validation, and error cases properly.
 ```
@@ -116,7 +81,7 @@ Make sure to handle all loading states, form validation, and error cases properl
 Cursor will generate a detailed implementation plan. Carefully review it and ensure:
 - ✅ All UI components are identified (page, form fields, editor)
 - ✅ Backend API endpoints are planned (create blog)
-- ✅ ImageKit integration is included
+- ✅ Local image upload handling is included
 - ✅ Form validation is considered
 - ✅ Authentication middleware is included
 - ✅ Rich text editor (Quill) setup is planned
@@ -151,7 +116,7 @@ Once you're satisfied with the plan:
 Cursor will:
 - Create the blog creation page component
 - Set up the Quill rich text editor
-- Integrate ImageKit for uploads
+- Handle local image uploads via Multer
 - Create/update backend API routes
 - Add authentication middleware
 - Update navigation and routing
@@ -178,7 +143,7 @@ Once implementation is complete, thoroughly test the feature:
 #### 7.3 Test Image Upload
 
 1. Click on the **"Upload Thumbnail"** area
-2. Select an image from your computer (JPG, PNG, or WebP)
+2. Select an image from your computer (JPG, PNG, GIF, or WebP)
 3. Verify the image preview appears
 4. Try uploading different image formats and sizes
 5. Ensure the preview updates correctly
@@ -222,7 +187,7 @@ Once implementation is complete, thoroughly test the feature:
 2. Find your blog in the blog grid
 3. Click to open the blog detail page
 4. Verify:
-   - Image loads from ImageKit
+   - Image loads correctly from local storage
    - Title and subtitle display correctly
    - Rich text content renders with proper formatting
    - Category is displayed
@@ -239,7 +204,7 @@ Once implementation is complete, thoroughly test the feature:
 
 **Test Error Handling**:
 - Disconnect internet and try to submit → Should show network error
-- Try uploading a very large image (>10MB) → Should handle gracefully
+- Try uploading a very large image (>10MB) → Should show file size error
 - Log out and try to access the page → Should redirect to login
 
 **Test Rich Text Editor**:
@@ -255,7 +220,7 @@ Once implementation is complete, thoroughly test the feature:
 
 After completing all steps, you should have:
 - ✅ A fully functional blog creation page matching the Figma design
-- ✅ Working image upload with ImageKit integration
+- ✅ Working image upload with local storage
 - ✅ Rich text editor with formatting toolbar
 - ✅ Complete form validation with helpful error messages
 - ✅ Proper loading states during submission
