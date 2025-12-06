@@ -6,8 +6,6 @@ QuickBlog is a simple full‑stack blog demo used to showcase Cursor's capabilit
 
 ---
 
-[![Cursor & AI Development Workshop](workshop-banner.png)](https://gamma.app/docs/Cursor-AI-Development-Workshop-sk3zpe30t3tw2sz?mode=present#card-hajs9rr3zuclvbt)
-
 **[🎓 Workshop Slides](https://gamma.app/docs/Cursor-AI-Development-Workshop-sk3zpe30t3tw2sz?mode=present#card-hajs9rr3zuclvbt)** — Learn how to build features with Cursor AI through our comprehensive workshop covering key concepts, best practices, and development workflows.
 
 **[📚 Implementing Comments Feature Demo](DEMO-COMMENTS-FEATURE.md)** — Complete hands-on walkthrough showing how to use Cursor's planning mode with Figma designs to build a full admin comments management page.
