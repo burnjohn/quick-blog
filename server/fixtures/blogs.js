@@ -1,4 +1,5 @@
 // Blog post fixtures based on design mockups
+// Images are stored locally in public/uploads/seed/
 export const blogs = [
   {
     title: 'A detailed step by step guide to manage your lifestyle',
@@ -29,7 +30,7 @@ Time management is crucial for a balanced life. Use tools like calendars, to-do 
 
 Managing your lifestyle is an ongoing process, not a one-time fix. Start small, be consistent, and adjust as needed. With time, these intentional changes will become habits, leading to a more balanced, fulfilling life.`,
     category: 'Lifestyle',
-    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800'
+    image: '/uploads/seed/blog_pic_1.png'
   },
   {
     title: 'How to create an effective startup roadmap or ideas',
@@ -70,7 +71,7 @@ Share your roadmap with your team, investors, and stakeholders. Transparency bui
 
 A startup roadmap isn't set in stone — it's a living document. Review it regularly, adjust as needed, and stay focused on your vision. With a clear roadmap, you're not just dreaming; you're executing.`,
     category: 'Startup',
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800'
+    image: '/uploads/seed/blog_pic_2.png'
   },
   {
     title: 'Learning new technology to boost your career in software',
@@ -132,7 +133,7 @@ Stay curious and keep exploring.
 
 Learning new technology is a marathon, not a sprint. Focus on fundamentals, build projects, and stay consistent. Your career will thank you.`,
     category: 'Technology',
-    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800'
+    image: '/uploads/seed/blog_pic_3.png'
   },
   {
     title: 'The ultimate guide to work-life balance in 2025',
@@ -178,7 +179,7 @@ Tech can help or hinder balance:
 
 Perfect balance doesn't exist, but sustainable rhythm does. Experiment, adjust, and find what works for your unique situation.`,
     category: 'Lifestyle',
-    image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800'
+    image: '/uploads/seed/blog_pic_4.png'
   },
   {
     title: 'Understanding modern JavaScript frameworks in depth',
@@ -242,7 +243,7 @@ Consider:
 
 There's no "best" framework — only the best one for your situation. Start with React if unsure, but don't be afraid to explore Vue or Angular.`,
     category: 'Technology',
-    image: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800'
+    image: '/uploads/seed/blog_pic_5.png'
   },
   {
     title: 'From idea to launch: A startup founder\'s journey',
@@ -321,7 +322,6 @@ But also expect:
 
 Starting a company is one of the hardest things you'll do. It's also one of the most rewarding. If you're thinking about it, stop overthinking and start building.`,
     category: 'Startup',
-    image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800'
+    image: '/uploads/seed/blog_pic_6.png'
   }
 ]
-

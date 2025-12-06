@@ -1,11 +1,12 @@
 # Quick Blog — Server API
 
-Express server with blog CRUD, comments, admin auth, ImageKit uploads, and AI content generation.
+Express server with blog CRUD, comments, admin auth, local image uploads, and AI content generation.
 
 ## Tech Stack
 - **Backend:** Express 5, Mongoose 8, JWT, Multer
 - **Database:** MongoDB (local via Docker)
-- **Integrations:** ImageKit, Google Gemini AI
+- **Image Storage:** Local filesystem (served via Express static)
+- **Integrations:** Google Gemini AI
 - **Dev Tools:** migrate-mongo, Docker Compose
 - **Logging:** HTTP requests/responses + Database changes
 
@@ -32,7 +33,7 @@ npm install
 cp .env.example .env
 # Edit .env with your credentials:
 # - Database credentials (MONGODB_USER, MONGODB_PASSWORD, MONGODB_DATABASE)
-# - API keys (ImageKit, Gemini)
+# - API keys (Gemini)
 # - JWT secret
 
 # 3. Start MongoDB with Docker (init scripts create schema automatically)
@@ -67,14 +68,40 @@ NODE_ENV=development
 # JWT Authentication
 JWT_SECRET=your_jwt_secret_key_here
 
-# ImageKit (for image uploads)
-IMAGEKIT_PUBLIC_KEY=your_imagekit_public_key
-IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
-IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_imagekit_id
-
 # Google Gemini AI (for content generation)
 GEMINI_API_KEY=your_gemini_api_key_here
 ```
+
+---
+
+## 🖼️ Image Storage
+
+Blog images are stored locally on the server filesystem instead of a cloud service.
+
+### Upload Directory Structure
+```
+server/
+├── public/
+│   └── uploads/
+│       ├── blogs/     # User-uploaded blog images
+│       └── seed/      # Seed data images
+```
+
+### How It Works
+1. When a blog is created, the image is uploaded via Multer
+2. The image is saved to `public/uploads/blogs/` with a unique filename
+3. The image URL stored in the database is a relative path like `/uploads/blogs/blog-1234567890.png`
+4. Express serves static files from the `public/uploads` directory
+5. Frontend accesses images via the full URL: `http://localhost:5001/uploads/blogs/blog-1234567890.png`
+
+### Supported Formats
+- JPEG/JPG
+- PNG
+- GIF
+- WebP
+
+### File Size Limit
+- Maximum: 10MB per image
 
 ---
 
@@ -253,16 +280,21 @@ All HTTP requests/responses and database changes are automatically logged.
 ```
 server/
 ├── src/                      # 🎯 Application Code
-│   ├── configs/             # DB, ImageKit, Gemini configs
+│   ├── configs/             # DB, Gemini configs
 │   ├── constants/           # Status codes, messages, enums
 │   ├── controllers/         # Route handlers (thin, delegate to services)
 │   ├── helpers/             # Response formatters, async handlers
-│   ├── middleware/          # Auth, error handling, validation
+│   ├── middleware/          # Auth, error handling, file uploads (Multer)
 │   ├── models/              # Mongoose schemas
 │   ├── routes/              # API route definitions
 │   ├── services/            # Business logic layer
 │   ├── utils/               # HTTP & Database loggers
 │   └── validators/          # Input validation middleware
+│
+├── public/                  # Static files
+│   └── uploads/             # Uploaded images
+│       ├── blogs/           # User-uploaded blog images
+│       └── seed/            # Seed data images
 │
 ├── fixtures/                # Test/seed data
 ├── scripts/                 # Database seeding scripts
@@ -280,6 +312,7 @@ server/
 - **Response Helpers**: Consistent API responses via helper functions
 - **Constants**: Centralized messages and status codes
 - **Validators**: Input validation middleware for clean controllers
+- **Local Image Storage**: Images stored in `public/uploads/` directory
 
 ---
 
@@ -308,7 +341,7 @@ server/
 
 ### Performance
 ✅ **Cache Control** - Disabled in development for fresh data
-✅ **Optimized Images** - ImageKit transformations (WebP, compression)
+✅ **Local Image Storage** - Fast access, no external dependencies
 ✅ **Lean Queries** - Mongoose query optimization
 ✅ **Async/Await** - Non-blocking operations throughout
 

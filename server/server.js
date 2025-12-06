@@ -1,4 +1,6 @@
 import express from 'express'
+import path from 'path'
+import { fileURLToPath } from 'url'
 import 'dotenv/config'
 import cors from 'cors'
 import connectDB from './src/configs/db.js'
@@ -9,6 +11,10 @@ import { notFound, errorHandler } from './src/middleware/errorHandler.js'
 import appRouter from './src/routes/appRoutes.js'
 import adminRouter from './src/routes/adminRoutes.js'
 import blogRouter from './src/routes/blogRoutes.js'
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const app = express();
 
@@ -23,6 +29,9 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }))
 app.use(express.json())
+
+// Serve static files from public directory
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')))
 
 // Disable caching in development
 if (process.env.NODE_ENV === 'development') {
