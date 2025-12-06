@@ -1,5 +1,7 @@
 ## QuickBlog — Demo Project
 
+![QuickBlog Hero](hero-image.png)
+
 QuickBlog is a simple full‑stack blog demo used to showcase Cursor's capabilities in web development. It includes a React + Vite client and an Express + MongoDB server, with local image storage and Google Gemini for optional AI‑assisted content generation.
 
 ---
