@@ -1,10 +1,7 @@
 import express from 'express'
 import { 
   adminLogin, 
-  approveCommentById, 
-  deleteCommentById, 
   getAllBlogsAdmin, 
-  getAllComments, 
   getDashboard 
 } from '../controllers/adminController.js'
 import auth from '../middleware/auth.js'
@@ -18,8 +15,5 @@ adminRouter.use(auth)
 
 adminRouter.get('/dashboard', getDashboard)
 adminRouter.get('/blogs', getAllBlogsAdmin)
-adminRouter.get('/comments', getAllComments)
-adminRouter.post('/approve-comment', approveCommentById)
-adminRouter.post('/delete-comment', deleteCommentById)
 
 export default adminRouter
