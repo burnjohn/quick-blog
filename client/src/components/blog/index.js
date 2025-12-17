@@ -5,4 +5,6 @@ export { default as BlogContent } from './BlogContent'
 export { default as CategoryFilter } from './CategoryFilter'
 export { default as BlogGrid } from './BlogGrid'
 export { default as SocialShare } from './SocialShare'
+export { default as CommentForm } from './CommentForm'
+export { default as CommentsList } from './CommentsList'
 

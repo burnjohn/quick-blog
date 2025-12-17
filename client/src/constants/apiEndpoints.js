@@ -10,5 +10,12 @@ export const API_ENDPOINTS = {
   ADMIN_LOGIN: '/api/admin/login',
   ADMIN_STATS: '/api/admin/stats',
   ADMIN_BLOGS: '/api/admin/blogs',
+  ADMIN_COMMENTS: '/api/admin/comments',
+  
+  // Comment endpoints
+  COMMENT_ADD: '/api/comment/add',
+  COMMENT_APPROVE: '/api/admin/comments/approve',
+  COMMENT_DELETE: '/api/admin/comments/delete',
+  BLOG_COMMENTS: (blogId) => `/api/comment/blog/${blogId}`,
 }
 

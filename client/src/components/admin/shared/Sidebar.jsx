@@ -26,6 +26,11 @@ function Sidebar() {
         <img src={assets.list_icon} alt='' className='min-w-4 w-5' />
         <p className='hidden md:inline-block'>Blog lists</p>
       </NavLink>
+
+      <NavLink to={ROUTES.ADMIN_COMMENTS} className={navLinkClass}>
+        <img src={assets.comment_icon} alt='' className='min-w-4 w-5' />
+        <p className='hidden md:inline-block'>Comments</p>
+      </NavLink>
     </nav>
   )
 }
