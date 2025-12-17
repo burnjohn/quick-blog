@@ -5,6 +5,10 @@ export const MESSAGES = {
   SUCCESS_BLOG_DELETED: 'Blog deleted successfully!',
   SUCCESS_LOGIN: 'Login successful!',
   SUCCESS_LOGOUT: 'Logout successful!',
+  SUCCESS_COMMENT_SUBMITTED: 'Comment submitted successfully. It will be reviewed before being published.',
+  SUCCESS_COMMENT_APPROVED: 'Comment approved successfully!',
+  SUCCESS_COMMENT_UNAPPROVED: 'Comment unapproved successfully!',
+  SUCCESS_COMMENT_DELETED: 'Comment deleted successfully!',
   
   // Error messages
   ERROR_GENERIC: 'Something went wrong. Please try again.',
@@ -15,6 +19,10 @@ export const MESSAGES = {
   ERROR_DELETE_BLOG: 'Failed to delete blog.',
   ERROR_LOGIN: 'Login failed. Please check your credentials.',
   ERROR_UNAUTHORIZED: 'You are not authorized to perform this action.',
+  ERROR_FETCH_COMMENTS: 'Failed to fetch comments.',
+  ERROR_SUBMIT_COMMENT: 'Failed to submit comment.',
+  ERROR_UPDATE_COMMENT: 'Failed to update comment.',
+  ERROR_DELETE_COMMENT: 'Failed to delete comment.',
   
   // Validation messages
   VALIDATION_REQUIRED_FIELD: 'This field is required.',

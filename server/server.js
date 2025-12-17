@@ -11,6 +11,7 @@ import { notFound, errorHandler } from './src/middleware/errorHandler.js'
 import appRouter from './src/routes/appRoutes.js'
 import adminRouter from './src/routes/adminRoutes.js'
 import blogRouter from './src/routes/blogRoutes.js'
+import commentRouter from './src/routes/commentRoutes.js'
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url)
@@ -49,6 +50,7 @@ app.use(httpLogger)
 app.use('/', appRouter)
 app.use('/api/admin', adminRouter)
 app.use('/api/blog', blogRouter)
+app.use('/api/comment', commentRouter)
 
 // Error handling middleware (must be last)
 app.use(notFound)
