@@ -2,7 +2,6 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import Card from '../ui/Card'
 import { truncateHtml } from '../../utils/formatters'
-import { getImageUrl } from '../../utils/helpers'
 import { getBlogDetailPath } from '../../constants/routes'
 
 function BlogCard({ blog }) {
@@ -15,7 +14,7 @@ function BlogCard({ blog }) {
 
   return (
     <Card hover onClick={handleClick} className='w-full'>
-      <Card.Image src={getImageUrl(image)} alt={title} />
+      <Card.Image src={image} alt={title} />
       <Card.Badge>{category}</Card.Badge>
       <Card.Body>
         <Card.Title>{title}</Card.Title>

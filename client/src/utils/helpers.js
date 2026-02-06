@@ -2,17 +2,6 @@ export const classNames = (...classes) => {
   return classes.filter(Boolean).join(' ')
 }
 
-// Convert relative image paths to full URLs
-export const getImageUrl = (imagePath) => {
-  if (!imagePath) return ''
-  // If already a full URL (http/https), return as is
-  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
-    return imagePath
-  }
-  // Prepend the base URL for relative paths
-  const baseUrl = import.meta.env.VITE_BASE_URL || ''
-  return `${baseUrl}${imagePath}`
-}
 
 export const debounce = (func, delay) => {
   let timeoutId

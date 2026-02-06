@@ -15,7 +15,7 @@ function BlogTableItem({ blog, onUpdate, index }) {
   }
 
   const handleTogglePublish = async () => {
-    const result = await togglePublish(blog._id)
+    const result = await togglePublish(blog._id, blog.isPublished)
     if (result.success && onUpdate) {
       onUpdate()
     }
