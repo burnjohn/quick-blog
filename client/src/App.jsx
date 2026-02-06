@@ -1,12 +1,11 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { Home, BlogDetail } from './pages/public'
-import { Layout, Dashboard, AddBlog, ListBlog } from './pages/admin'
+import { Layout, Dashboard, ListBlog } from './pages/admin'
 import { Login } from './components/admin'
 import { useAppContext } from './context/AppContext'
 import { Toaster } from 'react-hot-toast'
 import { ROUTES } from './constants/routes'
-import 'quill/dist/quill.snow.css'
 
 function App() {
   const { token } = useAppContext()
@@ -19,7 +18,6 @@ function App() {
         <Route path={ROUTES.BLOG_DETAIL} element={<BlogDetail />} />
         <Route path={ROUTES.ADMIN} element={token ? <Layout /> : <Login />}>
           <Route index element={<Dashboard />} />
-          <Route path='addBlog' element={<AddBlog />} />
           <Route path='listBlog' element={<ListBlog />} />
         </Route>
       </Routes>

@@ -1,7 +1,5 @@
 export const MESSAGES = {
   // Success messages
-  SUCCESS_BLOG_CREATED: 'Blog created successfully!',
-  SUCCESS_BLOG_UPDATED: 'Blog updated successfully!',
   SUCCESS_BLOG_DELETED: 'Blog deleted successfully!',
   SUCCESS_LOGIN: 'Login successful!',
   SUCCESS_LOGOUT: 'Logout successful!',
@@ -10,8 +8,6 @@ export const MESSAGES = {
   ERROR_GENERIC: 'Something went wrong. Please try again.',
   ERROR_FETCH_BLOGS: 'Failed to fetch blogs.',
   ERROR_FETCH_BLOG: 'Failed to fetch blog details.',
-  ERROR_CREATE_BLOG: 'Failed to create blog.',
-  ERROR_UPDATE_BLOG: 'Failed to update blog.',
   ERROR_DELETE_BLOG: 'Failed to delete blog.',
   ERROR_LOGIN: 'Login failed. Please check your credentials.',
   ERROR_UNAUTHORIZED: 'You are not authorized to perform this action.',
