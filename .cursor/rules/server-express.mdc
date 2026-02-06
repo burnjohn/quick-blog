@@ -1,0 +1,56 @@
+---
+description: Express 5 patterns, MVC, security, and error handling for server
+globs: server/**
+alwaysApply: false
+---
+
+# Server Express Patterns
+
+## Architecture
+
+- **Express 5** with ES modules (`"type": "module"`).
+- **MVC flow:** Routes → Controllers → Models. Routes define endpoints and attach middleware; controllers handle request/response and call models; models define Mongoose schemas and data access.
+
+## Async and Error Handling
+
+- **Async route handlers:** Use the **asyncHandler** wrapper from `server/src/helpers/asyncHandler.js` so thrown errors and rejected promises are passed to Express's error pipeline.
+- **Centralized errors:** Use the **errorHandler** middleware from `server/src/middleware/errorHandler.js` as the last middleware. Do not catch and swallow errors in controllers; let them propagate to errorHandler.
+- **Responses:** Use helpers from `server/src/helpers/response.js` for consistent success/error responses (e.g. success, error, notFound).
+
+## Security
+
+- **Helmet:** Use for security headers (configured in `server.js` or app setup).
+- **CORS:** Configure for `CLIENT_URL`; allow only trusted origins in production.
+- **Rate limiting:** Use **express-rate-limit** (e.g. via `server/src/middleware/rateLimiter.js`) on public and auth routes.
+- **Auth:** JWT verification in `server/src/middleware/auth.js`; protect admin routes. Use **bcryptjs** for password hashing; never store plain passwords.
+
+## File Uploads
+
+- **Multer:** Use the Multer middleware from `server/src/middleware/multer.js` for blog image uploads. Validate file types and size in middleware or controller.
+
+## Database and Config
+
+- **MongoDB:** Connection config in `server/src/configs/db.js`. Use Mongoose; set connection options (e.g. timeouts, pool size) for production.
+- **Gemini:** API/config for AI content in `server/src/configs/gemini.js`.
+
+## Models and Migrations
+
+- **Models:** Mongoose schemas in `server/src/models/` (Blog.js, Comment.js, User.js). Use proper schema definitions and indexes.
+- **Migrations:** Use **migrate-mongo**; migration files live in `server/migrations/`; config in `migrations/migrate-mongo-config.cjs`.
+- **Seed data:** Fixtures in `server/fixtures/`; seed script in `server/scripts/seed.js`.
+
+## Validation
+
+- **Validators:** Request validation in `server/src/validators/` (e.g. blogValidator.js). Validate all user input (body, query, params) before business logic.
+- **Never trust user input:** Always validate and sanitize; use validators or a validation library where appropriate.
+
+## Constants and Logging
+
+- **API messages:** Use `server/src/constants/messages.js` for user-facing and log messages; avoid hardcoding strings in controllers.
+- **Logging:** Use `server/src/utils/dbLogger.js` and `server/src/utils/httpLogger.js` for database and HTTP request logging.
+
+## Route and Middleware Order
+
+- Apply security and CORS **before** auth so preflight (OPTIONS) and health checks do not require JWT.
+- Apply auth middleware only to routes that need protection.
+- Mount **errorHandler** last so it catches all errors from route handlers and middleware.
