@@ -1,0 +1,71 @@
+---
+description: Project architecture, tech stack, and folder structure for Quick Blog
+alwaysApply: true
+---
+
+# Quick Blog Architecture
+
+## Overview
+
+Quick Blog is a full-stack monorepo: a React SPA (client) and an Express API (server). The project uses JavaScript/JSX only (no TypeScript). Deployment target is Vercel.
+
+## Tech Stack
+
+| Layer | Technologies |
+|-------|--------------|
+| Client | React 19, Vite 6, Tailwind CSS 4, React Router 7, Axios |
+| Server | Express 5, MongoDB (Mongoose 8), JWT (jsonwebtoken), bcryptjs |
+| Auth | JWT-based; admin panel with login |
+| Features | Blog CRUD, comments, AI content generation (Google Gemini), file uploads (Multer) |
+| Database | MongoDB via Docker Compose; migrate-mongo for migrations |
+| Build | ES Modules (`"type": "module"`) everywhere |
+
+## Monorepo Layout
+
+```
+cii/
+├── client/          # React SPA (Vite)
+│   ├── src/
+│   │   ├── api/           # Axios API calls, axiosConfig
+│   │   ├── components/    # UI by domain (admin, blog, comment, forms, layout, ui)
+│   │   ├── constants/     # routes, messages, categories, apiEndpoints
+│   │   ├── context/       # AppContext (global state)
+│   │   ├── hooks/         # api/queries, api/mutations, core, utils
+│   │   ├── pages/         # admin/, public/
+│   │   └── utils/         # formatters, helpers, validators
+│   ├── vite.config.js
+│   └── package.json
+│
+├── server/          # Express API
+│   ├── server.js         # Entry point
+│   ├── src/
+│   │   ├── configs/       # db.js, gemini.js
+│   │   ├── constants/    # messages.js
+│   │   ├── controllers/  # adminController, appController, blogController
+│   │   ├── helpers/      # asyncHandler, response
+│   │   ├── middleware/   # auth, errorHandler, multer, rateLimiter
+│   │   ├── models/       # Blog, Comment, User (Mongoose)
+│   │   ├── routes/       # adminRoutes, appRoutes, blogRoutes
+│   │   ├── utils/        # dbLogger, httpLogger, imageUrl
+│   │   └── validators/   # blogValidator
+│   ├── migrations/       # migrate-mongo
+│   ├── fixtures/         # Seed data definitions
+│   ├── scripts/          # seed.js
+│   └── package.json
+│
+└── .cursor/rules/   # Cursor rule files (this directory)
+```
+
+## Key Conventions
+
+- **Client entry:** `client/src/main.jsx` → `App.jsx`; routing and layout live in App and pages.
+- **Server entry:** `server/server.js` mounts routes and middleware; app logic lives under `server/src/`.
+- **Environment:** Use `.env` (gitignored) and document variables in `.env.example` for both client and server. Client uses `VITE_` prefix for Vite-exposed vars.
+- **API base URL:** Client reads `VITE_BASE_URL` (e.g. `http://localhost:5001`) for the Express API.
+- **Database:** MongoDB; connection config in `server/src/configs/db.js`. Use Docker Compose for local dev; run migrations with `migrate-mongo`.
+
+## Do Not
+
+- Mix client and server code; keep `client/` and `server/` strictly separate.
+- Use `require()`; use ES module `import`/`export` only.
+- Put business logic in route files; keep routes thin and delegate to controllers/models.

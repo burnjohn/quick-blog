@@ -1,0 +1,71 @@
+---
+description: Client code style — naming, imports, Tailwind, and file structure
+globs: client/**/*.{js,jsx}
+alwaysApply: false
+---
+
+# Client Code Style
+
+## File Naming
+
+- **Components:** PascalCase with `.jsx` (e.g. `BlogCard.jsx`, `CommentForm.jsx`).
+- **Hooks, utils, API, constants:** camelCase with `.js` (e.g. `useBlogs.js`, `formatters.js`, `blogApi.js`).
+
+## File Structure Order
+
+Inside a component file:
+
+1. Imports (external first, then internal)
+2. Constants (if any)
+3. Helper functions (if small and used only in this file)
+4. Component function
+5. Export (default export for components)
+
+## Import Order
+
+1. External libraries (react, react-router-dom, axios, etc.)
+2. Internal modules: api → hooks → components → utils → constants → assets
+
+Example:
+
+```javascript
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { blogApi } from '../../api'
+import { useBlogs } from '../../hooks/api/queries'
+import { Button } from '../ui'
+import { formatDate } from '../../utils/formatters'
+import { ROUTES } from '../../constants/routes'
+```
+
+## JSX Patterns
+
+- **Destructure props** in the function signature: `function BlogCard({ title, slug, excerpt }) { ... }`
+- Use **early returns** for loading/error: `if (loading) return <Loader />; if (error) return <ErrorMessage />;`
+- Prefer **meaningful fragment or wrapper** over unnecessary divs when no styling is needed.
+
+## Styling
+
+- Use **Tailwind CSS** for all styling (utility classes in `className`).
+- Do **not** use inline `style={{ }}` objects for layout/visual styling.
+- Do **not** introduce CSS modules or separate `.css` files for components; use `index.css` for global styles and Tailwind for component-level styles.
+
+## File Length
+
+- Aim to keep **components under ~150 lines**. If a component grows beyond that, extract sub-components or move logic into a custom hook.
+
+## Helpers and Logic
+
+- **Helper functions** used by a component should live at the **top of the same file** (below imports) or in a **separate helper file** under `utils/`. Do not define helpers inside the component body.
+
+## Libraries to Use
+
+- **Notifications:** `react-hot-toast`
+- **Animations:** `motion` (Framer Motion)
+- **Markdown:** `marked` for rendering markdown
+- **Rich text editing:** `quill` where WYSIWYG is needed
+- **Dates:** `moment` for formatting (e.g. `moment(date).format(...)`)
+
+## Constants and Copy
+
+- Put user-facing **copy and route paths** in `constants/` (e.g. `messages.js`, `routes.js`). Avoid hardcoding strings in components when they are reused or displayed to users.

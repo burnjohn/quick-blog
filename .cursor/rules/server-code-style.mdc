@@ -1,0 +1,48 @@
+---
+description: Server code style — naming, ES modules, async patterns, and organization
+globs: server/**/*.js
+alwaysApply: false
+---
+
+# Server Code Style
+
+## File Naming
+
+- **All server source files:** camelCase with `.js` (e.g. `blogController.js`, `asyncHandler.js`, `errorHandler.js`).
+- **Models:** PascalCase singular for schema files (e.g. `Blog.js`, `Comment.js`, `User.js`).
+
+## Module Syntax
+
+- Use **ES modules only:** `import` and `export`. Do **not** use `require()`.
+
+## Async Patterns
+
+- Prefer **async/await** over callbacks and raw `.then()/.catch()`.
+- Wrap async route handlers with **asyncHandler** from `server/src/helpers/asyncHandler.js` so errors are passed to `next(err)`.
+- Do not catch errors in controllers only to rethrow; let asyncHandler and errorHandler handle them.
+
+## Controllers and Routes
+
+- **Controllers:** Thin controllers that delegate to model methods and response helpers. Do not put business logic in route files.
+- **Routes:** Route files should only define routes and attach middleware; no business logic or complex logic inside route callbacks.
+
+## Middleware
+
+- Keep each middleware **focused** (single responsibility). One concern per file (auth, multer, rateLimiter, errorHandler).
+
+## Responses and Errors
+
+- **All API responses:** Use the centralized helpers from `server/src/helpers/response.js` (e.g. success, error, notFound). Do not manually set status and JSON in controllers except via these helpers where applicable.
+- **Error responses:** Always use the error-handling path (errorHandler or response helpers); avoid ad-hoc `res.status(...).json(...)` for errors.
+
+## Environment and Config
+
+- **Environment variables:** Access via `process.env`. Define all required vars in `.env` and document them in `.env.example`. Do not hardcode secrets or environment-specific URLs.
+
+## Logging
+
+- Use **dbLogger** and **httpLogger** from `server/src/utils/` for database and HTTP request logging. Do not use `console.log` for production logging; use the project loggers.
+
+## File Length
+
+- Aim to keep **files under ~200 lines**. If a controller or module grows beyond that, split by domain or extract helpers into separate files.

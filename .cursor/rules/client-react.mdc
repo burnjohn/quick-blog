@@ -1,0 +1,55 @@
+---
+description: React 19 patterns, hooks architecture, and component organization for client
+globs: client/**
+alwaysApply: false
+---
+
+# Client React Patterns
+
+## Component Rules
+
+- Use **functional components only**; no class components.
+- Keep components **pure**: same props/state in → same output; no side effects during render.
+- Put side effects in **event handlers** or **useEffect** (or custom hooks), never in render.
+- Call **Hooks only at the top level** of a component or custom Hook; never inside loops, conditions, or nested functions.
+
+## Component Organization
+
+Group by feature/domain under `client/src/components/`:
+
+| Directory | Purpose |
+|-----------|---------|
+| `admin/` | Admin UI: auth (Login), blog (BlogTableItem), comment (CommentTableItem), shared (Sidebar) |
+| `blog/` | Public blog: BlogCard, BlogContent, BlogGrid, BlogHeader, BlogList, CategoryFilter, SocialShare |
+| `comment/` | Comments: CommentForm, CommentItem, CommentList |
+| `forms/` | Shared forms: Header, Newsletter, NewsletterForm, SearchBar |
+| `layout/` | Layout: Container, Footer, Navbar, Section |
+| `ui/` | Reusable UI: Badge, Button, Card, Input, Loader, Textarea |
+
+Use **barrel exports** via `index.js` in each component directory.
+
+## Hooks Architecture
+
+- **`hooks/api/queries/`** — Data fetching (useBlogs, useBlog, useComments, useAdminBlogs, useAdminComments, useAdminDashboard). Use the core `useApiQuery` pattern.
+- **`hooks/api/mutations/`** — Mutations (useCreateBlog, useBlogActions, useBlogGenerator, useCommentActions). Use the core `useApiMutation` pattern.
+- **`hooks/core/`** — useApiRequest, useApiQuery, useApiMutation (shared API primitives).
+- **`hooks/utils/`** — useDebounce, useForm (reusable form/debounce logic).
+
+Prefer **custom hooks** over duplicating logic in components. Extract reusable stateful logic into hooks.
+
+## State and Routing
+
+- **Global state:** React Context in `context/AppContext.jsx`; no Redux.
+- **Routing:** `react-router-dom` v7. Pages live under `pages/admin/` (Dashboard, AddBlog, ListBlog, Comments, Layout) and `pages/public/` (Home, BlogDetail).
+
+## API Layer
+
+- **Centralized in `api/`:** blogApi.js, commentApi.js, adminApi.js; all use `axiosConfig.js` for base URL and shared config.
+- **Constants:** Routes, messages, categories, and API endpoint paths live in `constants/` (routes.js, messages.js, categories.js, apiEndpoints.js).
+
+## Best Practices
+
+- **Early returns** for loading and error states in components.
+- **Destructure props** in the component signature for clarity.
+- Prefer **composition** over prop-drilling; use Context when many components need the same data.
+- Use **useDebounce** and **useForm** from `hooks/utils/` for forms and search instead of reimplementing.
