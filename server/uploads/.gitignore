@@ -1,0 +1,3 @@
+# Keep seed images, ignore user uploads
+blogs/*
+!blogs/.gitkeep

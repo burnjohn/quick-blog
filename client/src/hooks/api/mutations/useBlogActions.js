@@ -25,17 +25,18 @@ export function useBlogActions() {
     return result
   }
 
-  const togglePublish = async (blogId) => {
+  const togglePublish = async (blogId, isCurrentlyPublished) => {
     setIsToggling(true)
-    
+
+    const endpoint = isCurrentlyPublished ? '/api/blog/unpublish' : '/api/blog/publish'
     const result = await mutate(
-      () => axios.post('/api/blog/toggle-publish', { id: blogId }),
+      () => axios.post(endpoint, { id: blogId }),
       {
         successMessage: MESSAGES.SUCCESS_BLOG_UPDATED,
         errorMessage: MESSAGES.ERROR_UPDATE_BLOG
       }
     )
-    
+
     setIsToggling(false)
     return result
   }
