@@ -119,22 +119,6 @@ export const unpublishBlog = asyncHandler(async (req, res) => {
   res.json({ success: true, message: 'Blog unpublished successfully' })
 })
 
-export const addComment = asyncHandler(async (req, res) => {
-  const { blog, name, content } = req.body
-  await Comment.create({ blog, name, content })
-  res.status(201).json({ success: true, message: 'Comment added for review' })
-})
-
-export const getBlogComments = asyncHandler(async (req, res) => {
-  const { blogId } = req.body
-  const comments = await Comment.find({ blog: blogId, isApproved: true }).sort({ createdAt: -1 })
-  res.json({
-    success: true,
-    count: comments.length,
-    comments
-  })
-})
-
 export const generateContent = asyncHandler(async (req, res) => {
   const { prompt } = req.body
   if (!prompt || !prompt.trim()) {

@@ -4,8 +4,7 @@ export const ROUTES = {
   ADMIN: '/admin',
   ADMIN_DASHBOARD: '/admin',
   ADMIN_ADD_BLOG: '/admin/addBlog',
-  ADMIN_LIST_BLOG: '/admin/listBlog',
-  ADMIN_COMMENTS: '/admin/comments'
+  ADMIN_LIST_BLOG: '/admin/listBlog'
 }
 
 export const getBlogDetailPath = (id) => `/blog/${id}`
