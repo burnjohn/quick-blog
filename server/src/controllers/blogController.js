@@ -2,14 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import Blog from '../models/Blog.js'
 import Comment from '../models/Comment.js'
-import main from '../configs/gemini.js'
 import { transformBlogImage, transformBlogsImages } from '../utils/imageUrl.js'
 import { asyncHandler } from '../helpers/asyncHandler.js'
-
-// Helper to get image URL from filename (relative path for storage)
-const getImagePath = (filename) => {
-  return `/uploads/blogs/${filename}`
-}
 
 // Helper to delete image file from disk
 const deleteImageFile = (imagePath) => {
@@ -29,33 +23,6 @@ const deleteImageFile = (imagePath) => {
     }
   }
 }
-
-export const addBlog = asyncHandler(async (req, res) => {
-  const { title, subTitle, description, category, isPublished } = JSON.parse(req.body.blog)
-  const imageFile = req.file
-
-  // Check if all fields are present
-  if (!title || !description || !category || !imageFile) {
-    return res.status(400).json({ success: false, message: 'Missing required fields' })
-  }
-
-  // Get the image path from the uploaded file (stored as relative path)
-  const image = getImagePath(imageFile.filename)
-
-  // Create blog with author information from authenticated user
-  const blog = await Blog.create({
-    title,
-    subTitle,
-    description,
-    category,
-    image,
-    isPublished,
-    author: req.user.userId,
-    authorName: req.user.name
-  })
-
-  res.status(201).json({ success: true, message: 'Blog added successfully', blog: transformBlogImage(blog, req) })
-})
 
 export const getAllBlogs = asyncHandler(async (req, res) => {
   const blogs = await Blog.find({ isPublished: true })
@@ -119,11 +86,3 @@ export const unpublishBlog = asyncHandler(async (req, res) => {
   res.json({ success: true, message: 'Blog unpublished successfully' })
 })
 
-export const generateContent = asyncHandler(async (req, res) => {
-  const { prompt } = req.body
-  if (!prompt || !prompt.trim()) {
-    return res.status(400).json({ success: false, message: 'Prompt is required' })
-  }
-  const content = await main(prompt + ' Generate a blog content for this topic in simple text format')
-  res.json({ success: true, content })
-})
