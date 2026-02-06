@@ -3,22 +3,12 @@ import { useParams } from 'react-router-dom'
 import { assets } from '../../assets/assets'
 import { Navbar, Footer } from '../../components/layout'
 import { BlogHeader, BlogContent, SocialShare } from '../../components/blog'
-import { CommentList, CommentForm } from '../../components/comment'
 import { Loader } from '../../components/ui'
-import { useBlog, useComments } from '../../hooks'
+import { useBlog } from '../../hooks'
 
 function BlogDetail() {
   const { id } = useParams()
   const { blog, loading: blogLoading } = useBlog(id)
-  const { comments, addComment } = useComments(id)
-
-  const handleAddComment = async (commentData) => {
-    return await addComment({
-      blog: id,
-      name: commentData.name,
-      content: commentData.content
-    })
-  }
 
   if (blogLoading || !blog) {
     return <Loader />
@@ -37,10 +27,6 @@ function BlogDetail() {
       <BlogHeader blog={blog} />
       
       <BlogContent image={blog.image} content={blog.description} />
-      
-      <CommentList comments={comments} />
-      
-      <CommentForm onSubmit={handleAddComment} />
       
       <SocialShare />
       
