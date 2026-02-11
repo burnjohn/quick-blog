@@ -14,7 +14,8 @@ export const ERROR_MESSAGES = {
   BLOG_NOT_FOUND: 'Blog not found',
   COMMENT_NOT_FOUND: 'Comment not found',
   UNAUTHORIZED: 'Unauthorized access',
-  SERVER_ERROR: 'Internal server error'
+  SERVER_ERROR: 'Internal server error',
+  INVALID_DRILL_DOWN_DATE: 'Invalid or missing date parameter (use YYYY-MM-DD, YYYY-Wnn, or YYYY-MM)'
 }
 
 export const HTTP_STATUS = {
