@@ -1,0 +1,83 @@
+---
+description: Project Overview and Tech Stack
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Quick Blog — Project Overview
+
+## Tech Stack
+
+| Layer | Technologies |
+|-------|-------------|
+| Client | React 19, Vite 6, Tailwind CSS 4, React Router 7, Axios |
+| Server | Express 5, MongoDB (Mongoose 8), JWT (jsonwebtoken), bcryptjs |
+| Auth | JWT-based; admin panel with login |
+| Features | Blog CRUD, comments, AI content generation (Google Gemini), file uploads (Multer) |
+| Database | MongoDB via Docker Compose; migrate-mongo for migrations |
+| Build | ES Modules (`"type": "module"`) everywhere |
+
+## Monorepo Layout
+
+```
+quick-blog/
+├── client/                  # React SPA (Vite)
+│   └── src/
+│       ├── api/             # Axios API calls, axiosConfig
+│       ├── components/      # UI by domain (admin, blog, comment, forms, layout, ui)
+│       ├── constants/       # routes, messages, categories, apiEndpoints
+│       ├── context/         # AppContext (global state)
+│       ├── hooks/           # api/queries, api/mutations, core, utils
+│       ├── pages/           # admin/, public/
+│       └── utils/           # formatters, helpers, validators
+│
+├── server/                  # Express API
+│   ├── server.js            # Entry point
+│   └── src/
+│       ├── configs/         # db.js, gemini.js
+│       ├── constants/       # messages.js
+│       ├── controllers/     # adminController, appController, blogController
+│       ├── helpers/         # asyncHandler, response
+│       ├── middleware/       # auth, errorHandler, multer, rateLimiter
+│       ├── models/          # Blog, Comment, User (Mongoose)
+│       ├── routes/          # adminRoutes, appRoutes, blogRoutes
+│       ├── utils/           # dbLogger, httpLogger, imageUrl
+│       └── validators/      # blogValidator
+│
+└── .cursor/                 # Cursor AI configuration
+    ├── rules/               # Always-on conventions
+    ├── skills/              # On-demand domain knowledge
+    ├── agents/              # Specialized subagents
+    └── commands/            # Slash commands
+```
+
+## Key Scripts
+
+| Script | Location | Purpose |
+|--------|----------|---------|
+| `npm run dev` | client/ | Vite dev server |
+| `npm run build` | client/ | Production build |
+| `npm run dev` | server/ | Start DB + nodemon |
+| `npm run server` | server/ | Nodemon only |
+| `npm run seed` | server/ | Seed database |
+| `npm run setup` | server/ | Start DB + seed |
+| `npm run db:start` | server/ | Start MongoDB via Docker |
+| `npm run migrate:up` | server/ | Run migrations |
+
+## Environment Variables
+
+**Client** (`.env` with `VITE_` prefix):
+- `VITE_BASE_URL` — Express API URL (e.g., `http://localhost:5001`)
+
+**Server** (`.env`):
+- `MONGODB_URI` — MongoDB connection string
+- `JWT_SECRET` — Secret for JWT signing
+- `CLIENT_URL` — Allowed CORS origin
+- `GEMINI_API_KEY` — Google Gemini API key
+
+## Do Not
+
+- Mix client and server code; keep `client/` and `server/` strictly separate
+- Use `require()`; use ES module `import`/`export` only
+- Put business logic in route files; keep routes thin and delegate to controllers/models
+- Hardcode secrets or environment-specific URLs; use `.env` files
