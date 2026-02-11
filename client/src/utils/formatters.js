@@ -23,3 +23,21 @@ export const truncateHtml = (html, length = 80) => {
   return truncateText(stripped, length)
 }
 
+export const formatNumber = (num) => {
+  if (num == null) return '0'
+  return Number(num).toLocaleString('en-US')
+}
+
+export const formatShortDate = (date) => {
+  if (!date) return '—'
+  return new Date(date).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  })
+}
+
+export const truncate = (text, length = 80) => {
+  if (!text) return ''
+  return text.length > length ? text.slice(0, length) + '…' : text
+}
