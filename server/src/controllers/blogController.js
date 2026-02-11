@@ -4,6 +4,7 @@ import Blog from '../models/Blog.js'
 import Comment from '../models/Comment.js'
 import main from '../configs/gemini.js'
 import { transformBlogImage, transformBlogsImages } from '../utils/imageUrl.js'
+import { recordView } from '../utils/viewTracking.js'
 import { asyncHandler } from '../helpers/asyncHandler.js'
 
 // Helper to get image URL from filename (relative path for storage)
@@ -71,6 +72,9 @@ export const getBlogById = asyncHandler(async (req, res) => {
   const blog = await Blog.findById(blogId)
   if (!blog) {
     return res.status(404).json({ success: false, message: 'Blog not found' })
+  }
+  if (blog.isPublished) {
+    recordView(blog._id, req)
   }
   res.json({ success: true, blog: transformBlogImage(blog, req) })
 })

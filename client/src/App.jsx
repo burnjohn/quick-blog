@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { Home, BlogDetail } from './pages/public'
 import { Layout, Dashboard, AddBlog, ListBlog, Comments } from './pages/admin'
+
+const Analytics = lazy(() => import('./pages/admin/Analytics'))
 import { Login } from './components/admin'
 import { useAppContext } from './context/AppContext'
 import { Toaster } from 'react-hot-toast'
@@ -22,6 +24,7 @@ function App() {
           <Route path='addBlog' element={<AddBlog />} />
           <Route path='listBlog' element={<ListBlog />} />
           <Route path='comments' element={<Comments />} />
+          <Route path='analytics' element={<Suspense fallback={<div className="p-4">Loading...</div>}><Analytics /></Suspense>} />
         </Route>
       </Routes>
     </div>

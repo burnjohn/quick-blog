@@ -1,46 +1,171 @@
-// Blog post fixtures based on design mockups
-// Images are stored locally in public/uploads/seed/
+// Blog post fixtures — 18 posts across 4 categories
+// Images cycle through /uploads/seed/blog_pic_1.png to blog_pic_10.png
+// daysAgo = days in the past for createdAt; isPublished set per post
 export const blogs = [
+  // Technology (6) — 4 published, 2 drafts
   {
-    title: 'A detailed step by step guide to manage your lifestyle',
-    subTitle: 'A Simple Step-by-Step Guide to Managing Your Lifestyle',
-    description: `<p>In today's fast-paced world, managing your lifestyle is more important than ever. A well-managed lifestyle doesn't just mean eating right or hitting the gym — it encompasses your physical health, mental well-being, time management, relationships, and even how you rest. The good news? You don't need a drastic overhaul. Small, intentional changes can lead to big results. Here's a simple, step-by-step guide to help you take control and create a balanced, fulfilling life.</p><h2>Step 1: Assess Your Current Lifestyle</h2><p>Before making any changes, take a step back and honestly evaluate your current habits. Are you getting enough sleep? Eating nutritious meals? Spending too much time on screens or feeling constantly stressed? Jot down what's working and what's not. Self-awareness is the first key to making effective changes.</p><h2>Step 2: Set Clear, Achievable Goals</h2><p>Once you have a clear picture of your current lifestyle, set specific goals. Avoid vague resolutions like "be healthier" or "stress less." Instead, opt for goals like "exercise three times a week," "read for 15 minutes daily," or "cut screen time by an hour." Small, manageable goals help build momentum and make change feel achievable.</p><h2>Step 3: Create a Daily Routine</h2><p>A consistent routine gives structure to your day and helps reduce decision fatigue. Start by prioritizing a few key habits that align with your goals — for instance, a morning stretch, a nutritious breakfast, or 10 minutes of journaling before bed. Your routine doesn't have to be rigid but should give a sense of rhythm to your life.</p><h2>Step 4: Prioritize Your Health</h2><p>Physical and mental health are the foundation of a good lifestyle. Make time for regular exercise, even if it's just a 20-minute walk. Eat balanced meals with plenty of whole foods. And don't neglect your mental health — practice mindfulness, meditation, or simply take breaks when you need them.</p><h2>Step 5: Manage Your Time Wisely</h2><p>Time management is crucial for a balanced life. Use tools like calendars, to-do lists, or time-blocking techniques to organize your day. Learn to say no to commitments that don't serve your goals, and make time for activities that truly matter to you.</p><h2>Conclusion</h2><p>Managing your lifestyle is an ongoing process, not a one-time fix. Start small, be consistent, and adjust as needed. With time, these intentional changes will become habits, leading to a more balanced, fulfilling life.</p>`,
-    category: 'Lifestyle',
-    image: '/uploads/seed/blog_pic_1.png'
-  },
-  {
-    title: 'How to create an effective startup roadmap or ideas',
-    subTitle: 'Building a Startup Roadmap That Actually Works',
-    description: `<p>Every successful startup begins with a solid roadmap. It's your strategic guide — a visual plan that outlines your goals, milestones, and the steps needed to achieve them. Without a roadmap, even the best ideas can lose direction. Here's how to create an effective startup roadmap that keeps you on track.</p><h2>1. Start with Your Vision</h2><p>What problem are you solving? Who is your target customer? Your startup vision should be clear and compelling. This is the north star that guides every decision and keeps your team aligned.</p><h2>2. Define Your MVP (Minimum Viable Product)</h2><p>Don't try to build everything at once. Identify the core features your product needs to solve the main problem. Launch quickly, gather feedback, and iterate.</p><h2>3. Break Down Your Goals into Milestones</h2><p>Divide your journey into phases:</p><ul><li><strong>Phase 1:</strong> Research and validation</li><li><strong>Phase 2:</strong> MVP development</li><li><strong>Phase 3:</strong> Launch and early traction</li><li><strong>Phase 4:</strong> Growth and scaling</li></ul><p>Each phase should have clear deliverables and timelines.</p><h2>4. Identify Key Metrics</h2><p>What does success look like? Define metrics for each phase — user signups, revenue targets, customer retention, etc. Track these religiously.</p><h2>5. Plan for Flexibility</h2><p>The startup world is unpredictable. Build flexibility into your roadmap. Be ready to pivot based on market feedback, competition, or new opportunities.</p><h2>6. Communicate Your Roadmap</h2><p>Share your roadmap with your team, investors, and stakeholders. Transparency builds trust and keeps everyone moving in the same direction.</p><h2>Conclusion</h2><p>A startup roadmap isn't set in stone — it's a living document. Review it regularly, adjust as needed, and stay focused on your vision. With a clear roadmap, you're not just dreaming; you're executing.</p>`,
-    category: 'Startup',
-    image: '/uploads/seed/blog_pic_2.png'
-  },
-  {
-    title: 'Learning new technology to boost your career in software',
-    subTitle: 'How to Stay Relevant in the Ever-Changing Tech World',
-    description: `<p>Technology evolves at lightning speed. What's cutting-edge today might be outdated tomorrow. For software professionals, continuous learning isn't optional — it's essential. Here's how to strategically learn new technology to boost your career.</p><h2>1. Identify High-Demand Skills</h2><p>Not all technologies are worth your time. Focus on skills in demand:</p><ul><li><strong>Cloud platforms:</strong> AWS, Azure, Google Cloud</li><li><strong>Frontend frameworks:</strong> React, Vue, Angular</li><li><strong>Backend technologies:</strong> Node.js, Python, Go</li><li><strong>DevOps:</strong> Docker, Kubernetes, CI/CD</li><li><strong>AI/ML:</strong> Machine learning basics, data science</li></ul><p>Check job boards, LinkedIn, and industry reports to see what's trending.</p><h2>2. Set Clear Learning Goals</h2><p>Don't just learn randomly. Set specific goals like:</p><ul><li>"Build a full-stack app with React and Node.js"</li><li>"Deploy a containerized application using Docker"</li><li>"Complete an AWS certification"</li></ul><p>Clear goals keep you motivated and focused.</p><h2>3. Learn by Building Projects</h2><p>Theory is important, but hands-on experience is crucial. Build real projects:</p><ul><li>Clone popular apps (Twitter, Netflix, etc.)</li><li>Contribute to open-source projects</li><li>Create your own side projects</li></ul><p>Projects give you portfolio pieces and practical experience.</p><h2>4. Use Quality Learning Resources</h2><p>Choose the right platforms:</p><ul><li><strong>Free:</strong> freeCodeCamp, YouTube, MDN, official documentation</li><li><strong>Paid:</strong> Udemy, Pluralsight, Frontend Masters, Coursera</li></ul><p>Join communities like Reddit, Discord, Stack Overflow for support.</p><h2>5. Consistency Over Intensity</h2><p>Don't burn out trying to learn everything at once. Dedicate 30-60 minutes daily. Consistency beats cramming.</p><h2>6. Stay Updated</h2><p>Follow tech blogs, podcasts, newsletters:</p><ul><li>Hacker News</li><li>Dev.to</li><li>JavaScript Weekly</li><li>TechCrunch</li></ul><p>Stay curious and keep exploring.</p><h2>Conclusion</h2><p>Learning new technology is a marathon, not a sprint. Focus on fundamentals, build projects, and stay consistent. Your career will thank you.</p>`,
+    title: 'Building Scalable APIs with Node.js and TypeScript',
+    subTitle: 'A modern approach to server-side development',
+    description: `<h2>Why TypeScript for APIs?</h2><p>TypeScript brings type safety to JavaScript, catching bugs at compile time rather than in production. When building APIs, this means fewer runtime errors and better IDE support.</p><h2>Setting Up Your Project</h2><p>Start with a clean Express or Fastify setup. Use strict mode and enable path aliases for cleaner imports. Structure your code into controllers, services, and repositories.</p><h2>Best Practices</h2><p>Validate input with Zod or Joi. Use dependency injection for testability. Log structured JSON. Rate limit public endpoints.</p>`,
     category: 'Technology',
-    image: '/uploads/seed/blog_pic_3.png'
+    image: '/uploads/seed/blog_pic_1.png',
+    daysAgo: 12,
+    isPublished: true
   },
   {
-    title: 'The ultimate guide to work-life balance in 2025',
-    subTitle: 'Finding Harmony Between Professional and Personal Life',
-    description: `<p>Work-life balance isn't about splitting your time equally — it's about finding harmony that works for you. In 2025's hybrid work environment, the lines between work and personal life are blurrier than ever. Here's how to create sustainable balance.</p><h2>Understanding Work-Life Balance</h2><p>Work-life balance means different things to different people. For some, it's leaving work at 5 PM. For others, it's having flexibility to attend a kid's school event. Define what balance means for you.</p><h2>Set Boundaries</h2><ul><li>Turn off work notifications after hours</li><li>Create a dedicated workspace at home</li><li>Communicate your availability clearly</li><li>Learn to say no to non-essential meetings</li></ul><h2>Prioritize What Matters</h2><p>Use the Eisenhower Matrix:</p><ul><li><strong>Urgent &amp; Important:</strong> Do immediately</li><li><strong>Important, Not Urgent:</strong> Schedule it</li><li><strong>Urgent, Not Important:</strong> Delegate</li><li><strong>Neither:</strong> Eliminate</li></ul><h2>Take Care of Yourself</h2><p>You can't pour from an empty cup:</p><ul><li>Exercise regularly</li><li>Get 7-8 hours of sleep</li><li>Eat nutritious meals</li><li>Schedule downtime</li></ul><h2>Use Technology Wisely</h2><p>Tech can help or hinder balance:</p><ul><li>Use calendar blocking</li><li>Automate repetitive tasks</li><li>Set "focus time" in your calendar</li><li>Use productivity apps mindfully</li></ul><h2>Conclusion</h2><p>Perfect balance doesn't exist, but sustainable rhythm does. Experiment, adjust, and find what works for your unique situation.</p>`,
-    category: 'Lifestyle',
-    image: '/uploads/seed/blog_pic_4.png'
-  },
-  {
-    title: 'Understanding modern JavaScript frameworks in depth',
-    subTitle: 'React, Vue, Angular: Which One Should You Choose?',
-    description: `<p>The JavaScript ecosystem is vast and ever-changing. React, Vue, and Angular dominate the frontend landscape, but which one should you learn? Let's dive deep into each framework.</p><h2>React: The Most Popular Choice</h2><p><strong>Pros:</strong></p><ul><li>Huge ecosystem and community</li><li>Flexible and unopinionated</li><li>Strong job market demand</li><li>Great for building complex UIs</li></ul><p><strong>Cons:</strong></p><ul><li>Steep learning curve for beginners</li><li>Requires additional libraries for routing, state management</li><li>Fast-paced changes</li></ul><p><strong>Best For:</strong> Large-scale applications, teams that value flexibility</p><h2>Vue: The Progressive Framework</h2><p><strong>Pros:</strong></p><ul><li>Gentle learning curve</li><li>Excellent documentation</li><li>Flexible and scalable</li><li>Great developer experience</li></ul><p><strong>Cons:</strong></p><ul><li>Smaller ecosystem than React</li><li>Less corporate backing</li><li>Fewer job opportunities (but growing)</li></ul><p><strong>Best For:</strong> Small to medium projects, developers transitioning from jQuery</p><h2>Angular: The Complete Framework</h2><p><strong>Pros:</strong></p><ul><li>All-in-one solution</li><li>Strong TypeScript integration</li><li>Great for large enterprise apps</li><li>Opinionated structure (good for teams)</li></ul><p><strong>Cons:</strong></p><ul><li>Steep learning curve</li><li>Verbose syntax</li><li>Heavyweight framework</li></ul><p><strong>Best For:</strong> Enterprise applications, teams that want structure</p><h2>Making Your Choice</h2><p>Consider:</p><ol><li><strong>Job market:</strong> React has most jobs</li><li><strong>Learning curve:</strong> Vue is easiest</li><li><strong>Project size:</strong> Angular for enterprise, Vue for small-medium, React for any</li><li><strong>Team preference:</strong> Use what your team knows</li></ol><h2>Conclusion</h2><p>There's no "best" framework — only the best one for your situation. Start with React if unsure, but don't be afraid to explore Vue or Angular.</p>`,
+    title: 'Getting Started with React Server Components',
+    subTitle: 'The future of React rendering is here',
+    description: `<h2>What Are RSCs?</h2><p>React Server Components run on the server, reducing client bundle size and enabling direct database access. They're a paradigm shift for React apps.</p><h2>Migration Strategy</h2><p>Start with new pages. Use 'use client' for interactive pieces. Keep data fetching in RSCs. Gradually convert leaf components.</p><h2>Common Pitfalls</h2><p>Don't pass non-serializable props. Be mindful of the network boundary. Use Suspense for streaming.</p>`,
     category: 'Technology',
-    image: '/uploads/seed/blog_pic_5.png'
+    image: '/uploads/seed/blog_pic_2.png',
+    daysAgo: 38,
+    isPublished: true
   },
   {
-    title: 'From idea to launch: A startup founder\'s journey',
-    subTitle: 'Real Stories and Lessons from Building a Startup',
-    description: `<p>Building a startup is exhilarating, terrifying, and transformative. After founding three startups (one failure, one modest success, one still going), I've learned lessons that no business school teaches. Here's the unfiltered truth.</p><h2>The Idea Phase: Everyone Has Ideas</h2><p>Ideas are cheap. Execution is everything. I've had dozens of "million-dollar ideas" that went nowhere because I didn't execute. What matters:</p><ul><li>Does it solve a real problem?</li><li>Will people pay for it?</li><li>Can you build it?</li></ul><h2>Validation: Talk to Users</h2><p>Don't build in isolation. Before writing a single line of code:</p><ul><li>Interview 50+ potential customers</li><li>Test your assumptions</li><li>Build a landing page</li><li>Get pre-orders if possible</li></ul><p>I wasted 6 months building features nobody wanted. Don't be me.</p><h2>MVP: Launch Embarrassingly Early</h2><p>Your first version will suck. That's okay. Launch it anyway. We launched with a buggy MVP and got invaluable feedback. Waiting for "perfect" means never launching.</p><h2>The Hardest Part: Growth</h2><p>Building is easy. Growing is hard. We tried:</p><ul><li>Content marketing (slow but works)</li><li>Paid ads (expensive)</li><li>Cold outreach (soul-crushing but effective)</li><li>Product Hunt launch (temporary spike)</li></ul><p>Focus on one channel. Master it. Then scale.</p><h2>Team Building: Hire Slowly</h2><p>Early hires make or break you. We hired too fast and paid for it. Look for:</p><ul><li>Self-starters</li><li>Culture fit</li><li>Scrappiness over pedigree</li><li>People who believe in the mission</li></ul><h2>Funding: Bootstrap if Possible</h2><p>VC money comes with strings. We bootstrapped our first startup and had full control. The second one took VC money — growth was faster but pressure was immense.</p><p>Bootstrap unless you need capital for something specific.</p><h2>The Reality: It's Harder Than You Think</h2><p>Expect:</p><ul><li>Long hours (sorry, no work-life balance early on)</li><li>Financial stress</li><li>Constant rejection</li><li>Imposter syndrome</li><li>Burnout risk</li></ul><p>But also expect:</p><ul><li>Building something meaningful</li><li>Learning exponentially</li><li>Meeting amazing people</li><li>Freedom and autonomy</li></ul><h2>Lessons Learned</h2><ol><li><strong>Move fast:</strong> Speed matters</li><li><strong>Focus ruthlessly:</strong> Say no to distractions</li><li><strong>Listen to users:</strong> They know what they need</li><li><strong>Take care of yourself:</strong> Burnout helps nobody</li><li><strong>Enjoy the journey:</strong> The destination isn't guaranteed</li></ol><h2>Conclusion</h2><p>Starting a company is one of the hardest things you'll do. It's also one of the most rewarding. If you're thinking about it, stop overthinking and start building.</p>`,
+    title: 'Docker vs Kubernetes: When to Use Which',
+    subTitle: 'A practical guide for dev teams',
+    description: `<h2>Docker: Containers for Everyone</h2><p>Docker simplifies packaging and running applications. Use it for local dev, CI/CD, and single-node deployments. Perfect for startups and small teams.</p><h2>Kubernetes: Orchestration at Scale</h2><p>When you need auto-scaling, self-healing, and multi-node deployments, Kubernetes shines. It adds complexity but pays off at scale.</p><h2>Choosing Wisely</h2><p>Start with Docker Compose. Move to Kubernetes when you hit scale limits or need multi-team coordination.</p>`,
+    category: 'Technology',
+    image: '/uploads/seed/blog_pic_3.png',
+    daysAgo: 67,
+    isPublished: false
+  },
+  {
+    title: 'Automating Tests with Vitest and Playwright',
+    subTitle: 'Fast, reliable testing for modern apps',
+    description: `<h2>Vitest for Unit Tests</h2><p>Vitest is lightning-fast and Vite-native. Jest-compatible API means easy migration. Snapshots, mocks, and coverage built in.</p><h2>Playwright for E2E</h2><p>Cross-browser, reliable, flake-resistant. Use page object model. Run in CI with parallel workers.</p><h2>Putting It Together</h2><p>Unit tests for logic, integration for APIs, E2E for critical paths. Aim for fast feedback loops.</p>`,
+    category: 'Technology',
+    image: '/uploads/seed/blog_pic_4.png',
+    daysAgo: 95,
+    isPublished: true
+  },
+  {
+    title: 'Understanding WebAuthn and Passwordless Auth',
+    subTitle: 'Security and UX in the post-password era',
+    description: `<h2>The Case for Passwordless</h2><p>Passwords are the weakest link. Phishing, reuse, and weak choices plague security. WebAuthn uses public-key crypto on your device.</p><h2>How It Works</h2><p>Register a credential with your authenticator. Sign challenges on login. No secrets leave the device. Works with passkeys.</p><h2>Implementation Tips</h2><p>Offer passkeys as an option alongside passwords. Use conditional UI for smooth UX. Fall back gracefully for older browsers.</p>`,
+    category: 'Technology',
+    image: '/uploads/seed/blog_pic_5.png',
+    daysAgo: 128,
+    isPublished: true
+  },
+  {
+    title: 'GraphQL Federation: Beyond the Monolith',
+    subTitle: 'Scaling GraphQL across microservices',
+    description: `<h2>Why Federation?</h2><p>Single schema, multiple services. Each team owns a subgraph. Apollo or other gateways compose the schema. No central bottleneck.</p><h2>Designing Subgraphs</h2><p>Define entity keys. Extend types from other services. Use @key and @extends. Resolve references in your service.</p><h2>Operational Concerns</h2><p>Version schemas carefully. Monitor query complexity. Cache at the gateway. Handle partial failures.</p>`,
+    category: 'Technology',
+    image: '/uploads/seed/blog_pic_6.png',
+    daysAgo: 162,
+    isPublished: false
+  },
+  // Lifestyle (5) — 4 published, 1 draft
+  {
+    title: 'Morning Routines That Actually Stick',
+    subTitle: 'Small habits for big impact',
+    description: `<h2>Start Small</h2><p>One new habit at a time. Stack it onto something you already do. Five minutes is enough to begin.</p><h2>Common Morning Wins</h2><p>Hydration first. Movement before screens. Sunlight exposure. Mindful moments. Prep the night before.</p><h2>Sustaining the Routine</h2><p>Track it. Reward yourself. Be flexible on tough days. Consistency beats perfection.</p>`,
+    category: 'Lifestyle',
+    image: '/uploads/seed/blog_pic_7.png',
+    daysAgo: 8,
+    isPublished: true
+  },
+  {
+    title: 'Digital Detox: A Week Without Social Media',
+    subTitle: 'What I learned from unplugging',
+    description: `<h2>Why I Did It</h2><p>Endless scrolling, comparison, and anxiety. I needed to reset my relationship with my phone.</p><h2>Day by Day</h2><p>First two days: withdrawal and boredom. By day four: clarity and focus. Reading and walks replaced scrolling.</p><h2>After the Week</h2><p>I reinstalled with limits. Curated feeds. Scheduled checks. The break changed my habits for good.</p>`,
+    category: 'Lifestyle',
+    image: '/uploads/seed/blog_pic_8.png',
+    daysAgo: 42,
+    isPublished: true
+  },
+  {
+    title: 'Meal Prepping Without the Overwhelm',
+    subTitle: 'Simple strategies for busy people',
+    description: `<h2>Keep It Simple</h2><p>Batch cook one protein, one grain, lots of veggies. Sauces and dressings make repetition tolerable.</p><h2>Time-Saving Hacks</h2><p>Use a slow cooker. Roast trays of vegetables. Pre-portion snacks. Freeze portions for later.</p><h2>Sustainable Habits</h2><p>Start with two days of prep. Add more as it becomes routine. Your future self will thank you.</p>`,
+    category: 'Lifestyle',
+    image: '/uploads/seed/blog_pic_9.png',
+    daysAgo: 78,
+    isPublished: false
+  },
+  {
+    title: 'Finding Flow: The Art of Deep Work',
+    subTitle: 'Productivity through intentional focus',
+    description: `<h2>What Is Deep Work?</h2><p>Uninterrupted, focused effort on cognitively demanding tasks. It's rare and valuable in a distracted world.</p><h2>Creating Conditions</h2><p>Block time. Eliminate notifications. Design your environment. Ritualize the start.</p><h2>Building the Muscle</h2><p>Start with 25-minute blocks. Gradually extend. Recover between sessions. Protect your focus ruthlessly.</p>`,
+    category: 'Lifestyle',
+    image: '/uploads/seed/blog_pic_10.png',
+    daysAgo: 115,
+    isPublished: true
+  },
+  {
+    title: 'Minimalism Isn\'t About Owning Nothing',
+    subTitle: 'It\'s about owning what matters',
+    description: `<h2>Beyond the Stereotype</h2><p>Minimalism isn't white walls and 47 items. It's intentional curation. Keep what serves you. Let go of the rest.</p><h2>Practical Steps</h2><p>Audit one area at a time. Question each possession. Donate, sell, recycle. Prevent new clutter.</p><h2>Mental Clarity</h2><p>Less stuff, less decision fatigue. More space, more calm. It's a practice, not a destination.</p>`,
+    category: 'Lifestyle',
+    image: '/uploads/seed/blog_pic_1.png',
+    daysAgo: 148,
+    isPublished: true
+  },
+  // Startup (4) — 3 published, 1 draft
+  {
+    title: 'Finding Product-Market Fit: A Founder\'s Playbook',
+    subTitle: 'Signals, metrics, and honest feedback',
+    description: `<h2>Defining PMF</h2><p>Customers pull your product. Retention improves. Word of mouth grows. You feel it when you have it.</p><h2>Early Signals</h2><p>Rapid repeat usage. Unprompted referrals. "How did I live without this?" testimonials. Churn drops.</p><h2>Getting There</h2><p>Talk to users constantly. Pivot based on behavior, not opinions. Speed of learning beats speed of building.</p>`,
     category: 'Startup',
-    image: '/uploads/seed/blog_pic_6.png'
+    image: '/uploads/seed/blog_pic_2.png',
+    daysAgo: 22,
+    isPublished: true
+  },
+  {
+    title: 'Pricing Strategy for SaaS: What We Learned',
+    subTitle: 'From $0 to $10K MRR',
+    description: `<h2>Starting Out</h2><p>We undercharged at first. Free tier attracted tire-kickers. Paid tier felt like a leap for serious users.</p><h2>Experiments That Worked</h2><p>Usage-based add-ons. Annual discount. Clear value tiers. Transparent pricing page.</p><h2>Key Insight</h2><p>Price communicates value. Cheap can signal "not serious." Test regularly. Don't be afraid to raise.</p>`,
+    category: 'Startup',
+    image: '/uploads/seed/blog_pic_3.png',
+    daysAgo: 58,
+    isPublished: true
+  },
+  {
+    title: 'Hiring Your First Engineer as a Non-Technical Founder',
+    subTitle: 'What to look for and what to avoid',
+    description: `<h2>The Challenge</h2><p>You need someone who can build, lead, and scale. But you can't evaluate code. Focus on outcomes and process.</p><h2>Evaluation Strategies</h2><p>Portfolio and past projects. Take-home that mirrors real work. References from previous employers.</p><h2>Red Flags</h2><p>Over-promising. Dismissive of users. No curiosity. Inability to explain tradeoffs in plain language.</p>`,
+    category: 'Startup',
+    image: '/uploads/seed/blog_pic_4.png',
+    daysAgo: 102,
+    isPublished: false
+  },
+  {
+    title: 'Bootstrapping vs VC: Our Decision Framework',
+    subTitle: 'Choosing the right path for your startup',
+    description: `<h2>When to Bootstrap</h2><p>You have revenue or a path to it. You value control. You're patient. Market isn't winner-take-all.</p><h2>When to Raise</h2><p>Network effects matter. Speed is critical. You need capital for growth. You're okay with dilution.</p><h2>Our Choice</h2><p>We bootstrapped to $50K MRR. Then raised a small round for a specific growth bet. No one-size-fits-all.</p>`,
+    category: 'Startup',
+    image: '/uploads/seed/blog_pic_5.png',
+    daysAgo: 138,
+    isPublished: true
+  },
+  // Finance (3) — 2 published, 1 draft
+  {
+    title: 'Index Funds vs Picking Stocks: The Data Says',
+    subTitle: 'A boring approach to wealth building',
+    description: `<h2>The Evidence</h2><p>Most active managers underperform indexes over time. Fees eat returns. Simplicity wins.</p><h2>Why Indexing Works</h2><p>Diversification. Lower fees. Tax efficiency. No emotional trading. Time in market beats timing the market.</p><h2>Getting Started</h2><p>Pick a broad market fund. Automate contributions. Ignore the noise. Stay the course for decades.</p>`,
+    category: 'Finance',
+    image: '/uploads/seed/blog_pic_6.png',
+    daysAgo: 35,
+    isPublished: true
+  },
+  {
+    title: 'Building an Emergency Fund: How Much Is Enough?',
+    subTitle: 'Stress-free savings strategies',
+    description: `<h2>The Rule of Thumb</h2><p>3–6 months of expenses. More if your income is variable. Less if you have other safety nets.</p><h2>Where to Keep It</h2><p>High-yield savings. Easy access. Separate from daily accounts. Automate contributions.</p><h2>Rebuilding After Use</h2><p>Priority after any emergency. Cut non-essentials temporarily. Slow and steady wins.</p>`,
+    category: 'Finance',
+    image: '/uploads/seed/blog_pic_7.png',
+    daysAgo: 88,
+    isPublished: false
+  },
+  {
+    title: 'Tax-Advantaged Accounts: 401k, IRA, HSA Explained',
+    subTitle: 'Maximize your savings, minimize taxes',
+    description: `<h2>401(k) Basics</h2><p>Employer-sponsored. Pre-tax or Roth options. Match is free money. Max it if you can.</p><h2>IRAs for Everyone</h2><p>Traditional: deduct now, pay later. Roth: pay now, tax-free growth. Income limits apply.</p><h2>HSA: The Triple Tax Advantage</h2><p>Pre-tax contributions. Tax-free growth. Tax-free withdrawals for medical. Best account most people underuse.</p>`,
+    category: 'Finance',
+    image: '/uploads/seed/blog_pic_8.png',
+    daysAgo: 155,
+    isPublished: true
   }
 ]

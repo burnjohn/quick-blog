@@ -1,5 +1,21 @@
 import Moment from 'moment'
 
+export const formatNumber = (n) => (n ?? 0).toLocaleString('en-US')
+
+export const formatShortDate = (date) => {
+  if (!date) return ''
+  return new Date(date).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  })
+}
+
+export const truncate = (text, maxLen = 80) => {
+  if (!text) return ''
+  return text.length > maxLen ? text.slice(0, maxLen) + '...' : text
+}
+
 export const formatDate = (date) => {
   return Moment(date).format('MMMM Do YYYY')
 }
