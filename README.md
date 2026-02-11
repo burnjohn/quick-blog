@@ -12,6 +12,8 @@ QuickBlog is a simple full‑stack blog demo used to showcase Cursor's capabilit
 
 **[✍️ Implementing Blog Creation Demo](DEMO-BLOG-CREATION.md)** — Step-by-step guide to building a feature-rich blog creation page with Quill editor, local image uploads, and AI content generation using Cursor's planning mode.
 
+**[📊 Implementing Analytics Dashboard Demo (Multi-Agent)](DEMO-ANALYTICS-FEATURE.md)** — Advanced tutorial demonstrating how to build a full analytics dashboard using Cursor's multi-agent orchestration: requirements-planner, parallel implementors, plan-verifier, and dual code reviewers working simultaneously.
+
 ---
 
 ### Monorepo Structure
@@ -176,3 +178,4 @@ Images are served via the `/uploads` endpoint (e.g., `http://localhost:5001/uplo
 - [`client/README.md`](client/README.md) — Frontend setup and component documentation
 - [`DEMO-COMMENTS-FEATURE.md`](DEMO-COMMENTS-FEATURE.md) — Tutorial on implementing comments
 - [`DEMO-BLOG-CREATION.md`](DEMO-BLOG-CREATION.md) — Tutorial on implementing blog creation
+- [`DEMO-ANALYTICS-FEATURE.md`](DEMO-ANALYTICS-FEATURE.md) — Multi-agent tutorial on implementing analytics dashboard
