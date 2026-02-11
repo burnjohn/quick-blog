@@ -1,0 +1,84 @@
+---
+description: Express Backend Development Conventions
+globs: ["server/**/*.js"]
+alwaysApply: false
+---
+
+# Express Backend Rules
+
+## Architecture (MVC)
+
+- **Routes** define endpoints and attach middleware — no business logic
+- **Controllers** handle request/response and delegate to models/helpers
+- **Models** define Mongoose schemas and data access methods
+- Keep routes thin; delegate ALL logic to controllers
+
+## Async and Error Handling
+
+- Wrap ALL async route handlers with `asyncHandler` from `helpers/asyncHandler.js`
+- Do NOT catch errors in controllers only to rethrow — let asyncHandler and errorHandler handle them
+- Use centralized `errorHandler` middleware (mounted last) for all error responses
+- Use response helpers from `helpers/response.js`:
+  - `sendSuccess(res, data, message, statusCode)` — successful responses
+  - `sendError(res, message, statusCode)` — error responses
+  - `sendData(res, data, count)` — data list responses
+
+## Security
+
+- **Helmet** for security headers — configured in server.js
+- **CORS** configured for `CLIENT_URL` — allow only trusted origins in production
+- **Rate limiting** via `express-rate-limit` on public and auth routes
+- **JWT auth** middleware in `middleware/auth.js` — protect all admin routes
+- **bcryptjs** for password hashing — NEVER store plain passwords
+- Never trust user input — always validate and sanitize
+
+## Models (Mongoose)
+
+- Schema files in `models/` with PascalCase singular names (Blog.js, Comment.js, User.js)
+- Define proper schema validation, indexes, and defaults
+- Use `timestamps: true` for automatic createdAt/updatedAt
+- Keep business logic in model methods or controller helpers, not in routes
+
+## Validation
+
+- Request validation in `validators/` directory (e.g., blogValidator.js)
+- Validate all user input (body, query, params) before business logic
+- Return clear validation error messages
+
+## File Uploads
+
+- Use Multer middleware from `middleware/multer.js`
+- Validate file types and size in middleware
+- Store uploaded files in `uploads/` directory
+
+## Database and Config
+
+- MongoDB connection in `configs/db.js`
+- Gemini AI config in `configs/gemini.js`
+- All config via `dotenv` — document variables in `.env.example`
+- Migrations via `migrate-mongo` in `migrations/` directory
+- Seed data via `scripts/seed.js` with fixtures from `fixtures/`
+
+## Constants and Logging
+
+- User-facing messages in `constants/messages.js` — no hardcoded strings in controllers
+- Use `utils/dbLogger.js` and `utils/httpLogger.js` for logging
+- Do NOT use `console.log` for production logging
+
+## Middleware Order
+
+1. Security (helmet, cors)
+2. Body parsing (express.json, express.urlencoded)
+3. Static files (express.static for uploads)
+4. HTTP logging
+5. Rate limiting
+6. Routes (public first, then auth-protected)
+7. Error handler (LAST)
+
+## Code Style
+
+- ES Modules only (`import`/`export`) — no `require()`
+- Prefer `async/await` over callbacks and `.then()/.catch()`
+- camelCase for file names; PascalCase for model files
+- Max ~200 lines per file — extract helpers if larger
+- Single responsibility per middleware file
