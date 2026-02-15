@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { Home, BlogDetail } from './pages/public'
-import { Layout, Dashboard, AddBlog, ListBlog, Comments } from './pages/admin'
+import { Layout, Dashboard, AddBlog, ListBlog, Comments, Analytics } from './pages/admin'
 import { Login } from './components/admin'
 import { useAppContext } from './context/AppContext'
 import { Toaster } from 'react-hot-toast'
@@ -22,6 +22,7 @@ function App() {
           <Route path='addBlog' element={<AddBlog />} />
           <Route path='listBlog' element={<ListBlog />} />
           <Route path='comments' element={<Comments />} />
+          <Route path='analytics' element={<Analytics />} />
         </Route>
       </Routes>
     </div>

@@ -1,4 +1,5 @@
 import rateLimit from 'express-rate-limit'
+import { ERROR_MESSAGES } from '../constants/messages.js'
 
 // Rate limiter for login attempts - stricter limits
 export const loginLimiter = rateLimit({
@@ -31,6 +32,18 @@ export const generateLimiter = rateLimit({
   message: {
     success: false,
     message: 'Too many generation requests. Please wait a moment.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false
+})
+
+// Rate limiter for view tracking — prevent abuse
+export const viewTrackLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 30, // 30 view tracks per minute per IP
+  message: {
+    success: false,
+    message: ERROR_MESSAGES.TOO_MANY_VIEW_TRACKS
   },
   standardHeaders: true,
   legacyHeaders: false

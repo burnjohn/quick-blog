@@ -5,12 +5,13 @@ import { Navbar, Footer } from '../../components/layout'
 import { BlogHeader, BlogContent, SocialShare } from '../../components/blog'
 import { CommentList, CommentForm } from '../../components/comment'
 import { Loader } from '../../components/ui'
-import { useBlog, useComments } from '../../hooks'
+import { useBlog, useComments, useTrackView } from '../../hooks'
 
 function BlogDetail() {
   const { id } = useParams()
   const { blog, loading: blogLoading } = useBlog(id)
   const { comments, addComment } = useComments(id)
+  useTrackView(id)
 
   const handleAddComment = async (commentData) => {
     return await addComment({

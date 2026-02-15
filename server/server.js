@@ -13,6 +13,8 @@ import { apiLimiter } from './src/middleware/rateLimiter.js'
 import appRouter from './src/routes/appRoutes.js'
 import adminRouter from './src/routes/adminRoutes.js'
 import blogRouter from './src/routes/blogRoutes.js'
+import viewRouter from './src/routes/viewRoutes.js'
+import analyticsRouter from './src/routes/analyticsRoutes.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -74,6 +76,8 @@ app.use(httpLogger)
 app.use('/', appRouter)
 app.use('/api/admin', adminRouter)
 app.use('/api/blog', blogRouter)
+app.use('/api/views', viewRouter)
+app.use('/api/analytics', analyticsRouter)
 
 // Error handling middleware (must be last)
 app.use(notFound)

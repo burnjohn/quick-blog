@@ -4,6 +4,10 @@ export const formatDate = (date) => {
   return Moment(date).format('MMMM Do YYYY')
 }
 
+export const formatShortDate = (date) => {
+  return Moment(date).format('MMM D, YYYY')
+}
+
 export const formatRelativeTime = (date) => {
   return Moment(date).fromNow()
 }

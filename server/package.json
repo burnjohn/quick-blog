@@ -17,6 +17,7 @@
     "migrate:down": "migrate-mongo down -f migrations/migrate-mongo-config.cjs",
     "migrate:create": "migrate-mongo create -f migrations/migrate-mongo-config.cjs",
     "seed": "NODE_ENV=development node scripts/seed.js",
+    "seed:analytics": "NODE_ENV=development node scripts/seedAnalytics.js",
     "setup": "npm run db:start && sleep 5 && npm run seed",
     "dev": "npm run db:start && npm run server"
   },

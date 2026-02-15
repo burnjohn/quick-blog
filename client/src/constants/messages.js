@@ -27,9 +27,16 @@ export const MESSAGES = {
   VALIDATION_EMAIL_INVALID: 'Please enter a valid email address.',
   VALIDATION_PASSWORD_MIN: 'Password must be at least 6 characters.',
   
+  // Analytics messages
+  ERROR_FETCH_ANALYTICS: 'Failed to fetch analytics data.',
+  ERROR_EXPORT_CSV: 'Failed to export CSV. Please try again.',
+  SUCCESS_EXPORT_CSV: 'CSV exported successfully!',
+
   // Info messages
   INFO_NO_BLOGS: 'No blogs found.',
   INFO_NO_COMMENTS: 'No comments yet. Be the first!',
-  INFO_LOADING: 'Loading...'
+  INFO_LOADING: 'Loading...',
+  INFO_NO_ANALYTICS_DATA: 'No data available for the selected period.',
+  INFO_NO_BLOGS_YET: 'No blog posts yet. Create your first blog to see analytics.'
 }
 

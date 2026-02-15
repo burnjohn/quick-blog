@@ -6,11 +6,11 @@ import Comment from '../src/models/Comment.js'
 import View from '../src/models/View.js'
 import dbLogger from '../src/utils/dbLogger.js'
 import { users } from '../fixtures/users.js'
-import { blogs } from '../fixtures/blogs.js'
-import { comments } from '../fixtures/comments.js'
+import { blogs as originalBlogs } from '../fixtures/blogs.js'
+import { analyticsBlogs } from '../fixtures/analyticsBlogs.js'
+import { analyticsComments } from '../fixtures/analyticsComments.js'
 import { generateViewFixtures } from '../fixtures/analyticsViews.js'
 
-// Connect to database
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI)
@@ -21,12 +21,11 @@ const connectDB = async () => {
   }
 }
 
-// Seed database
 const seedDatabase = async () => {
   try {
-    console.log('🌱 Starting database seed...\n')
-    
-    // Clear existing data
+    console.log('🌱 Starting analytics database seed...\n')
+
+    // Clear ALL existing data
     await User.deleteMany({})
     await Blog.deleteMany({})
     await Comment.deleteMany({})
@@ -36,63 +35,83 @@ const seedDatabase = async () => {
     // Create users
     const createdUsers = await User.create(users)
     console.log(`✅ Created ${createdUsers.length} users`)
-    dbLogger.logEvent('SEED_USERS', `Created ${createdUsers.length} users`)
 
     // Display credentials
     console.log('\n📝 Test Credentials:')
     users.forEach(user => {
-      console.log(`   ${user.role.toUpperCase()}: ${user.email} / ${user.password}`)
+      console.log(`   ${user.role?.toUpperCase() || 'USER'}: ${user.email} / ${user.password}`)
     })
     console.log()
 
-    // Create blogs with alternating authors
+    // Create original blogs + analytics blogs
+    const allBlogData = [...originalBlogs, ...analyticsBlogs]
     const createdBlogs = []
-    for (let i = 0; i < blogs.length; i++) {
+
+    for (let i = 0; i < allBlogData.length; i++) {
       const author = createdUsers[i % createdUsers.length]
-      const blog = await Blog.create({
-        ...blogs[i],
+      const blogData = {
+        ...allBlogData[i],
         author: author._id,
         authorName: author.name,
-        isPublished: true
-      })
+        isPublished: allBlogData[i].isPublished !== undefined ? allBlogData[i].isPublished : true
+      }
+
+      const blog = await Blog.create(blogData)
+
+      // Override createdAt if specified in fixture
+      if (allBlogData[i].createdAt) {
+        await Blog.updateOne(
+          { _id: blog._id },
+          { $set: { createdAt: allBlogData[i].createdAt } }
+        )
+        blog.createdAt = allBlogData[i].createdAt
+      }
+
       createdBlogs.push(blog)
-      dbLogger.logCreate('blogs', blog)
     }
     console.log(`✅ Created ${createdBlogs.length} blog posts\n`)
 
-    // Create comments for first 3 blogs
+    // Create comments — distribute across all published blogs
     let commentCount = 0
-    for (let i = 0; i < Math.min(3, createdBlogs.length); i++) {
-      for (const commentData of comments) {
-        const comment = await Comment.create({
-          ...commentData,
-          blog: createdBlogs[i]._id
-        })
-        dbLogger.logCreate('comments', comment)
-        commentCount++
+    const publishedBlogs = createdBlogs.filter(b => b.isPublished)
+
+    for (const commentData of analyticsComments) {
+      const blog = publishedBlogs[Math.floor(Math.random() * publishedBlogs.length)]
+      const comment = await Comment.create({
+        ...commentData,
+        blog: blog._id
+      })
+
+      // Override createdAt if specified
+      if (commentData.createdAt) {
+        await Comment.updateOne(
+          { _id: comment._id },
+          { $set: { createdAt: commentData.createdAt } }
+        )
       }
+
+      commentCount++
     }
     console.log(`✅ Created ${commentCount} comments\n`)
 
-    // Generate and create view records for analytics
+    // Generate and create view records
     const viewFixtures = generateViewFixtures(
       createdBlogs.map(b => ({ _id: b._id, category: b.category })),
       800
     )
+
     await View.insertMany(viewFixtures)
     console.log(`✅ Created ${viewFixtures.length} view records\n`)
 
-    dbLogger.logEvent('SEED_COMPLETE', 'Database seeded successfully')
-    console.log('🎉 Database seeded successfully!\n')
-    
+    dbLogger.logEvent('ANALYTICS_SEED_COMPLETE', 'Analytics database seeded successfully')
+    console.log('🎉 Analytics database seeded successfully!\n')
   } catch (error) {
     console.error('❌ Seed error:', error)
-    dbLogger.logError('SEED_ERROR', error)
+    dbLogger.logError('ANALYTICS_SEED_ERROR', error)
     process.exit(1)
   }
 }
 
-// Run seed
 const runSeed = async () => {
   await connectDB()
   await seedDatabase()
@@ -101,10 +120,8 @@ const runSeed = async () => {
   process.exit(0)
 }
 
-// Execute if run directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   runSeed()
 }
 
 export default runSeed
-
