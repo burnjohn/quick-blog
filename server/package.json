@@ -18,6 +18,8 @@
     "migrate:create": "migrate-mongo create -f migrations/migrate-mongo-config.cjs",
     "seed": "NODE_ENV=development node scripts/seed.js",
     "seed:analytics": "NODE_ENV=development node scripts/seedAnalytics.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "setup": "npm run db:start && sleep 5 && npm run seed",
     "dev": "npm run db:start && npm run server"
   },
@@ -38,6 +40,9 @@
   },
   "devDependencies": {
     "migrate-mongo": "^11.0.0",
-    "nodemon": "^3.1.10"
+    "mongodb-memory-server": "^11.0.1",
+    "nodemon": "^3.1.10",
+    "supertest": "^7.2.2",
+    "vitest": "^4.0.18"
   }
 }
