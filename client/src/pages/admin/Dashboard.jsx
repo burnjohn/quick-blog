@@ -1,8 +1,16 @@
 import React from 'react'
 import { assets } from '../../assets/assets'
-import { BlogTableItem } from '../../components/admin'
+import { BlogTableItem, StatCard } from '../../components/admin'
 import { Loader } from '../../components/ui'
 import { useAdminDashboard } from '../../hooks'
+
+const getStatCards = (dashboardData) => [
+  { icon: assets.dashboard_icon_1, value: dashboardData.blogs, label: 'Blogs' },
+  { icon: assets.dashboard_icon_2, value: dashboardData.comments, label: 'Comments' },
+  { icon: assets.dashboard_icon_3, value: dashboardData.drafts, label: 'Drafts' },
+  { icon: assets.dashboard_icon_1, value: dashboardData.blogsThisMonth, label: 'Written This Month' },
+  { icon: assets.dashboard_icon_3, value: dashboardData.publishedThisMonth, label: 'Published This Month' }
+]
 
 function Dashboard() {
   const { dashboardData, loading, refetch } = useAdminDashboard()
@@ -11,33 +19,20 @@ function Dashboard() {
     return <Loader />
   }
 
+  const statCards = getStatCards(dashboardData)
+
   return (
     <div className='flex-1 p-4 md:p-10 bg-blue-50/50 h-full min-h-full'>
       {/* Stats Cards */}
       <div className='flex flex-wrap gap-4'>
-        <div className='flex items-center gap-4 bg-white p-4 min-w-58 rounded shadow cursor-pointer hover:scale-105 transition-all'>
-          <img src={assets.dashboard_icon_1} alt='' />
-          <div>
-            <p className='text-xl font-semibold text-gray-600'>{dashboardData.blogs}</p>
-            <p className='text-gray-400 font-light'>Blogs</p>
-          </div>
-        </div>
-
-        <div className='flex items-center gap-4 bg-white p-4 min-w-58 rounded shadow cursor-pointer hover:scale-105 transition-all'>
-          <img src={assets.dashboard_icon_2} alt='' />
-          <div>
-            <p className='text-xl font-semibold text-gray-600'>{dashboardData.comments}</p>
-            <p className='text-gray-400 font-light'>Comments</p>
-          </div>
-        </div>
-
-        <div className='flex items-center gap-4 bg-white p-4 min-w-58 rounded shadow cursor-pointer hover:scale-105 transition-all'>
-          <img src={assets.dashboard_icon_3} alt='' />
-          <div>
-            <p className='text-xl font-semibold text-gray-600'>{dashboardData.drafts}</p>
-            <p className='text-gray-400 font-light'>Drafts</p>
-          </div>
-        </div>
+        {statCards.map((card) => (
+          <StatCard
+            key={card.label}
+            icon={card.icon}
+            value={card.value}
+            label={card.label}
+          />
+        ))}
       </div>
 
       {/* Latest Blogs */}
