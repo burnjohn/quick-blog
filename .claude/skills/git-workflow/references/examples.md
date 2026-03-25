@@ -16,7 +16,7 @@ fix(BLOG-42): clear error message on modal close
 
 ### Refactor with context
 ```
-refactor(hooks): extract filtering logic to useFilteredBlogs hook
+refactor(BLOG-100): extract filtering logic to useFilteredBlogs hook
 ```
 
 ### Multiple files changed, single concern
@@ -61,16 +61,76 @@ fix(BLOG-42): fix bug
 
 ## Pull Request Descriptions
 
-### Feature PR
+### Feature PR (simple)
 
 **Title:** `feat(BLOG-68): add category filter for blog posts`
 
 ```markdown
 ## What was done
 
-- Added `CategoryFilter` component with category buttons
+- Added `CategoryFilter` component with category buttons in `components/blog/`
 - Updated `BlogList.jsx` to filter posts by selected category
 - Added category constants in `constants/categories.js`
+- Updated `Home.jsx` to pass filter state to BlogList
+
+**Logic:** +127 −12
+
+## Ticket
+
+BLOG-68
+```
+
+### Feature PR with tests
+
+**Title:** `feat(BLOG-200): add empty state for blog list`
+
+```markdown
+## What was done
+
+- Added `EmptyState` component with illustration and CTA button
+- Updated `BlogList.jsx` to render `EmptyState` when no posts match filter
+- Added empty state styles to `blog.css`
+
+**Logic:** +135 −8 | **Tests:** +68 −0
+
+## Tests
+
+`EmptyState.test.jsx` (4 tests):
+- Renders empty message and CTA button
+- Navigates to create page on CTA click
+
+`BlogList.test.jsx` (2 tests):
+- Shows empty state when posts array is empty
+- Shows empty state when filter matches no posts
+
+## Ticket
+
+BLOG-200
+```
+
+### Feature PR with design rationale
+
+**Title:** `feat(BLOG-150): add AI content generation for blog posts`
+
+```markdown
+## What was done
+
+- Added `GenerateButton` component in `components/blog/GenerateButton.jsx`
+- Created `useGenerateContent` hook for Gemini API integration
+- Updated `AddBlog.jsx` to include generation UI in the form
+- Added generation endpoint in `apiEndpoints.js`
+
+**Logic:** +189 −14
+
+**Why server-side proxy over direct Gemini API call:**
+
+- **Direct client call** — exposes API key in browser, blocked by CORS
+- **Serverless function** — adds deployment complexity for a simple proxy
+- **Express endpoint proxy** — keeps API key on server, reuses existing auth middleware, minimal code
+
+## Ticket
+
+BLOG-150
 ```
 
 ### Bug fix PR
@@ -82,6 +142,12 @@ fix(BLOG-42): fix bug
 
 - Fixed error state not resetting when blog form closes in `AddBlog.jsx`
 - Removed redundant useEffect causing re-renders in `BlogDetail.jsx`
+
+**Logic:** +6 −11
+
+## Ticket
+
+BLOG-42
 ```
 
 ### Refactor PR
@@ -94,6 +160,8 @@ fix(BLOG-42): fix bug
 - Extracted shared request config to `api/axiosConfig.js`
 - Simplified error handling in `blogApi.js`
 - Removed unused helper functions from `utils/helpers.js`
+
+**Logic:** +45 −89
 ```
 
 ### What NOT to do in PR descriptions
@@ -116,6 +184,13 @@ fix(BLOG-42): fix bug
 - Changed line 55 in BlogCard.jsx
 - Changed line 12 in CommentItem.jsx
 - ...etc
+
+# BAD: including alternatives without asking the user
+## What was done
+- Added caching layer
+**Why Redis over in-memory cache:**
+- ...
+(should have asked the user if they want this section)
 ```
 
 ---
@@ -165,4 +240,10 @@ Title: `feat(BLOG-68): add category filter for blog posts`
 - Updated `BlogList.jsx` to filter displayed posts by category
 - Added category definitions in `constants/categories.js`
 - Updated `Home.jsx` to pass filter state to BlogList
+
+**Logic:** +127 −12
+
+## Ticket
+
+BLOG-68
 ```
