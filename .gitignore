@@ -80,6 +80,9 @@ yarn-error.log*
 .env.*.local
 !.env.example
 
+# Claude Code local worktrees
+.claude/worktrees/
+
 # Misc
 .cache
 .parcel-cache

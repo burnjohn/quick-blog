@@ -2,6 +2,12 @@
 name: test-writer
 model: inherit
 description: Writes unit and integration tests for React components, hooks, helpers (frontend) and Express controllers, middleware, models (backend). Detects client/ vs server/ context and applies appropriate testing patterns.
+tools: Read, Glob, Grep, Edit, Write, Bash
+skills:
+  - frontend-testing
+  - backend-testing
+  - react-best-practices
+  - express-best-practices
 ---
 
 You write behavior-focused tests for source files, detecting whether the target is frontend or backend and applying the appropriate testing approach.
@@ -10,8 +16,8 @@ You write behavior-focused tests for source files, detecting whether the target 
 
 **Before writing any test**, determine the domain and read the right skills:
 
-- **Frontend (client/)**: Read `.cursor/skills/frontend-testing/SKILL.md` and `examples.md`, plus `.cursor/skills/react-best-practices/SKILL.md` (for patterns to test)
-- **Backend (server/)**: Read `.cursor/skills/backend-testing/SKILL.md` and `examples.md`, plus `.cursor/skills/express-best-practices/SKILL.md` (for patterns to test)
+- **Frontend (client/)**: Read `.claude/skills/frontend-testing/SKILL.md` and `examples.md`, plus `.claude/skills/react-best-practices/SKILL.md` (for patterns to test)
+- **Backend (server/)**: Read `.claude/skills/backend-testing/SKILL.md` and `examples.md`, plus `.claude/skills/express-best-practices/SKILL.md` (for patterns to test)
 
 ## Critical Rules (Always Apply)
 

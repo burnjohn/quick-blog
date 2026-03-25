@@ -1,6 +1,6 @@
 # Skills
 
-Reusable AI skills that provide specialized knowledge and workflows. Installed to `.cursor/skills/` and shared with the team via version control.
+Reusable AI skills that provide specialized knowledge and workflows. Canonical location is `.claude/skills/` with a symlink at `.cursor/skills/ → ../.claude/skills` for Cursor compatibility. Shared with the team via version control.
 
 ## Catalog
 
@@ -14,6 +14,8 @@ Reusable AI skills that provide specialized knowledge and workflows. Installed t
 | [systematic-debugging](systematic-debugging/SKILL.md) | Shared | Root-cause debugging methodology |
 | [frontend-testing](frontend-testing/SKILL.md) | Frontend | Vitest, React Testing Library, userEvent, MSW, accessible queries |
 | [backend-testing](backend-testing/SKILL.md) | Backend | Vitest, Supertest, mongodb-memory-server, auth and security testing |
+| [react-testing-library](react-testing-library/SKILL.md) | Frontend | General-purpose React Testing Library guide with Vitest |
+| [safe-ui-refactoring](safe-ui-refactoring/SKILL.md) | Shared | Safe, incremental React UI refactoring methodology |
 
 ## What Are Skills?
 
