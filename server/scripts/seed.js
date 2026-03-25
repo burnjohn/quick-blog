@@ -3,10 +3,12 @@ import 'dotenv/config'
 import User from '../src/models/User.js'
 import Blog from '../src/models/Blog.js'
 import Comment from '../src/models/Comment.js'
+import BlogView from '../src/models/BlogView.js'
 import dbLogger from '../src/utils/dbLogger.js'
 import { users } from '../fixtures/users.js'
 import { blogs } from '../fixtures/blogs.js'
 import { comments } from '../fixtures/comments.js'
+import { viewsConfig } from '../fixtures/views.js'
 
 // Connect to database
 const connectDB = async () => {
@@ -19,15 +21,70 @@ const connectDB = async () => {
   }
 }
 
+// Seed blog views based on viewsConfig
+const seedViews = async (createdBlogs) => {
+  const {
+    totalViews, categoryWeights, weekdayMultiplier,
+    referrerSources, referrerWeights, visitorKeyPrefix
+  } = viewsConfig
+
+  // Build weighted blog pool based on category popularity
+  const weightedPool = []
+  createdBlogs.forEach(blog => {
+    const weight = Math.round((categoryWeights[blog.category] || 0.1) * 100)
+    for (let i = 0; i < weight; i++) weightedPool.push(blog)
+  })
+
+  const views = []
+  let attempts = 0
+  const maxAttempts = totalViews * 3
+
+  while (views.length < totalViews && attempts < maxAttempts) {
+    attempts++
+
+    const blog = weightedPool[Math.floor(Math.random() * weightedPool.length)]
+
+    // Random date within 6-month spread
+    const daysAgo = Math.floor(Math.random() * 180)
+    const viewDate = new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000)
+
+    // Weekday bias: weekends get fewer views
+    const dayOfWeek = viewDate.getDay()
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6
+    if (isWeekend && Math.random() > (1 / weekdayMultiplier)) continue
+
+    // Weighted referrer source
+    const rnd = Math.random()
+    let cumulative = 0
+    let referrerSource = 'direct'
+    for (let j = 0; j < referrerSources.length; j++) {
+      cumulative += referrerWeights[j]
+      if (rnd < cumulative) { referrerSource = referrerSources[j]; break }
+    }
+
+    views.push({
+      blog: blog._id,
+      viewedAt: viewDate,
+      referrerSource,
+      isAdminView: false,
+      visitorKey: `${visitorKeyPrefix}${views.length}-${blog._id}`
+    })
+  }
+
+  await BlogView.insertMany(views)
+  console.log(`✅ Created ${views.length} blog views`)
+}
+
 // Seed database
 const seedDatabase = async () => {
   try {
     console.log('🌱 Starting database seed...\n')
-    
+
     // Clear existing data
     await User.deleteMany({})
     await Blog.deleteMany({})
     await Comment.deleteMany({})
+    await BlogView.deleteMany({})
     console.log('🗑️  Cleared existing data\n')
 
     // Create users
@@ -50,30 +107,33 @@ const seedDatabase = async () => {
         ...blogs[i],
         author: author._id,
         authorName: author.name,
-        isPublished: true
+        isPublished: true,
+        createdAt: blogs[i].createdAt || new Date()
       })
       createdBlogs.push(blog)
       dbLogger.logCreate('blogs', blog)
     }
     console.log(`✅ Created ${createdBlogs.length} blog posts\n`)
 
-    // Create comments for first 3 blogs
+    // Create comments distributed across ALL blogs (round-robin)
     let commentCount = 0
-    for (let i = 0; i < Math.min(3, createdBlogs.length); i++) {
-      for (const commentData of comments) {
-        const comment = await Comment.create({
-          ...commentData,
-          blog: createdBlogs[i]._id
-        })
-        dbLogger.logCreate('comments', comment)
-        commentCount++
-      }
+    for (let i = 0; i < comments.length; i++) {
+      const blog = createdBlogs[i % createdBlogs.length]
+      const comment = await Comment.create({
+        ...comments[i],
+        blog: blog._id
+      })
+      dbLogger.logCreate('comments', comment)
+      commentCount++
     }
     console.log(`✅ Created ${commentCount} comments\n`)
 
+    // Seed blog views
+    await seedViews(createdBlogs)
+
     dbLogger.logEvent('SEED_COMPLETE', 'Database seeded successfully')
-    console.log('🎉 Database seeded successfully!\n')
-    
+    console.log('\n🎉 Database seeded successfully!\n')
+
   } catch (error) {
     console.error('❌ Seed error:', error)
     dbLogger.logError('SEED_ERROR', error)
@@ -96,4 +156,3 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 }
 
 export default runSeed
-
