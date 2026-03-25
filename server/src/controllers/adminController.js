@@ -85,15 +85,26 @@ export const getDashboard = asyncHandler(async (req, res) => {
     })
   )
 
-  const recentComments = await Comment.find({}).sort({ createdAt: -1 }).limit(6)
-  const blogs = await Blog.countDocuments()
-  const comments = await Comment.countDocuments()
-  const drafts = await Blog.countDocuments({ isPublished: false })
+  // Calculate start of current month for monthly stats
+  const now = new Date()
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+
+  const [recentComments, blogs, comments, drafts, blogsThisMonth, publishedThisMonth] =
+    await Promise.all([
+      Comment.find({}).sort({ createdAt: -1 }).limit(6),
+      Blog.countDocuments(),
+      Comment.countDocuments(),
+      Blog.countDocuments({ isPublished: false }),
+      Blog.countDocuments({ createdAt: { $gte: startOfMonth } }),
+      Blog.countDocuments({ isPublished: true, createdAt: { $gte: startOfMonth } })
+    ])
 
   const dashboardData = {
     blogs,
     comments,
     drafts,
+    blogsThisMonth,
+    publishedThisMonth,
     recentBlogs: blogsWithCounts,
     recentComments
   }

@@ -39,7 +39,7 @@ export const generateLimiter = rateLimit({
 // General API rate limiter
 export const apiLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 100, // 100 requests per minute
+  max: 300, // 300 requests per minute (analytics dashboard uses ~9 parallel requests per interaction)
   message: {
     success: false,
     message: 'Too many requests. Please slow down.'
