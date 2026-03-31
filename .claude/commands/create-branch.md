@@ -4,7 +4,7 @@ Create a new Git branch following the project's naming conventions.
 
 ## Prerequisites
 
-Read the git-workflow skill at `.cursor/skills/git-workflow/SKILL.md` for branch naming conventions and types.
+Read the git-workflow skill at `.claude/skills/git-workflow/SKILL.md` for branch naming conventions and types.
 
 ## Input Parameters
 

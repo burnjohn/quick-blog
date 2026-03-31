@@ -4,7 +4,7 @@ Create a step-by-step implementation plan for an approved design or feature.
 
 ## Instructions
 
-Read and follow the writing-plans skill at `.cursor/skills/writing-plans/SKILL.md` exactly as presented.
+Read and follow the writing-plans skill at `.claude/skills/writing-plans/SKILL.md` exactly as presented.
 
 The skill will guide you through:
 1. Understanding the approved design or feature spec

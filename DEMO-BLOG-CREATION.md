@@ -1,11 +1,11 @@
-# Demo: Implementing Blog Creation Page with Cursor
+# Demo: Implementing Blog Creation Page with Claude Code / Cursor
 
-This guide demonstrates how to implement a complete blog creation feature in QuickBlog using Cursor's AI capabilities, Figma integration, and local image uploads.
+This guide demonstrates how to implement a complete blog creation feature in QuickBlog using Claude Code / Cursor's AI capabilities, Figma integration, and local image uploads.
 
 ## Overview
 
 In this demo, you'll learn how to:
-- Use Cursor's **Planning Mode** to analyze and implement Figma designs
+- Use Claude Code / Cursor's **Planning Mode** to analyze and implement Figma designs
 - Create a full-featured blog creation page with rich text editor
 - Handle image uploads with local storage
 - Build backend API endpoints for blog creation
@@ -37,11 +37,11 @@ Navigate to the QuickBlog Figma design file and review the blog creation page:
 - Go through the layout, form fields, and interaction patterns
 - Note the required fields: thumbnail, title, subtitle, description (rich text), category, publish status
 
-### 3. Use Cursor's Agent Mode in Planning Mode
+### 3. Use Claude Code / Cursor's Agent Mode in Planning Mode
 
 This is where the magic happens! Follow these steps carefully:
 
-1. **Open a new Cursor chat**
+1. **Open a new chat**
 2. **Switch to Planning Mode** within Agent Mode
 3. **Attach relevant folders** using `@` mention:
    - `@client/src` (for UI implementation)
@@ -74,11 +74,11 @@ For the backend:
 Make sure to handle all loading states, form validation, and error cases properly.
 ```
 
-> **Tip**: Attach a screenshot or the Figma design link along with your prompt. Cursor's AI will understand the design and implement accordingly. The more context you provide through attached files (`@client/src`, `@server/src`), the better the results!
+> **Tip**: Attach a screenshot or the Figma design link along with your prompt. Claude Code / Cursor's AI will understand the design and implement accordingly. The more context you provide through attached files (`@client/src`, `@server/src`), the better the results!
 
 ### 4. Review the Plan
 
-Cursor will generate a detailed implementation plan. Carefully review it and ensure:
+The AI will generate a detailed implementation plan. Carefully review it and ensure:
 - ✅ All UI components are identified (page, form fields, editor)
 - ✅ Backend API endpoints are planned (create blog)
 - ✅ Local image upload handling is included
@@ -88,7 +88,7 @@ Cursor will generate a detailed implementation plan. Carefully review it and ens
 - ✅ Error handling is comprehensive
 - ✅ Routing and navigation updates are included
 
-If you notice any gaps or want to adjust the approach, provide feedback to Cursor before proceeding.
+If you notice any gaps or want to adjust the approach, provide feedback before proceeding.
 
 ### 5. Compare AI Models (Recommended)
 
@@ -109,11 +109,11 @@ For the best results, it's recommended to test this feature implementation with 
 
 Once you're satisfied with the plan:
 1. Click **"Run Plan"** or **"Start Building"**
-2. Cursor will create/modify the necessary files
+2. The AI will create/modify the necessary files
 3. Monitor the progress and review changes as they're made
 4. Approve file changes when prompted
 
-Cursor will:
+The AI will:
 - Create the blog creation page component
 - Set up the Quill rich text editor
 - Handle local image uploads via Multer

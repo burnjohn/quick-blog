@@ -1,11 +1,11 @@
-# Demo: Implementing Comments Feature with Cursor
+# Demo: Implementing Comments Feature with Claude Code / Cursor
 
-This guide demonstrates how to implement a complete comments management feature in QuickBlog using Cursor's AI capabilities and Figma integration.
+This guide demonstrates how to implement a complete comments management feature in QuickBlog using Claude Code / Cursor's AI capabilities and Figma integration.
 
 ## Overview
 
 In this demo, you'll learn how to:
-- Use Cursor's planning mode to analyze Figma designs
+- Use Claude Code / Cursor's planning mode to analyze Figma designs
 - Generate a complete admin comments page with UI
 - Integrate with existing backend APIs
 - Test the full comment workflow (create → approve → display)
@@ -35,7 +35,7 @@ Navigate to the QuickBlog Figma design file:
 - Locate the **Comments Management Page** design
 - Take a screenshot of the comments page design
 
-### 3. Use Cursor's Planning Mode
+### 3. Use Claude Code / Cursor's Planning Mode
 
 1. **Open a new Cursor chat**
 2. **Enable Planning Mode** (toggle at the top of chat)
@@ -184,7 +184,7 @@ After completing all steps, you should have:
 ## What You Learned
 
 This demo showcased:
-1. **Cursor + Figma Integration**: Using design screenshots to generate UI components
+1. **Claude Code / Cursor + Figma Integration**: Using design screenshots to generate UI components
 2. **Planning Mode**: Breaking down complex features into manageable steps
 3. **Full-Stack Development**: Integrating frontend with existing backend APIs
 4. **React Best Practices**: Components, hooks, state management, error handling
