@@ -10,15 +10,21 @@ Good/bad patterns for each rule in [SKILL.md](SKILL.md).
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import request from 'supertest';
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { app } from '../server.js';
 import Blog from '../src/models/Blog.js';
+import User from '../src/models/User.js';
 
 let mongoServer;
+let testUser;
+let authToken;
 
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
   await mongoose.connect(mongoServer.getUri());
+  testUser = await User.create({ name: 'Admin', email: 'admin@test.com', password: 'hashed' });
+  authToken = jwt.sign({ id: testUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 });
 
 afterAll(async () => {
@@ -29,92 +35,84 @@ afterAll(async () => {
 beforeEach(async () => {
   await Blog.deleteMany({});
 });
+
+// Helpers — keep Supertest calls DRY
+const authedPost = (url, body) =>
+  request(app).post(url).set('Authorization', `Bearer ${authToken}`).send(body);
+
+const authedPut = (url, body) =>
+  request(app).put(url).set('Authorization', `Bearer ${authToken}`).send(body);
+
+const authedDelete = (url) =>
+  request(app).delete(url).set('Authorization', `Bearer ${authToken}`);
 ```
 
 ---
 
-## CRUD Endpoint Tests
+## Fewer, Longer Tests — CRUD Endpoints
+
+### BAD: Too many tiny tests
 
 ```javascript
-describe('GET /api/blogs', () => {
-  it('returns all published blogs', async () => {
-    // Seed test data
-    await Blog.create([
-      { title: 'Blog 1', content: 'Content 1', category: 'Technology', author: userId },
-      { title: 'Blog 2', content: 'Content 2', category: 'Startup', author: userId },
-    ]);
-
-    const res = await request(app).get('/api/blogs');
-
-    expect(res.status).toBe(200);
-    expect(res.body.success).toBe(true);
-    expect(res.body.blogs).toHaveLength(2);
-    expect(res.body.blogs[0]).toHaveProperty('title');
-    expect(res.body.blogs[0]).toHaveProperty('category');
-  });
-
-  it('returns empty array when no blogs exist', async () => {
-    const res = await request(app).get('/api/blogs');
-
-    expect(res.status).toBe(200);
-    expect(res.body.success).toBe(true);
-    expect(res.body.blogs).toHaveLength(0);
-  });
+// 8 tests for one endpoint — most add little confidence
+describe('POST /api/blogs', () => {
+  it('returns 201', async () => { /* ... */ });
+  it('returns success true', async () => { /* ... */ });
+  it('returns the blog title', async () => { /* ... */ });
+  it('returns the blog category', async () => { /* ... */ });
+  it('saves to database', async () => { /* ... */ });
+  it('returns 400 for missing title', async () => { /* ... */ });
+  it('returns 400 for missing content', async () => { /* ... */ });
+  it('returns 400 for invalid category', async () => { /* ... */ });
 });
+```
 
-describe('GET /api/blogs/:id', () => {
-  it('returns a blog by ID', async () => {
-    const blog = await Blog.create({
-      title: 'Test Blog', content: 'Content', category: 'Technology', author: userId,
+### GOOD: 3 tests covering all scenarios
+
+```javascript
+describe('POST /api/blogs', () => {
+  it('creates blog with valid data and verifies persistence', async () => {
+    const res = await authedPost('/api/blogs', {
+      title: 'New Blog', content: 'Content here', category: 'Technology',
     });
 
-    const res = await request(app).get(`/api/blogs/${blog._id}`);
-
-    expect(res.status).toBe(200);
-    expect(res.body.success).toBe(true);
-    expect(res.body.blog.title).toBe('Test Blog');
-  });
-
-  it('returns 404 for non-existent blog', async () => {
-    const fakeId = new mongoose.Types.ObjectId();
-    const res = await request(app).get(`/api/blogs/${fakeId}`);
-
-    expect(res.status).toBe(404);
-    expect(res.body.success).toBe(false);
-  });
-
-  it('returns 400 for invalid ID format', async () => {
-    const res = await request(app).get('/api/blogs/not-a-valid-id');
-
-    expect(res.status).toBe(400);
-    expect(res.body.success).toBe(false);
-  });
-});
-
-describe('POST /api/blogs', () => {
-  it('creates a blog with valid data', async () => {
-    const res = await request(app)
-      .post('/api/blogs')
-      .set('Authorization', `Bearer ${validToken}`)
-      .send({ title: 'New Blog', content: 'Content here', category: 'Technology' });
-
+    // Response is correct
     expect(res.status).toBe(201);
     expect(res.body.success).toBe(true);
-    expect(res.body.blog.title).toBe('New Blog');
+    expect(res.body.blog).toMatchObject({
+      title: 'New Blog',
+      category: 'Technology',
+    });
+    expect(res.body.blog).toHaveProperty('_id');
+    expect(res.body.blog).toHaveProperty('createdAt');
 
-    // Verify it was actually saved
+    // Actually persisted in DB
     const saved = await Blog.findById(res.body.blog._id);
     expect(saved).not.toBeNull();
+    expect(saved.title).toBe('New Blog');
   });
 
-  it('returns 400 for missing required fields', async () => {
+  it('rejects unauthenticated request', async () => {
     const res = await request(app)
       .post('/api/blogs')
-      .set('Authorization', `Bearer ${validToken}`)
-      .send({ title: '' });
+      .send({ title: 'New Blog', content: 'Content', category: 'Technology' });
 
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(401);
     expect(res.body.success).toBe(false);
+  });
+
+  it('rejects invalid data with clear error response', async () => {
+    // Missing title
+    const res1 = await authedPost('/api/blogs', { content: 'Content', category: 'Technology' });
+    expect(res1.status).toBe(400);
+    expect(res1.body.success).toBe(false);
+    expect(res1.body).toHaveProperty('message');
+
+    // Invalid category
+    const res2 = await authedPost('/api/blogs', {
+      title: 'Blog', content: 'Content', category: 'InvalidCat',
+    });
+    expect(res2.status).toBe(400);
   });
 });
 ```
@@ -123,81 +121,103 @@ describe('POST /api/blogs', () => {
 
 ## Auth Middleware Tests
 
+### BAD: Testing every auth edge case on every endpoint
+
 ```javascript
-import jwt from 'jsonwebtoken';
+// These 4 tests are duplicated across EVERY protected endpoint
+describe('POST /api/blogs — auth', () => {
+  it('rejects without header', ...);
+  it('rejects malformed token', ...);
+  it('rejects expired token', ...);
+  it('accepts valid token', ...);
+});
+describe('PUT /api/blogs/:id — auth', () => {
+  it('rejects without header', ...);  // same test, different URL
+  it('rejects malformed token', ...);
+  it('rejects expired token', ...);
+  it('accepts valid token', ...);
+});
+```
 
+### GOOD: Test middleware once, then test 401 per-endpoint
+
+```javascript
+// Test auth edge cases ONCE against any protected endpoint
 describe('Auth middleware', () => {
-  const protectedUrl = '/api/admin/dashboard';
+  const protectedUrl = '/api/blogs';
+  const validBody = { title: 'Test', content: 'Content', category: 'Technology' };
 
-  it('rejects requests without Authorization header', async () => {
-    const res = await request(app).get(protectedUrl);
+  it('rejects malformed and expired tokens', async () => {
+    // No header
+    const res1 = await request(app).post(protectedUrl).send(validBody);
+    expect(res1.status).toBe(401);
+
+    // Malformed token
+    const res2 = await request(app)
+      .post(protectedUrl)
+      .set('Authorization', 'Bearer garbage')
+      .send(validBody);
+    expect(res2.status).toBe(401);
+
+    // Expired token
+    const expiredToken = jwt.sign({ id: 'user1' }, process.env.JWT_SECRET, { expiresIn: '0s' });
+    const res3 = await request(app)
+      .post(protectedUrl)
+      .set('Authorization', `Bearer ${expiredToken}`)
+      .send(validBody);
+    expect(res3.status).toBe(401);
+  });
+});
+
+// Then in each endpoint test, just verify 401 without token (one line)
+describe('POST /api/blogs', () => {
+  it('rejects unauthenticated request', async () => {
+    const res = await request(app).post('/api/blogs').send({...});
     expect(res.status).toBe(401);
-    expect(res.body.success).toBe(false);
   });
-
-  it('rejects requests with malformed token', async () => {
-    const res = await request(app)
-      .get(protectedUrl)
-      .set('Authorization', 'Bearer invalid-token-here');
-    expect(res.status).toBe(401);
-  });
-
-  it('rejects requests with expired token', async () => {
-    const expiredToken = jwt.sign(
-      { id: 'user1' },
-      process.env.JWT_SECRET,
-      { expiresIn: '0s' },
-    );
-
-    const res = await request(app)
-      .get(protectedUrl)
-      .set('Authorization', `Bearer ${expiredToken}`);
-    expect(res.status).toBe(401);
-  });
-
-  it('allows requests with valid token', async () => {
-    const token = jwt.sign({ id: 'user1' }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-    const res = await request(app)
-      .get(protectedUrl)
-      .set('Authorization', `Bearer ${token}`);
-    expect(res.status).toBe(200);
-  });
+  // ... other tests
 });
 ```
 
 ---
 
-## Validation Tests
+## Workflow Test (Full CRUD Lifecycle)
+
+One test that catches integration bugs across the entire resource lifecycle:
 
 ```javascript
-describe('POST /api/blogs — validation', () => {
-  const post = (body) =>
-    request(app)
-      .post('/api/blogs')
-      .set('Authorization', `Bearer ${validToken}`)
-      .send(body);
+describe('Blog CRUD workflow', () => {
+  it('create → read → update → delete lifecycle', async () => {
+    // CREATE
+    const createRes = await authedPost('/api/blogs', {
+      title: 'Lifecycle Blog', content: 'Original', category: 'Technology',
+    });
+    expect(createRes.status).toBe(201);
+    const blogId = createRes.body.blog._id;
 
-  it('rejects empty title', async () => {
-    const res = await post({ title: '', content: 'Content', category: 'Technology' });
-    expect(res.status).toBe(400);
-    expect(res.body.message).toMatch(/title/i);
-  });
+    // READ — verify creation
+    const readRes = await request(app).get(`/api/blogs/${blogId}`);
+    expect(readRes.status).toBe(200);
+    expect(readRes.body.blog.title).toBe('Lifecycle Blog');
 
-  it('rejects missing content', async () => {
-    const res = await post({ title: 'Title', category: 'Technology' });
-    expect(res.status).toBe(400);
-    expect(res.body.message).toMatch(/content/i);
-  });
+    // UPDATE
+    const updateRes = await authedPut(`/api/blogs/${blogId}`, {
+      title: 'Updated Blog', content: 'Updated content',
+    });
+    expect(updateRes.status).toBe(200);
+    expect(updateRes.body.blog.title).toBe('Updated Blog');
 
-  it('rejects invalid category', async () => {
-    const res = await post({ title: 'Title', content: 'Content', category: 'InvalidCat' });
-    expect(res.status).toBe(400);
-  });
+    // VERIFY UPDATE persisted
+    const verifyRes = await request(app).get(`/api/blogs/${blogId}`);
+    expect(verifyRes.body.blog.content).toBe('Updated content');
 
-  it('rejects title exceeding max length', async () => {
-    const res = await post({ title: 'A'.repeat(201), content: 'Content', category: 'Technology' });
-    expect(res.status).toBe(400);
+    // DELETE
+    const deleteRes = await authedDelete(`/api/blogs/${blogId}`);
+    expect(deleteRes.status).toBe(200);
+
+    // VERIFY DELETION
+    const goneRes = await request(app).get(`/api/blogs/${blogId}`);
+    expect(goneRes.status).toBe(404);
   });
 });
 ```
@@ -218,72 +238,29 @@ vi.mock('../../configs/gemini.js', () => ({
 }));
 
 describe('POST /api/blogs/generate', () => {
-  it('returns AI-generated content', async () => {
-    const res = await request(app)
-      .post('/api/blogs/generate')
-      .set('Authorization', `Bearer ${validToken}`)
-      .send({ topic: 'AI in 2026' });
-
+  it('generates content and handles API failure', async () => {
+    // Happy path
+    const res = await authedPost('/api/blogs/generate', { topic: 'AI in 2026' });
     expect(res.status).toBe(200);
     expect(res.body.content).toBe('Generated content');
-  });
 
-  it('handles Gemini API failure gracefully', async () => {
+    // Simulate API failure
     const { generateContent } = await import('../../configs/gemini.js');
     vi.mocked(generateContent).mockRejectedValueOnce(new Error('API down'));
 
-    const res = await request(app)
-      .post('/api/blogs/generate')
-      .set('Authorization', `Bearer ${validToken}`)
-      .send({ topic: 'AI in 2026' });
-
-    expect(res.status).toBe(500);
-    expect(res.body.success).toBe(false);
+    const errorRes = await authedPost('/api/blogs/generate', { topic: 'AI in 2026' });
+    expect(errorRes.status).toBe(500);
+    expect(errorRes.body.success).toBe(false);
   });
 });
 ```
 
 ---
 
-## Security Tests
+## Response Shape Testing
 
 ```javascript
-describe('Security', () => {
-  it('rejects NoSQL injection in login', async () => {
-    const res = await request(app)
-      .post('/api/admin/login')
-      .send({
-        email: 'admin@test.com',
-        password: { $ne: '' },  // NoSQL injection attempt
-      });
-
-    // Should reject, not authenticate
-    expect(res.status).toBe(400);
-  });
-
-  it('rejects file upload with invalid type', async () => {
-    const res = await request(app)
-      .post('/api/blogs')
-      .set('Authorization', `Bearer ${validToken}`)
-      .attach('image', Buffer.from('fake-script'), {
-        filename: 'malicious.js',
-        contentType: 'application/javascript',
-      })
-      .field('title', 'Test')
-      .field('content', 'Content')
-      .field('category', 'Technology');
-
-    expect(res.status).toBe(400);
-  });
-});
-```
-
----
-
-## Testing Response Shape
-
-```javascript
-// BAD: Testing exact values (brittle)
+// BAD: Testing exact values (brittle, breaks on any change)
 expect(res.body).toEqual({
   success: true,
   message: 'Blog created successfully',
@@ -298,6 +275,33 @@ expect(res.body.blog).toMatchObject({
 });
 expect(res.body.blog).toHaveProperty('_id');
 expect(res.body.blog).toHaveProperty('createdAt');
+```
+
+---
+
+## Security Tests (Extended Tier)
+
+```javascript
+describe('Security — extended tier', () => {
+  it('rejects NoSQL injection and invalid file types', async () => {
+    // NoSQL injection attempt
+    const injectionRes = await request(app)
+      .post('/api/admin/login')
+      .send({ email: 'admin@test.com', password: { $ne: '' } });
+    expect(injectionRes.status).toBe(400);
+
+    // Invalid file type upload
+    const uploadRes = await authedPost('/api/blogs')
+      .attach('image', Buffer.from('fake-script'), {
+        filename: 'malicious.js',
+        contentType: 'application/javascript',
+      })
+      .field('title', 'Test')
+      .field('content', 'Content')
+      .field('category', 'Technology');
+    expect(uploadRes.status).toBe(400);
+  });
+});
 ```
 
 ---
