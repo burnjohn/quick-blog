@@ -7,6 +7,27 @@ description: "General-purpose React Testing Library guide with Vitest. Use when 
 
 General-purpose guide for testing React components and hooks with React Testing Library (RTL) and Vitest. Project-agnostic — works with any Vite + React setup.
 
+## Philosophy: Fewer Tests, Real Scenarios
+
+> "Write tests. Not too many. Mostly integration." — Kent C. Dodds
+
+1. **Use-case coverage > code coverage** — aim for 100% use-case coverage, not 100% line coverage. Think about what the user can DO, not what the code does internally.
+2. **Write fewer, longer tests** — one test that walks through a full user flow beats six isolated assertions. Combine related steps (render → interact → verify) into a single test.
+3. **Test behavior, not implementation** — assert on what the user sees and can do. Never assert on internal state, hook calls, or DOM structure.
+4. **Mock at boundaries only** — mock API calls and external services. Never mock your own components, hooks, or context internals.
+5. **Each test must justify its existence** — if removing a test wouldn't reduce your confidence that the app works, delete it.
+
+### The Testing Trophy (what to invest in)
+
+```
+    E2E        ← Few: critical user journeys only (Playwright/Cypress)
+  Integration  ← MOST tests: components with real providers, MSW for APIs
+  Unit         ← Some: complex pure logic, utilities, formatters
+Static Analysis ← Always: TypeScript, ESLint
+```
+
+---
+
 ## Setup from Scratch
 
 ### 1. Install Dependencies
@@ -66,14 +87,173 @@ Add to `package.json`:
 
 ---
 
-## Core Philosophy
+## Test Scenarios by Component Type
 
-RTL tests should answer: **"Does this component work correctly from the user's perspective?"**
+Before writing tests, identify the component type and pick scenarios from this matrix. Write **1-3 tests per component** — each test covers a full user flow, not a single assertion.
 
-- Query elements the way a user finds them — by visible text, labels, roles
-- Interact the way a user would — click, type, select
-- Assert what the user sees — text, visibility, enabled/disabled states
-- Never test implementation details — internal state, hook calls, DOM structure
+### Form Component (e.g., BlogEditor, LoginForm, CommentForm)
+
+| # | Test | What it covers |
+|---|------|----------------|
+| 1 | **Happy path: fill all fields → submit → success feedback** | Rendering, typing, validation passing, API call, success state |
+| 2 | **Validation: submit empty/invalid → error messages appear** | Required fields, validation rules, error rendering |
+| 3 | **API failure: fill valid → submit → server error shown** | Error handling, error UI, form stays filled |
+
+### List/Table Component (e.g., BlogList, CommentList, Dashboard)
+
+| # | Test | What it covers |
+|---|------|----------------|
+| 1 | **Happy path: data loads → items render → user interacts** | Loading state, data rendering, click/navigation |
+| 2 | **Empty state: no data → empty message shown** | Zero-data handling |
+| 3 | **Error state: API fails → error message shown** | Network failure handling |
+
+### Detail/View Component (e.g., BlogDetail, UserProfile)
+
+| # | Test | What it covers |
+|---|------|----------------|
+| 1 | **Happy path: data loads → full content renders → user actions work** | Data fetching, rendering, interactions (edit/delete/comment) |
+| 2 | **Not found / error: invalid ID → appropriate message** | 404 handling, error boundaries |
+
+### Auth-Gated Component (e.g., AdminPanel, ProtectedRoute)
+
+| # | Test | What it covers |
+|---|------|----------------|
+| 1 | **Authenticated: user sees protected content and can interact** | Auth context, content rendering, user actions |
+| 2 | **Unauthenticated: redirects or shows login prompt** | Guard behavior, redirect |
+
+### Shared/Presentational Component (e.g., BlogCard, Button, Modal)
+
+| # | Test | What it covers |
+|---|------|----------------|
+| 1 | **Renders with props and handles user interaction** | Props → UI mapping, click/hover callbacks |
+| 2 | **Conditional rendering: different props → different output** | Only if the component has meaningful branching |
+
+---
+
+## Complete Spec Template
+
+This is what a well-structured test file looks like. Each test walks through a real user flow.
+
+```jsx
+// BlogList.test.jsx
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
+import BlogList from './BlogList';
+
+// --- MSW setup: mock the API at the network level ---
+const blogs = [
+  { _id: '1', title: 'First Post', category: 'Technology', excerpt: 'About tech' },
+  { _id: '2', title: 'Second Post', category: 'Startup', excerpt: 'About startups' },
+];
+
+const server = setupServer(
+  http.get('/api/blogs', () => HttpResponse.json({ success: true, blogs })),
+);
+
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+
+// --- Render helper (keeps tests DRY) ---
+const renderBlogList = () =>
+  render(<MemoryRouter><BlogList /></MemoryRouter>);
+
+// --- Tests: 3 tests covering ALL real scenarios ---
+describe('BlogList', () => {
+  it('loads blogs and lets user navigate to a post', async () => {
+    const user = userEvent.setup();
+    renderBlogList();
+
+    // Loading state appears first
+    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+
+    // Blogs appear after fetch
+    expect(await screen.findByText('First Post')).toBeInTheDocument();
+    expect(screen.getByText('Second Post')).toBeInTheDocument();
+
+    // User clicks a blog card
+    await user.click(screen.getByRole('link', { name: /first post/i }));
+    // Assert navigation happened (or verify detail view renders)
+  });
+
+  it('shows empty state when no blogs exist', async () => {
+    server.use(
+      http.get('/api/blogs', () => HttpResponse.json({ success: true, blogs: [] })),
+    );
+    renderBlogList();
+
+    expect(await screen.findByText(/no blogs/i)).toBeInTheDocument();
+    expect(screen.queryByRole('article')).not.toBeInTheDocument();
+  });
+
+  it('shows error message when API fails', async () => {
+    server.use(
+      http.get('/api/blogs', () => HttpResponse.json(
+        { success: false, message: 'Server error' },
+        { status: 500 },
+      )),
+    );
+    renderBlogList();
+
+    expect(await screen.findByRole('alert')).toBeInTheDocument();
+    expect(screen.queryByRole('article')).not.toBeInTheDocument();
+  });
+});
+```
+
+### Form Spec Template
+
+```jsx
+// LoginForm.test.jsx
+describe('LoginForm', () => {
+  it('logs in with valid credentials and shows dashboard', async () => {
+    const user = userEvent.setup();
+    render(<MemoryRouter><LoginForm /></MemoryRouter>);
+
+    // Fill form
+    await user.type(screen.getByLabelText(/email/i), 'admin@test.com');
+    await user.type(screen.getByLabelText(/password/i), 'password123');
+    await user.click(screen.getByRole('button', { name: /sign in/i }));
+
+    // Success: redirected or success message
+    expect(await screen.findByText(/welcome/i)).toBeInTheDocument();
+  });
+
+  it('shows validation errors when submitted empty', async () => {
+    const user = userEvent.setup();
+    render(<MemoryRouter><LoginForm /></MemoryRouter>);
+
+    await user.click(screen.getByRole('button', { name: /sign in/i }));
+
+    // Both fields show errors
+    expect(await screen.findByText(/email is required/i)).toBeInTheDocument();
+    expect(screen.getByText(/password is required/i)).toBeInTheDocument();
+
+    // Form is still visible (not redirected)
+    expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
+  });
+
+  it('shows server error when API returns 401', async () => {
+    server.use(
+      http.post('/api/admin/login', () =>
+        HttpResponse.json({ success: false, message: 'Invalid credentials' }, { status: 401 }),
+      ),
+    );
+    const user = userEvent.setup();
+    render(<MemoryRouter><LoginForm /></MemoryRouter>);
+
+    await user.type(screen.getByLabelText(/email/i), 'admin@test.com');
+    await user.type(screen.getByLabelText(/password/i), 'wrongpassword');
+    await user.click(screen.getByRole('button', { name: /sign in/i }));
+
+    expect(await screen.findByText(/invalid credentials/i)).toBeInTheDocument();
+  });
+});
+```
 
 ---
 
@@ -218,6 +398,8 @@ await waitForElementToBeRemoved(() => screen.queryByText('Loading...'));
 3. Assert — check what the user would see
 ```
 
+Combine all three into a single test when they form one user flow. Don't split Arrange/Act/Assert into separate `it()` blocks.
+
 ### Render helper
 
 Create a local `renderComponent` function when the component needs providers:
@@ -245,15 +427,11 @@ const card = screen.getByRole('article');
 expect(within(card).getByText('Title')).toBeInTheDocument();
 ```
 
-### Testing loading / error / empty states
-
-Mock the data source (hook or API) to return each state, then assert the corresponding UI.
-
 ---
 
 ## Hook Testing
 
-Use `renderHook` for testing hooks in isolation:
+Use `renderHook` for hooks with **complex pure logic** only. If a hook just fetches data or manages simple state, test it through the component that uses it instead.
 
 ```js
 import { renderHook, act } from '@testing-library/react';
@@ -295,7 +473,37 @@ render(
 
 ## Mocking Strategies
 
-### Module mock (`vi.mock`)
+### MSW (Mock Service Worker) — preferred for all data-fetching components
+
+Intercepts at the network layer. Tests don't couple to HTTP client internals. Most realistic approach.
+
+```js
+import { setupServer } from 'msw/node';
+import { http, HttpResponse } from 'msw';
+
+const server = setupServer(
+  // Default happy-path handlers
+  http.get('/api/blogs', () => HttpResponse.json({ success: true, blogs: [...] })),
+  http.post('/api/blogs', async ({ request }) => {
+    const body = await request.json();
+    return HttpResponse.json({ success: true, blog: { _id: '1', ...body } }, { status: 201 });
+  }),
+);
+
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+
+// Override for specific tests:
+it('handles error', async () => {
+  server.use(
+    http.get('/api/blogs', () => HttpResponse.json({ success: false }, { status: 500 })),
+  );
+  // ...
+});
+```
+
+### Module mock (`vi.mock`) — fallback when MSW is overkill
 
 ```js
 vi.mock('../../api/blogApi', () => ({
@@ -306,23 +514,6 @@ vi.mock('../../api/blogApi', () => ({
 - Mock at the API/hook level, not at Axios/fetch level
 - Reset in `beforeEach`: `vi.clearAllMocks()`
 - Use `vi.mocked(fn)` for type-safe access to mock methods
-
-### MSW (Mock Service Worker) — preferred for integration tests
-
-- Intercepts at the network layer — most realistic
-- Tests don't couple to HTTP client internals
-- Share handlers across tests for consistent mock data
-
-Setup pattern:
-```js
-import { setupServer } from 'msw/node';
-import { http, HttpResponse } from 'msw';
-
-const server = setupServer(/* ...handlers */);
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
-```
 
 ### Context mocking
 
@@ -341,14 +532,12 @@ vi.useRealTimers(); // restore in afterEach
 
 ## What to Test / What to Skip
 
-**Test:**
-- Rendered output (what the user sees)
-- User interactions (click, type, submit)
-- Conditional rendering (different props/states produce different UI)
-- Loading, error, and empty states
-- Form validation (error messages appear for invalid input)
-- Callbacks invoked with correct arguments
-- Accessibility (elements findable by role/label)
+**Test (as user-visible flows):**
+- User journeys: form fill → submit → feedback
+- Data display: loading → loaded → interaction
+- State transitions: empty → filled, logged out → logged in
+- Error boundaries: API failure → error message
+- Conditional UI: different user roles see different things
 
 **Skip:**
 - Internal state (`useState` values)
@@ -358,6 +547,7 @@ vi.useRealTimers(); // restore in afterEach
 - Render counts or performance
 - Snapshot tests (unless explicitly requested)
 - Constants or static data
+- Individual assertions that belong inside a longer flow test
 
 ---
 
@@ -385,11 +575,11 @@ vi.useRealTimers(); // restore in afterEach
 - Place tests next to source: `BlogCard.jsx` -> `BlogCard.test.jsx`
 - Use `.test.jsx` extension (not `.spec.jsx`)
 - One `describe` per component/hook
-- Test names describe user-visible behavior: `"shows error when form is submitted empty"`
+- Test names describe user-visible behavior: `"user fills form and sees success message"`
 - Use `vi.fn()` for all mock functions
 - Call `userEvent.setup()` before `render()`
 - Always use `screen` — never destructure from `render()`
-- 3-6 tests per component, 2-4 per hook, 3-5 per utility
+- **1-3 tests per component** (user flows), 1-2 per hook, 2-3 per utility
 
 ---
 
@@ -397,6 +587,7 @@ vi.useRealTimers(); // restore in afterEach
 
 | Anti-Pattern | Fix |
 |-------------|-----|
+| Many tiny tests with one assertion each | Combine into fewer flow tests that walk through a user journey |
 | `fireEvent.click()` | Use `await user.click()` from `userEvent.setup()` |
 | Destructuring from `render()` | Use `screen.getByRole(...)` |
 | `getByTestId` as first choice | Try `getByRole`, `getByLabelText`, `getByText` first |
@@ -408,3 +599,5 @@ vi.useRealTimers(); // restore in afterEach
 | Importing from `jest` | Import from `vitest` (`vi.fn()`, `vi.mock()`) |
 | Mocking what you're testing | Mock dependencies, not the subject |
 | `act()` wrapping RTL calls | RTL handles `act()` internally |
+| Mocking Axios/fetch directly | Use MSW for network-level mocking |
+| Testing every prop combination | Test the meaningful user-facing differences only |
