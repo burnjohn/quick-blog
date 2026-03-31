@@ -2,17 +2,15 @@
 
 ![QuickBlog Hero](hero-image.png)
 
-QuickBlog is a simple full‑stack blog demo used to showcase Cursor's capabilities in web development. It includes a React + Vite client and an Express + MongoDB server, with local image storage and Google Gemini for optional AI‑assisted content generation.
+QuickBlog is a simple full‑stack blog demo used to showcase Claude Code / Cursor capabilities in web development. It includes a React + Vite client and an Express + MongoDB server, with local image storage and Google Gemini for optional AI‑assisted content generation.
 
 ---
 
-**[🎓 Workshop Slides](https://gamma.app/docs/Cursor-AI-Development-Workshop-sk3zpe30t3tw2sz?mode=present#card-hajs9rr3zuclvbt)** — Learn how to build features with Cursor AI through our comprehensive workshop covering key concepts, best practices, and development workflows.
+**[📚 Implementing Comments Feature Demo](DEMO-COMMENTS-FEATURE.md)** — Complete hands-on walkthrough showing how to use Claude Code / Cursor planning mode with Figma designs to build a full admin comments management page.
 
-**[📚 Implementing Comments Feature Demo](DEMO-COMMENTS-FEATURE.md)** — Complete hands-on walkthrough showing how to use Cursor's planning mode with Figma designs to build a full admin comments management page.
+**[✍️ Implementing Blog Creation Demo](DEMO-BLOG-CREATION.md)** — Step-by-step guide to building a feature-rich blog creation page with Quill editor, local image uploads, and AI content generation using Claude Code / Cursor planning mode.
 
-**[✍️ Implementing Blog Creation Demo](DEMO-BLOG-CREATION.md)** — Step-by-step guide to building a feature-rich blog creation page with Quill editor, local image uploads, and AI content generation using Cursor's planning mode.
-
-**[📊 Implementing Analytics Dashboard Demo (Multi-Agent)](DEMO-ANALYTICS-FEATURE.md)** — Advanced tutorial demonstrating how to build a full analytics dashboard using Cursor's multi-agent orchestration: requirements-planner, parallel implementors, plan-verifier, and dual code reviewers working simultaneously.
+**[📊 Implementing Analytics Dashboard Demo (Multi-Agent)](DEMO-ANALYTICS-FEATURE.md)** — Advanced tutorial demonstrating how to build a full analytics dashboard using Claude Code / Cursor multi-agent orchestration: requirements-planner, parallel implementors, plan-verifier, and dual code reviewers working simultaneously.
 
 ---
 

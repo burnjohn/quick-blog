@@ -1,6 +1,10 @@
 # Commands
 
-Slash commands for common workflows. Invoke with `/command-name` in Cursor chat.
+Slash commands for common workflows. Works with both **Claude Code** and **Cursor**.
+
+Canonical location: `.claude/commands/` with a symlink at `.cursor/commands/ → ../.claude/commands`.
+
+Invoke with `/command-name` in either tool's chat.
 
 ## Catalog
 
@@ -14,7 +18,7 @@ Slash commands for common workflows. Invoke with `/command-name` in Cursor chat.
 
 ## Shared Conventions
 
-All Git commands follow conventions from the **git-workflow** skill (`.cursor/skills/git-workflow/SKILL.md`):
+All Git commands follow conventions from the **git-workflow** skill (`.claude/skills/git-workflow/SKILL.md`):
 - Conventional commit types and message format
 - Branch naming patterns
 - PR description rules
@@ -22,4 +26,4 @@ All Git commands follow conventions from the **git-workflow** skill (`.cursor/sk
 
 ## Usage
 
-Type `/commit`, `/create-branch`, `/create-pr`, `/brainstorm`, or `/plan` in the Cursor chat.
+Type `/commit`, `/create-branch`, `/create-pr`, `/brainstorm`, or `/plan` in Claude Code / Cursor chat.
