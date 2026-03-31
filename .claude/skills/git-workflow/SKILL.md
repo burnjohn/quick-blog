@@ -153,6 +153,11 @@ Include a summary line after "What was done" bullets:
 - **Tests** = lines changed in `*.test.*` and `*.spec.*` files
 - If no test files changed, show only Logic: `**Logic:** +347 −89`
 
+## GitHub Operations
+
+- **Use the GitHub MCP tools as the primary method** for all GitHub operations (creating PRs, listing PRs, adding comments, etc.)
+- Fall back to the `gh` CLI only if MCP tools are unavailable or fail
+
 ## Push Policy
 
 - **NEVER push changes unless the user explicitly asks to push**
