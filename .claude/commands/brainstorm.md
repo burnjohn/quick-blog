@@ -4,7 +4,7 @@ Start a brainstorming session for a new feature or significant change.
 
 ## Instructions
 
-Read and follow the brainstorming skill at `.cursor/skills/brainstorming/SKILL.md` exactly as presented.
+Read and follow the brainstorming skill at `.claude/skills/brainstorming/SKILL.md` exactly as presented.
 
 The skill will guide you through:
 1. Understanding the current project state

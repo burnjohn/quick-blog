@@ -44,11 +44,16 @@ quick-blog/
 │       ├── utils/           # dbLogger, httpLogger, imageUrl
 │       └── validators/      # blogValidator
 │
-└── .cursor/                 # Cursor AI configuration
-    ├── rules/               # Always-on conventions
-    ├── skills/              # On-demand domain knowledge
-    ├── agents/              # Specialized subagents
-    └── commands/            # Slash commands
+├── .claude/                 # Claude Code / Cursor AI configuration (canonical)
+│   ├── skills/              # On-demand domain knowledge
+│   ├── agents/              # Specialized subagents
+│   └── commands/            # Slash commands (/commit, /plan, etc.)
+│
+└── .cursor/                 # Cursor-specific config + symlinks
+    ├── rules/               # Always-on conventions (.mdc)
+    ├── commands → ../.claude/commands   # Symlink
+    ├── skills → ../.claude/skills       # Symlink
+    └── agents → ../.claude/agents       # Symlink
 ```
 
 ## Key Scripts

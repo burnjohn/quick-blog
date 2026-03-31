@@ -4,13 +4,16 @@ Specialized AI agents for specific development workflows. Works with both **Curs
 
 ## Dual-Tool Setup
 
-All skills and agents live in `.claude/` (single source of truth). Symlinks in `.cursor/` provide backward compatibility:
+All skills, agents, and commands live in `.claude/` (single source of truth). Symlinks in `.cursor/` provide Cursor compatibility:
 
 ```
-.claude/skills/          ← canonical location (10 skills)
-.claude/agents/          ← canonical location (8 agents)
-.cursor/skills → ../.claude/skills   ← symlink
-.cursor/agents → ../.claude/agents   ← symlink
+.claude/skills/          ← canonical (10 skills)
+.claude/agents/          ← canonical (8 agents)
+.claude/commands/        ← canonical (5 commands)
+.cursor/skills → ../.claude/skills     ← symlink
+.cursor/agents → ../.claude/agents     ← symlink
+.cursor/commands → ../.claude/commands ← symlink
+.cursor/rules/           ← Cursor-only (.mdc files)
 ```
 
 **Claude Code** uses:

@@ -1,6 +1,6 @@
 # Demo: Implementing Blog Analytics Dashboard with Multi-Agent Workflow
 
-This guide demonstrates how to implement a complete Blog Analytics Dashboard in QuickBlog using Cursor's multi-agent orchestration. 
+This guide demonstrates how to implement a complete Blog Analytics Dashboard in QuickBlog using Claude Code / Cursor's multi-agent orchestration. 
 The workflow leverages specialized subagents running in parallel to deliver a production-quality feature fast.
 
 ## Final Result
@@ -25,7 +25,7 @@ Before starting, ensure you have:
 
 ## Multi-Agent Workflow Overview
 
-This feature is built using a 5-step multi-agent workflow, where specialized Cursor subagents handle different aspects of the implementation in parallel:
+This feature is built using a 5-step multi-agent workflow, where specialized subagents handle different aspects of the implementation in parallel:
 
 | Step | Agent | Purpose |
 |------|-------|---------|
@@ -49,7 +49,7 @@ git checkout -b feat/analytics-dashboard
 
 Use the `requirements-planner` subagent to analyze the design document and create structured, categorized requirements.
 
-**Open a new Cursor chat and paste this prompt:**
+**Open a new chat and paste this prompt:**
 
 ```
 /requirements-planner let's plan the next requirements with this subagent
@@ -91,7 +91,7 @@ Split the requirements into separate implementation tracks that can be executed 
 
 > **Backup:** If Step 1 produced different files, you can use the pre-made examples from [`docs/requirements/`](docs/requirements/) instead.
 
-**Open a new Cursor chat, attach all three docs above, and paste this prompt:**
+**Open a new chat, attach all three docs above, and paste this prompt:**
 
 ```
 Plan all those 4 features in different plan tracks. I'm going to spawn
@@ -107,7 +107,7 @@ a separate implementation agent for each.
 - Identifies dependencies between tracks
 - Organizes tasks so parallel agents don't conflict
 
-**Expected output:** A Cursor plan file (e.g. `.cursor/plans/blog_analytics_dashboard_*.plan.md`) with tracks:
+**Expected output:** A plan file (e.g. `.cursor/plans/blog_analytics_dashboard_*.plan.md`) with tracks:
 
 | Track | Scope | Dependencies |
 |-------|-------|--------------|
@@ -124,7 +124,7 @@ a separate implementation agent for each.
 
 Execute the plan using `implementor` subagents. Start with foundation pieces, then run parallel tracks.
 
-**Open a new Cursor chat and paste this prompt:**
+**Open a new chat and paste this prompt:**
 
 ```
 @/.cursor/plans/blog_analytics_dashboard_3c6dac8d.plan.md Let's implement
@@ -172,7 +172,7 @@ that plan by /implementor Run what is possible by parallel subagents
 
 Run the `plan-verifier` subagent in parallel to check that the implementation matches the plan.
 
-**Open a new Cursor chat and paste this prompt:**
+**Open a new chat and paste this prompt:**
 
 ```
 /plan-verifier lets run in parallel to see if the plan was executed correctly
@@ -199,7 +199,7 @@ Run the `plan-verifier` subagent in parallel to check that the implementation ma
 
 Run code reviewers in parallel for backend and frontend, then fix any issues.
 
-**Open a new Cursor chat and paste this prompt:**
+**Open a new chat and paste this prompt:**
 
 ```
 Run those 2 agents in parallel to review the backend and UI
@@ -341,4 +341,5 @@ This demo showcased:
 - [QuickBlog Figma Design](https://www.figma.com/design/b0ILCMLfSEsx7NUclZAg3E/QuickBlog?node-id=0-1&p=f&t=WMJwZBPy1bWaj48I-0)
 - [Recharts Documentation](https://recharts.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
-- [Cursor Multi-Agent Docs](https://docs.cursor.com/)
+- [Cursor Docs](https://docs.cursor.com/)
+- [Claude Code Docs](https://docs.anthropic.com/en/docs/claude-code)
