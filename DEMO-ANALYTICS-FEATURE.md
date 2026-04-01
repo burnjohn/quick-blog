@@ -31,9 +31,9 @@ This feature is built using a 5-step multi-agent workflow, where specialized sub
 |------|-------|---------|
 | 1 | `requirements-planner` | Analyze design, create structured requirements |
 | 2 | Planning (manual) | Split requirements into parallel implementation tracks |
-| 3 | `implementor` (×N) | Implement each track in parallel |
-| 4 | `plan-verifier` | Verify implementation matches the plan |
-| 5 | `backend-reviewer` + `react-reviewer` | Review code, fix issues |
+| 3 | `implementor` (×N) + `plan-verifier` | Implement each track in parallel, then verify completeness |
+| 4 | `plan-verifier` (optional standalone) | Verify implementation matches the plan |
+| 5 | `backend-reviewer` + `react-reviewer` | Review code quality, fix major issues |
 
 ---
 
@@ -52,9 +52,11 @@ Use the `requirements-planner` subagent to analyze the design document and creat
 **Open a new chat and paste this prompt:**
 
 ```
-/requirements-planner let's plan the next requirements with this subagent
-for this feature. You can categorize things and run in parallel
-@docs/feature-requirements/2026-02-11-blog-analytics-dashboard-design.md
+Let's plan the next requirements with this subagent requirements-planner for this feature.
+You can categorize features and run in parallel. Create separate spec file for UI, backend and fixtures
+2026-02-11-blog-analytics-dashboard-design.md
+Take designs from here images
+You can also ask questions to get better spec.
 ```
 
 **What this does:**
@@ -94,20 +96,19 @@ Split the requirements into separate implementation tracks that can be executed 
 **Open a new chat, attach all three docs above, and paste this prompt:**
 
 ```
-Plan all those 4 features in different plan tracks. I'm going to spawn
-a separate implementation agent for each.
-@docs/requirements/analytics-backend-requirements.md
-@docs/requirements/analytics-interactivity-fixtures-requirements.md
-@docs/requirements/analytics-dashboard-frontend-requirements.md
+Create the implementation plan for all those features requirements
+Take into account that we have to spawn multiple implementor.md agents for this work
+I'll be using agent teams for the feature
+Go through the plan and verify if all the requirements are covered
 ```
 
 **What this does:**
 - Reads all requirement documents
-- Creates a unified implementation plan (`.cursor/plans/` directory)
+- Creates a unified implementation plan (`plans/` directory)
 - Identifies dependencies between tracks
 - Organizes tasks so parallel agents don't conflict
 
-**Expected output:** A plan file (e.g. `.cursor/plans/blog_analytics_dashboard_*.plan.md`) with tracks:
+**Expected output:** A plan file (e.g. `plans/blog_analytics_dashboard_*.plan.md`) with tracks:
 
 | Track | Scope | Dependencies |
 |-------|-------|--------------|
@@ -127,9 +128,16 @@ Execute the plan using `implementor` subagents. Start with foundation pieces, th
 **Open a new chat and paste this prompt:**
 
 ```
-@/.cursor/plans/blog_analytics_dashboard_3c6dac8d.plan.md Let's implement
-that plan by /implementor Run what is possible by parallel subagents
-/implementor, create some basic things by /implementor at first if needed
+@/plans/blog_analytics_dashboard_3c6dac8d.plan.md Let's implement
+that plan in Agent Teams mode by running @.claude/agents/implementor.md in parallel.
+In the end I want you to run @.claude/agents/plan-verifier.md in order to check if all points are covered
+```
+
+(Optionally add this)
+
+```
+In the end run react-reviewer and backend-reviewer
+in order to asses the quality and fix major issues.
 ```
 
 > **Note:** Replace the plan filename with the actual plan file created in Step 2.
@@ -140,6 +148,7 @@ that plan by /implementor Run what is possible by parallel subagents
 - Each agent implements its assigned track
 - Foundation pieces (models, routes, constants) are created first
 - Parallel agents handle independent frontend/backend tracks simultaneously
+- After implementation, `plan-verifier` checks that all planned steps were completed
 
 **What gets built:**
 
@@ -170,13 +179,13 @@ that plan by /implementor Run what is possible by parallel subagents
 
 ### Step 4: Plan Verification
 
-Run the `plan-verifier` subagent in parallel to check that the implementation matches the plan.
+> **Note:** Plan verification is now included in Step 3 — the `plan-verifier` agent runs automatically at the end of the implementation step. If you need to run it separately, use the prompt below.
 
 **Open a new chat and paste this prompt:**
 
 ```
-/plan-verifier lets run in parallel to see if the plan was executed correctly
-@/.cursor/plans/blog_analytics_dashboard_3c6dac8d.plan.md
+@/plans/blog_analytics_dashboard_3c6dac8d.plan.md
+Run @.claude/agents/plan-verifier.md to check if all points from the plan are covered
 ```
 
 > **Note:** Replace the plan filename with the actual plan file.
@@ -202,8 +211,8 @@ Run code reviewers in parallel for backend and frontend, then fix any issues.
 **Open a new chat and paste this prompt:**
 
 ```
-Run those 2 agents in parallel to review the backend and UI
-/backend-reviewer /react-reviewer
+Run @.claude/agents/react-reviewer.md and @.claude/agents/backend-reviewer.md in parallel
+to review the frontend and backend code and assess quality. Fix major issues found.
 ```
 
 **What this does:**
@@ -214,7 +223,7 @@ Run those 2 agents in parallel to review the backend and UI
 **Then fix issues with:**
 
 ```
-Use /implementor to fix those and run validations one more time
+Use @.claude/agents/implementor.md to fix the issues found and run validations one more time
 ```
 
 **Common review findings:**
