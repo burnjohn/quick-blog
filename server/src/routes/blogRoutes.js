@@ -10,7 +10,6 @@ import {
   publishBlog,
   unpublishBlog
 } from '../controllers/blogController.js'
-import { trackView } from '../controllers/analyticsController.js'
 import upload from '../middleware/multer.js'
 import auth from '../middleware/auth.js'
 import { commentLimiter, generateLimiter } from '../middleware/rateLimiter.js'
@@ -23,7 +22,6 @@ blogRouter.get('/all', getAllBlogs)
 blogRouter.get('/:blogId', getBlogById)
 blogRouter.post('/add-comment', commentLimiter, validateComment, addComment)
 blogRouter.post('/comments', getBlogComments)
-blogRouter.post('/:blogId/view', trackView)
 
 // Apply auth middleware to all routes below this point
 blogRouter.use(auth)
