@@ -1,45 +1,40 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useForm } from 'react-hook-form'
 import Button from '../../ui/Button'
 import Input from '../../ui/Input'
 import Textarea from '../../ui/Textarea'
 
 function CommentForm({ onSubmit, loading = false }) {
-  const [name, setName] = useState('')
-  const [content, setContent] = useState('')
+  const { register, handleSubmit, reset } = useForm()
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    
-    const result = await onSubmit({ name, content })
-    
+  const onFormSubmit = async (data) => {
+    const result = await onSubmit(data)
+
     if (result?.success) {
-      setName('')
-      setContent('')
+      reset()
     }
   }
 
   return (
     <div className='max-w-3xl mx-auto'>
       <p className='font-semibold mb-4'>Add your comment</p>
-      <form onSubmit={handleSubmit} className='flex flex-col items-start gap-4 max-w-lg'>
+      <form onSubmit={handleSubmit(onFormSubmit)} className='flex flex-col items-start gap-4 max-w-lg'>
         <Input
           type='text'
           placeholder='Name'
-          value={name}
-          onChange={(e) => setName(e.target.value)}
           required
+          {...register('name', { required: true })}
         />
-        
+
         <Textarea
           placeholder='Comment'
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
           rows={6}
           required
+          {...register('content', { required: true })}
         />
-        
-        <Button 
-          type='submit' 
+
+        <Button
+          type='submit'
           variant='primary'
           loading={loading}
         >
