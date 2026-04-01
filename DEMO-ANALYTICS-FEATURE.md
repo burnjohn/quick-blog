@@ -130,11 +130,8 @@ Execute the plan using `implementor` subagents. Start with foundation pieces, th
 ```
 @/plans/blog_analytics_dashboard_3c6dac8d.plan.md Let's implement
 that plan in Agent Teams mode by running @.claude/agents/implementor.md in parallel.
-Here are the specs for the feature:
-@docs/requirements/analytics-backend-requirements.md
-@docs/requirements/analytics-dashboard-frontend-requirements.md
-@docs/requirements/analytics-interactivity-fixtures-requirements.md
 In the end I want you to run @.claude/agents/plan-verifier.md in order to check if all points are covered
+Here is the spec for the plan-verifier @docs/feature-requirements/2026-02-11-blog-analytics-dashboard-design.md
 ```
 
 (Optionally add this)
