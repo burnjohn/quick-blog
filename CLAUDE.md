@@ -25,6 +25,12 @@ Full-stack blog demo (React + Express + MongoDB). Works with both **Claude Code*
 | `npm run setup` | server/ | Start DB + seed |
 | `npm run db:start` | server/ | Start MongoDB via Docker |
 
+## Git Workflow
+
+- Always use `/commit` for commits — it loads the `git-workflow` skill for consistent conventional commits
+- Always use `/create-pr` for pull requests — it formats title, description, and labels per project conventions
+- Never run raw `git commit` or `gh pr create` directly — the skills enforce team conventions that are easy to miss manually
+
 ## Do Not
 
 - Mix client and server code; keep `client/` and `server/` strictly separate
