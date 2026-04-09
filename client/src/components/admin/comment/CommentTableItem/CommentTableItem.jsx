@@ -27,7 +27,7 @@ function CommentTableItem({ comment, onUpdate }) {
       <td className='px-6 py-4'>
         <div className='space-y-2'>
           <p>
-            <span className='font-medium text-gray-600'>Blog:</span> {blog.title}
+            <span className='font-medium text-gray-600'>Blog:</span> {blog?.title}
           </p>
           <p>
             <span className='font-medium text-gray-600'>Name:</span> {comment.name}
