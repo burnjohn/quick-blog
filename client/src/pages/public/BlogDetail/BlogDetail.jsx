@@ -14,7 +14,6 @@ function BlogDetail() {
 
   const handleAddComment = async (commentData) => {
     return await addComment({
-      blog: id,
       name: commentData.name,
       content: commentData.content
     })

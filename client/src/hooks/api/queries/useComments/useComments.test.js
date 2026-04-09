@@ -60,7 +60,6 @@ describe('useComments', () => {
 
     await act(async () => {
       await result.current.addComment({
-        blogId: 'blog1',
         name: 'Bob',
         content: 'Hello',
       })

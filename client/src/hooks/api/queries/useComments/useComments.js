@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { commentApi } from '../../../../api'
 import toast from 'react-hot-toast'
 import { MESSAGES } from '../../../../constants/messages'
@@ -7,6 +7,9 @@ export function useComments(blogId) {
   const [comments, setComments] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+
+  // Cache blogId so addComment always targets the correct blog
+  const blogIdRef = useRef(blogId)
 
   const fetchComments = async () => {
     if (!blogId) {
@@ -18,7 +21,7 @@ export function useComments(blogId) {
       setLoading(true)
       setError(null)
       const response = await commentApi.getByBlogId(blogId)
-      
+
       if (response.data.success) {
         setComments(response.data.comments)
       } else {
@@ -41,8 +44,11 @@ export function useComments(blogId) {
 
   const addComment = async (commentData) => {
     try {
-      const response = await commentApi.add(commentData)
-      
+      const response = await commentApi.add({
+        ...commentData,
+        blog: blogIdRef.current
+      })
+
       if (response.data.success) {
         toast.success(response.data.message || MESSAGES.SUCCESS_COMMENT_ADDED)
         await fetchComments()

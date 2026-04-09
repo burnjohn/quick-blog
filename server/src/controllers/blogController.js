@@ -92,7 +92,7 @@ export const deleteBlogById = asyncHandler(async (req, res) => {
   await Blog.findByIdAndDelete(id)
 
   // Delete all comments associated with the blog
-  await Comment.deleteMany({ blog: id })
+  await Comment.deleteMany({ blogId: id })
 
   res.json({ success: true, message: 'Blog deleted successfully' })
 })
