@@ -15,6 +15,7 @@ Reusable AI skills that provide specialized knowledge and workflows. Canonical l
 | [backend-testing](backend-testing/SKILL.md) | Backend | Vitest, Supertest, mongodb-memory-server, auth and security testing |
 | [react-testing-library](react-testing-library/SKILL.md) | Frontend | General-purpose React Testing Library guide with Vitest |
 | [safe-ui-refactoring](safe-ui-refactoring/SKILL.md) | Shared | Safe, incremental React UI refactoring methodology |
+| [security](security/SKILL.md) | Full-stack | OWASP Top 10:2025, auth, injection, uploads, secrets, AI security |
 
 ## What Are Skills?
 
