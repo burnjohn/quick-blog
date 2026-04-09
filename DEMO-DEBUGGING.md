@@ -1,6 +1,6 @@
 # Demo: Debugging with Systematic Debugging Skill (Claude Code / Cursor)
 
-This guide demonstrates how to investigate and fix two real bugs in QuickBlog using Claude Code / Cursor's `systematic-debugging` skill. The bugs are pre-planted on this branch — your job is to find the root cause using structured debugging, not guessing.
+This guide demonstrates how to investigate and fix two real bugs in QuickBlog using Claude Code / Cursor's `systematic-debugging` skill. The bugs are pre-planted on a dedicated branch — your job is to find the root cause using structured debugging, not guessing.
 
 ## The Bugs
 
@@ -13,14 +13,37 @@ Two bugs have been reported by QA:
 
 You do **not** know the root cause yet. The demo walks through finding it systematically.
 
+## Step 0: Switch to the Demo Branch
+
+The bugs live on the `demo-debugging` branch. Switch to it before starting:
+
+```bash
+git checkout demo-debugging
+```
+
+> **Important:** Do NOT look at the branch diff or commit history before the demo — the bug locations are visible in the diff. The point is to discover them through systematic debugging.
+
 ## Prerequisites
 
-Before starting, ensure you have:
-- QuickBlog server running (`npm run server` in `server/`)
-- QuickBlog client running (`npm run dev` in `client/`)
-- MongoDB running via Docker (`npm run db:start` in `server/`)
-- Test data seeded (`npm run seed` in `server/`)
-- Logged into admin panel (`admin@quickblog.com` / `admin123`)
+After switching branches, start the application:
+
+1. Start MongoDB and seed test data:
+   ```bash
+   cd server
+   npm run setup    # starts DB via Docker + seeds data
+   npm run server   # starts Express with nodemon
+   ```
+
+2. Start the frontend dev server:
+   ```bash
+   cd client
+   npm run dev
+   ```
+
+3. Log into the admin panel:
+   - URL: `http://localhost:5173/admin`
+   - Email: `admin@quickblog.com`
+   - Password: `admin123`
 
 ---
 
