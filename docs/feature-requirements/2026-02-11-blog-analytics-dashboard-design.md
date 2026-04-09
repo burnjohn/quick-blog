@@ -1,170 +1,170 @@
-# Фіча: Blog Analytics Dashboard
+# Feature: Blog Analytics Dashboard
 
-## Резюме
+## Summary
 
-Окрема сторінка в адмін-панелі з повною аналітикою блогу: метрики контенту, залученість читачів, перегляди, графіки та інтерактивні фільтри. Дашборд дає адміну повну картину того, як живе блог — що читають, що коментують, як росте аудиторія.
+A separate page in the admin panel with full blog analytics: content metrics, reader engagement, views, charts, and interactive filters. The dashboard gives the admin a complete picture of how the blog is performing — what's being read, what's being commented on, how the audience is growing.
 
-## Рішення
+## Decisions
 
-- Нова сторінка **Analytics** в сайдбарі адмін-панелі (поточний Dashboard залишається як є)
-- Трекінг переглядів блог-постів (анонімний, без авторизації читача)
-- Фікстури в БД для реалістичних даних аналітики
-- Інтерактивні графіки з фільтрами та drill-down
+- New **Analytics** page in the admin panel sidebar (the current Dashboard remains as is)
+- Blog post view tracking (anonymous, no reader authentication required)
+- Database fixtures for realistic analytics data
+- Interactive charts with filters and drill-down
 
-## Загальні правила
+## General Rules
 
-- **REQ-0.1:** Весь UI (заголовки, лейбли, кнопки, підказки, placeholder'и, повідомлення) — виключно англійською мовою
-- **REQ-0.2:** Назви секцій, графіків, колонок таблиць, KPI-карток — англійською
-- **REQ-0.3:** Формати дат та чисел — en-US (Feb 11, 2026 / 1,234)
-
----
-
-## Продуктові вимоги
-
-### 1. Навігація
-
-- **REQ-1.1:** В сайдбарі адмін-панелі з'являється новий пункт "Analytics" з іконкою графіка
-- **REQ-1.2:** Сторінка доступна тільки авторизованим адмінам (як і решта адмін-панелі)
+- **REQ-0.1:** All UI (headings, labels, buttons, tooltips, placeholders, messages) — exclusively in English
+- **REQ-0.2:** Section names, chart titles, table columns, KPI card names — in English
+- **REQ-0.3:** Date and number formats — en-US (Feb 11, 2026 / 1,234)
 
 ---
 
-### 2. KPI-картки (верхня секція)
+## Product Requirements
 
-Ряд карток з ключовими метриками з трендом відносно попереднього періоду:
+### 1. Navigation
 
-| # | Картка | Що показує |
-|---|--------|-----------|
-| **REQ-2.1** | Всього переглядів | Загальна кількість переглядів усіх блогів |
-| **REQ-2.2** | Всього блогів | Кількість блогів (опубліковані / чернетки) |
-| **REQ-2.3** | Всього коментарів | Кількість коментарів (схвалені / на модерації) |
-| **REQ-2.4** | Середня залученість | Середня кількість коментарів на один пост |
-| **REQ-2.5** | Рівень схвалення | Відсоток схвалених коментарів від загальної кількості |
-| **REQ-2.6** | Найактивніша категорія | Категорія з найбільшою кількістю переглядів за обраний період |
-
-- **REQ-2.7:** Кожна картка показує тренд (стрілочка вгору/вниз + відсоток зміни) порівняно з попереднім аналогічним періодом
+- **REQ-1.1:** A new "Analytics" item appears in the admin panel sidebar with a chart icon
+- **REQ-1.2:** The page is accessible only to authenticated admins (same as the rest of the admin panel)
 
 ---
 
-### 3. Графіки
+### 2. KPI Cards (Top Section)
 
-#### 3.1 Перегляди за часом (лінійний/area графік)
+A row of cards with key metrics showing trends relative to the previous period:
 
-- **REQ-3.1:** Графік показує кількість переглядів по днях/тижнях/місяцях (залежно від обраного періоду)
-- **REQ-3.2:** При наведенні на точку — tooltip з точною датою та кількістю переглядів
+| # | Card | What It Shows |
+|---|------|---------------|
+| **REQ-2.1** | Total Views | Total number of views across all blogs |
+| **REQ-2.2** | Total Blogs | Number of blogs (published / drafts) |
+| **REQ-2.3** | Total Comments | Number of comments (approved / pending moderation) |
+| **REQ-2.4** | Average Engagement | Average number of comments per post |
+| **REQ-2.5** | Approval Rate | Percentage of approved comments out of total |
+| **REQ-2.6** | Most Active Category | Category with the most views in the selected period |
 
-#### 3.2 Публікації за часом (стовпчиковий графік)
-
-- **REQ-3.3:** Графік показує кількість опублікованих блогів по місяцях
-- **REQ-3.4:** Стовпчики розділені кольорами за категоріями (stacked bar)
-
-#### 3.3 Розподіл по категоріях (кругова діаграма)
-
-- **REQ-3.5:** Donut-чарт показує відсоток блогів у кожній категорії
-- **REQ-3.6:** При наведенні — назва категорії, кількість та відсоток
-
-#### 3.4 Активність коментарів (стовпчиковий графік)
-
-- **REQ-3.7:** Стовпчиковий графік з двома серіями: схвалені та очікуючі коментарі по місяцях
-- **REQ-3.8:** При наведенні — деталі за місяць
-
-#### 3.5 Перегляди по категоріях (горизонтальний bar chart)
-
-- **REQ-3.9:** Горизонтальні стовпчики показують загальну кількість переглядів для кожної категорії
-- **REQ-3.10:** Відсортовані від найбільшого до найменшого
+- **REQ-2.7:** Each card shows a trend (up/down arrow + percentage change) compared to the previous equivalent period
 
 ---
 
-### 4. Таблиці / Рейтинги
+### 3. Charts
 
-#### 4.1 Топ-5 найпопулярніших постів
+#### 3.1 Views Over Time (Line/Area Chart)
 
-- **REQ-4.1:** Таблиця з колонками: назва, категорія, перегляди, коментарі, дата публікації
-- **REQ-4.2:** Відсортована за переглядами (найбільше зверху)
-- **REQ-4.3:** Назва посту — клікабельне посилання, що відкриває пост
+- **REQ-3.1:** Chart shows view count by days/weeks/months (depending on selected period)
+- **REQ-3.2:** Hovering over a point — tooltip with exact date and view count
 
-#### 4.2 Топ-5 найкоментованіших постів
+#### 3.2 Publications Over Time (Bar Chart)
 
-- **REQ-4.4:** Таблиця з колонками: назва, категорія, коментарі (схвалені/всього), перегляди
-- **REQ-4.5:** Відсортована за кількістю коментарів
+- **REQ-3.3:** Chart shows number of published blogs by month
+- **REQ-3.4:** Bars are color-coded by category (stacked bar)
 
-#### 4.3 Останні коментарі
+#### 3.3 Distribution by Category (Pie Chart)
 
-- **REQ-4.6:** Список з 5 останніх коментарів: ім'я автора, уривок тексту, назва блогу, дата, статус (схвалений/на модерації)
+- **REQ-3.5:** Donut chart shows the percentage of blogs in each category
+- **REQ-3.6:** On hover — category name, count, and percentage
 
----
+#### 3.4 Comment Activity (Bar Chart)
 
-### 5. Інтерактивність
+- **REQ-3.7:** Bar chart with two series: approved and pending comments by month
+- **REQ-3.8:** On hover — details for that month
 
-#### 5.1 Фільтр по періоду
+#### 3.5 Views by Category (Horizontal Bar Chart)
 
-- **REQ-5.1:** Кнопки швидкого вибору: 7 днів, 30 днів, 90 днів, весь час
-- **REQ-5.2:** Кастомний вибір діапазону дат (date range picker: від — до)
-- **REQ-5.3:** Зміна періоду оновлює всі KPI-картки, графіки та таблиці на сторінці
-
-#### 5.2 Фільтр по категорії
-
-- **REQ-5.4:** Dropdown для вибору категорії (All, Technology, Startup, Lifestyle, Finance)
-- **REQ-5.5:** Фільтр застосовується до всіх секцій сторінки
-
-#### 5.3 Drill-down (деталізація)
-
-- **REQ-5.6:** Клік на стовпчик/точку графіка переглядів — показує список постів за цей період з їх переглядами
-- **REQ-5.7:** Клік на сегмент категорійної діаграми — фільтрує всю сторінку за цією категорією
-- **REQ-5.8:** Drill-down відкривається як модалка або розгортається під графіком
-
-#### 5.4 Експорт
-
-- **REQ-5.9:** Кнопка "Експорт CSV" — завантажує файл з усіма метриками за обраний період
-- **REQ-5.10:** CSV містить: назва посту, категорія, дата, перегляди, кількість коментарів, статус
+- **REQ-3.9:** Horizontal bars show total views for each category
+- **REQ-3.10:** Sorted from highest to lowest
 
 ---
 
-### 6. Трекінг переглядів
+### 4. Tables / Rankings
 
-- **REQ-6.1:** Кожен перегляд блог-посту на публічній частині фіксується
-- **REQ-6.2:** Трекінг анонімний — не потребує авторизації читача
-- **REQ-6.3:** Один унікальний користувач (сесія) рахується один раз за пост за 24 години (дедуплікація)
-- **REQ-6.4:** Фіксується джерело переходу (referrer): direct, search, social, інше
-- **REQ-6.5:** Перегляди від адмінів/авторів не враховуються в статистиці (або позначаються окремо)
+#### 4.1 Top 5 Most Viewed Posts
 
----
+- **REQ-4.1:** Table with columns: title, category, views, comments, publication date
+- **REQ-4.2:** Sorted by views (highest first)
+- **REQ-4.3:** Post title is a clickable link that opens the post
 
-### 7. Фікстури (тестові дані)
+#### 4.2 Top 5 Most Commented Posts
 
-- **REQ-7.1:** Seed-скрипт створює реалістичні дані переглядів для всіх існуючих блогів
-- **REQ-7.2:** Дані розподілені за останні 6 місяців з реалістичним патерном (будні > вихідні, поступне зростання)
-- **REQ-7.3:** Різні категорії мають різну популярність (Technology > Lifestyle > Startup > Finance)
-- **REQ-7.4:** Фікстури коментарів також розподілені у часі (не всі на одну дату)
-- **REQ-7.5:** Після запуску seed дашборд відразу виглядає наповненим та реалістичним
-- **REQ-7.6:** Мінімум 15–20 блог-постів у фікстурах (різних категорій, частина — чернетки, частина — опубліковані)
-- **REQ-7.7:** Мінімум 80–120 коментарів (різний статус: схвалені / на модерації, розподілені між постами нерівномірно)
-- **REQ-7.8:** Мінімум 500–1000 записів переглядів з різними referrer та sessionId
-- **REQ-7.9:** Дати створення блогів розкидані по 6 місяцях (не всі створені в один день)
-- **REQ-7.10:** Даних має бути достатньо, щоб кожен графік, таблиця та KPI-картка виглядали змістовно і не порожньо при будь-якому фільтрі (категорія, період)
+- **REQ-4.4:** Table with columns: title, category, comments (approved/total), views
+- **REQ-4.5:** Sorted by comment count
+
+#### 4.3 Recent Comments
+
+- **REQ-4.6:** List of the 5 most recent comments: author name, text excerpt, blog title, date, status (approved/pending moderation)
 
 ---
 
-### 8. Стани та UX
+### 5. Interactivity
 
-- **REQ-8.1:** Loading state — скелетони (shimmer) замість порожніх графіків під час завантаження
-- **REQ-8.2:** Empty state — якщо ще немає даних, показати повідомлення з пропозицією створити перший пост
-- **REQ-8.3:** Error state — якщо API повертає помилку, показати повідомлення з кнопкою "Спробувати знову"
-- **REQ-8.4:** Responsive — сторінка коректно виглядає на десктопі, планшеті та мобілці
-- **REQ-8.5:** Графіки адаптуються до ширини контейнера
+#### 5.1 Period Filter
+
+- **REQ-5.1:** Quick select buttons: 7 days, 30 days, 90 days, all time
+- **REQ-5.2:** Custom date range picker (from — to)
+- **REQ-5.3:** Changing the period updates all KPI cards, charts, and tables on the page
+
+#### 5.2 Category Filter
+
+- **REQ-5.4:** Dropdown for category selection (All, Technology, Startup, Lifestyle, Finance)
+- **REQ-5.5:** Filter applies to all sections on the page
+
+#### 5.3 Drill-down (Detail View)
+
+- **REQ-5.6:** Clicking a bar/point on the views chart — shows a list of posts for that period with their views
+- **REQ-5.7:** Clicking a segment on the category chart — filters the entire page by that category
+- **REQ-5.8:** Drill-down opens as a modal or expands below the chart
+
+#### 5.4 Export
+
+- **REQ-5.9:** "Export CSV" button — downloads a file with all metrics for the selected period
+- **REQ-5.10:** CSV contains: post title, category, date, views, comment count, status
 
 ---
 
-## Поза скоупом (не входить у цю фічу)
+### 6. View Tracking
 
-- Аналітика в реальному часі (real-time updates / WebSocket)
-- Географія відвідувачів (потребує геолокації)
-- A/B тестування заголовків
-- Порівняння періодів side-by-side
-- Email-звіти з аналітикою
+- **REQ-6.1:** Each blog post view on the public site is recorded
+- **REQ-6.2:** Tracking is anonymous — no reader authentication required
+- **REQ-6.3:** One unique user (session) is counted once per post per 24 hours (deduplication)
+- **REQ-6.4:** Referral source is recorded: direct, search, social, other
+- **REQ-6.5:** Views from admins/authors are not included in statistics (or marked separately)
 
 ---
 
-## Відкриті питання
+### 7. Fixtures (Test Data)
 
-1. Чи потрібна можливість обрати конкретного автора для фільтрації (коли буде мультикористувацькість)?
-2. Яка максимальна глибина зберігання даних переглядів (зберігати все назавжди чи агрегувати старі)?
+- **REQ-7.1:** Seed script creates realistic view data for all existing blogs
+- **REQ-7.2:** Data is distributed over the last 6 months with a realistic pattern (weekdays > weekends, gradual growth)
+- **REQ-7.3:** Different categories have different popularity levels (Technology > Lifestyle > Startup > Finance)
+- **REQ-7.4:** Comment fixtures are also distributed over time (not all on the same date)
+- **REQ-7.5:** After running seed, the dashboard immediately looks populated and realistic
+- **REQ-7.6:** Minimum 15–20 blog posts in fixtures (various categories, some drafts, some published)
+- **REQ-7.7:** Minimum 80–120 comments (various statuses: approved / pending moderation, unevenly distributed among posts)
+- **REQ-7.8:** Minimum 500–1,000 view records with various referrer and sessionId values
+- **REQ-7.9:** Blog creation dates are spread across 6 months (not all created on the same day)
+- **REQ-7.10:** There must be enough data so that every chart, table, and KPI card looks meaningful and non-empty for any filter (category, period)
+
+---
+
+### 8. States & UX
+
+- **REQ-8.1:** Loading state — skeletons (shimmer) instead of empty charts during loading
+- **REQ-8.2:** Empty state — if there's no data yet, show a message suggesting to create the first post
+- **REQ-8.3:** Error state — if the API returns an error, show a message with a "Try Again" button
+- **REQ-8.4:** Responsive — the page displays correctly on desktop, tablet, and mobile
+- **REQ-8.5:** Charts adapt to container width
+
+---
+
+## Out of Scope (Not Included in This Feature)
+
+- Real-time analytics (real-time updates / WebSocket)
+- Visitor geography (requires geolocation)
+- A/B testing of headlines
+- Side-by-side period comparison
+- Email reports with analytics
+
+---
+
+## Open Questions
+
+1. Is the ability to filter by a specific author needed (when multi-user support is added)?
+2. What is the maximum retention depth for view data (store everything forever or aggregate old data)?
