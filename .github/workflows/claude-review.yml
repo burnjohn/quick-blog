@@ -1,0 +1,106 @@
+name: Claude Code Review Pipeline
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# Cancel previous runs for the same PR when new commits are pushed
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  # ─────────────────────────────────────────────
+  # Detect which parts of the codebase changed
+  # ─────────────────────────────────────────────
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      client: ${{ steps.filter.outputs.client }}
+      server: ${{ steps.filter.outputs.server }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            client:
+              - 'client/**/*.{js,jsx,ts,tsx,css}'
+            server:
+              - 'server/**/*.{js,ts}'
+
+  # ─────────────────────────────────────────────
+  # React Reviewer — runs only if client/ changed
+  # ─────────────────────────────────────────────
+  review-react:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.client == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: React Architecture Review
+        uses: anthropic/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          use_sticky_comment: true
+          prompt: |
+            Read and follow the agent definition at `.claude/agents/react-reviewer.md`.
+            Load any skills referenced in its frontmatter (e.g. `react-best-practices`).
+            Apply the agent's workflow, rules, and output format to review the PR diff.
+            Only review changed files in `client/`. Ignore server changes entirely.
+
+  # ─────────────────────────────────────────────
+  # Backend Reviewer — runs only if server/ changed
+  # ─────────────────────────────────────────────
+  review-backend:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.server == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Backend Architecture Review
+        uses: anthropic/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          use_sticky_comment: true
+          prompt: |
+            Read and follow the agent definition at `.claude/agents/backend-reviewer.md`.
+            Load any skills referenced in its frontmatter (e.g. `express-best-practices`).
+            Apply the agent's workflow, rules, and output format to review the PR diff.
+            Only review changed files in `server/`. Ignore client changes entirely.
+
+  # ─────────────────────────────────────────────
+  # Security Reviewer — always runs on all changes
+  # ─────────────────────────────────────────────
+  review-security:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Security Review
+        uses: anthropic/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          use_sticky_comment: true
+          prompt: |
+            Read and follow the agent definition at `.claude/agents/security-reviewer.md`.
+            Also load the security skill at `.claude/skills/security/` if it exists.
+            Apply the agent's workflow, OWASP checks, and output format to review the PR diff.
+            Review ALL changed files for security vulnerabilities.
