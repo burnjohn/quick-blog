@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { assets } from '../../../assets/assets'
 import { Navbar, Footer } from '../../../components/layout'
@@ -6,11 +6,17 @@ import { BlogHeader, BlogContent, SocialShare } from '../../../components/blog'
 import { CommentList, CommentForm } from '../../../components/comment'
 import { Loader } from '../../../components/ui'
 import { useBlog, useComments } from '../../../hooks'
+import { analyticsApi } from '../../../api/analyticsApi'
 
 function BlogDetail() {
   const { id } = useParams()
   const { blog, loading: blogLoading } = useBlog(id)
   const { comments, addComment } = useComments(id)
+
+  useEffect(() => {
+    if (!blog?._id) return
+    analyticsApi.recordView(blog._id).catch(() => {})
+  }, [blog?._id])
 
   const handleAddComment = async (commentData) => {
     return await addComment({
