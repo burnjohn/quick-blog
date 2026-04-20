@@ -12,6 +12,8 @@ QuickBlog is a simple full‑stack blog demo used to showcase Claude Code / Curs
 
 **[📊 Implementing Analytics Dashboard Demo (Multi-Agent)](DEMO-ANALYTICS-FEATURE.md)** — Advanced tutorial demonstrating how to build a full analytics dashboard using Claude Code / Cursor multi-agent orchestration: requirements-planner, parallel implementors, plan-verifier, and dual code reviewers working simultaneously.
 
+**[🐞 Debugging Demo (Systematic Debugging Skill)](DEMO-DEBUGGING.md)** — Guided walkthrough for investigating two pre-planted bugs on the `demo-debugging` branch using the `systematic-debugging` skill — root-cause analysis over guessing.
+
 ---
 
 ### Monorepo Structure
@@ -177,3 +179,4 @@ Images are served via the `/uploads` endpoint (e.g., `http://localhost:5001/uplo
 - [`DEMO-COMMENTS-FEATURE.md`](DEMO-COMMENTS-FEATURE.md) — Tutorial on implementing comments
 - [`DEMO-BLOG-CREATION.md`](DEMO-BLOG-CREATION.md) — Tutorial on implementing blog creation
 - [`DEMO-ANALYTICS-FEATURE.md`](DEMO-ANALYTICS-FEATURE.md) — Multi-agent tutorial on implementing analytics dashboard
+- [`DEMO-DEBUGGING.md`](DEMO-DEBUGGING.md) — Tutorial on investigating bugs with the `systematic-debugging` skill (uses `demo-debugging` branch)
