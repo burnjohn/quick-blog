@@ -8,6 +8,7 @@ function Input({
   containerClassName = '',
   type = 'text',
   required = false,
+  ref,
   ...props
 }) {
   return (
@@ -19,12 +20,13 @@ function Input({
         </label>
       )}
       <input
+        ref={ref}
         type={type}
         required={required}
         className={classNames(
           'w-full p-2 border rounded outline-none transition-colors',
-          error 
-            ? 'border-red-500 focus:border-red-600' 
+          error
+            ? 'border-red-500 focus:border-red-600'
             : 'border-gray-300 focus:border-primary',
           className
         )}

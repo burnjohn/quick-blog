@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useAppContext } from '../../../../context/AppContext'
 import { adminApi } from '../../../../api'
 import { Button, Input } from '../../../ui'
@@ -7,16 +8,14 @@ import { MESSAGES } from '../../../../constants/messages'
 
 function Login() {
   const { setToken } = useAppContext()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const { register, handleSubmit } = useForm()
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const onSubmit = async (data) => {
     setLoading(true)
-    
+
     try {
-      const response = await adminApi.login({ email, password })
+      const response = await adminApi.login(data)
 
       if (response.data.success) {
         setToken(response.data.token)
@@ -42,30 +41,28 @@ function Login() {
             </h1>
             <p className='font-light'>Enter your credentials to access the admin panel</p>
           </div>
-          
-          <form onSubmit={handleSubmit} className='mt-6 w-full sm:max-w-md text-gray-600'>
+
+          <form onSubmit={handleSubmit(onSubmit)} className='mt-6 w-full sm:max-w-md text-gray-600'>
             <Input
               label='Email'
               type='email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               placeholder='your email id'
               required
               className='border-b-2 border-gray-300 mb-6 rounded-none border-x-0 border-t-0'
+              {...register('email', { required: true })}
             />
-            
+
             <Input
               label='Password'
               type='password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               placeholder='your password'
               required
               className='border-b-2 border-gray-300 mb-6 rounded-none border-x-0 border-t-0'
+              {...register('password', { required: true })}
             />
-            
-            <Button 
-              type='submit' 
+
+            <Button
+              type='submit'
               variant='primary'
               fullWidth
               loading={loading}

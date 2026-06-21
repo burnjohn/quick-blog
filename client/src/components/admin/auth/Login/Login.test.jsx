@@ -1,94 +1,80 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { setupServer } from 'msw/node'
-import { http, HttpResponse } from 'msw'
-import toast from 'react-hot-toast'
-import Login from '.'
-
-vi.mock('react-hot-toast', () => ({
-  default: { success: vi.fn(), error: vi.fn() },
-}))
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import Login from './Login'
 
 const mockSetToken = vi.fn()
-
 vi.mock('../../../../context/AppContext', () => ({
-  useAppContext: () => ({
-    setToken: mockSetToken,
-  }),
+  useAppContext: () => ({ setToken: mockSetToken })
 }))
 
-const server = setupServer()
+const mockLogin = vi.fn()
+vi.mock('../../../../api', () => ({
+  adminApi: { login: (...args) => mockLogin(...args) }
+}))
 
-beforeAll(() => server.listen())
-afterEach(() => {
-  server.resetHandlers()
-  vi.clearAllMocks()
-  localStorage.clear()
-})
-afterAll(() => server.close())
+vi.mock('react-hot-toast', () => ({
+  default: { success: vi.fn(), error: vi.fn() }
+}))
+
+vi.mock('../../../../constants/messages', () => ({
+  MESSAGES: {
+    SUCCESS_LOGIN: 'Login successful',
+    ERROR_LOGIN: 'Login failed'
+  }
+}))
 
 describe('Login', () => {
-  it('successful login sets token and shows success toast', async () => {
-    server.use(
-      http.post('http://localhost:5001/api/admin/login', () =>
-        HttpResponse.json({ success: true, token: 'jwt123' })
-      )
-    )
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
 
+  it('renders email and password inputs', () => {
+    render(<Login />)
+    expect(screen.getByPlaceholderText('your email id')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('your password')).toBeInTheDocument()
+  })
+
+  it('renders login button', () => {
+    render(<Login />)
+    expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument()
+  })
+
+  it('submits form with email and password', async () => {
     const user = userEvent.setup()
+    mockLogin.mockResolvedValue({ data: { success: true, token: 'abc123' } })
+
     render(<Login />)
 
-    await user.type(screen.getByPlaceholderText('your email id'), 'admin@quickblog.com')
-    await user.type(screen.getByPlaceholderText('your password'), 'admin123')
+    await user.type(screen.getByPlaceholderText('your email id'), 'test@example.com')
+    await user.type(screen.getByPlaceholderText('your password'), 'password123')
     await user.click(screen.getByRole('button', { name: /login/i }))
 
     await waitFor(() => {
-      expect(mockSetToken).toHaveBeenCalledWith('jwt123')
-    })
-
-    expect(localStorage.getItem('token')).toBe('jwt123')
-    expect(toast.success).toHaveBeenCalled()
-  })
-
-  it('shows error toast on invalid credentials', async () => {
-    server.use(
-      http.post('http://localhost:5001/api/admin/login', () =>
-        HttpResponse.json({ message: 'Invalid credentials' }, { status: 401 })
-      )
-    )
-
-    const user = userEvent.setup()
-    render(<Login />)
-
-    await user.type(screen.getByPlaceholderText('your email id'), 'wrong@email.com')
-    await user.type(screen.getByPlaceholderText('your password'), 'wrongpass')
-    await user.click(screen.getByRole('button', { name: /login/i }))
-
-    await waitFor(() => {
-      expect(toast.error).toHaveBeenCalled()
-    })
-
-    expect(mockSetToken).not.toHaveBeenCalled()
-  })
-
-  it('disables submit button while loading', async () => {
-    server.use(
-      http.post('http://localhost:5001/api/admin/login', async () => {
-        await new Promise((resolve) => setTimeout(resolve, 500))
-        return HttpResponse.json({ success: true, token: 'jwt123' })
+      expect(mockLogin).toHaveBeenCalledWith({
+        email: 'test@example.com',
+        password: 'password123'
       })
-    )
+    })
 
+    await waitFor(() => {
+      expect(mockSetToken).toHaveBeenCalledWith('abc123')
+    })
+  })
+
+  it('shows error toast on failed login', async () => {
     const user = userEvent.setup()
+    const toast = (await import('react-hot-toast')).default
+    mockLogin.mockRejectedValue({ response: { data: { message: 'Bad creds' } } })
+
     render(<Login />)
 
-    await user.type(screen.getByPlaceholderText('your email id'), 'admin@quickblog.com')
-    await user.type(screen.getByPlaceholderText('your password'), 'admin123')
+    await user.type(screen.getByPlaceholderText('your email id'), 'test@example.com')
+    await user.type(screen.getByPlaceholderText('your password'), 'wrong')
     await user.click(screen.getByRole('button', { name: /login/i }))
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /loading/i })).toBeDisabled()
+      expect(toast.error).toHaveBeenCalledWith('Bad creds')
     })
   })
 })

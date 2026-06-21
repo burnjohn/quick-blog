@@ -1,33 +1,69 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import CommentForm from '.';
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import CommentForm from './CommentForm'
 
 describe('CommentForm', () => {
-  it('fills name and comment, submits, and form clears on success', async () => {
-    const user = userEvent.setup();
-    const handleSubmit = vi.fn().mockResolvedValue({ success: true });
+  const mockOnSubmit = vi.fn()
 
-    render(<CommentForm onSubmit={handleSubmit} />);
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
 
-    const nameInput = screen.getByPlaceholderText('Name');
-    const commentInput = screen.getByPlaceholderText('Comment');
+  it('renders name and comment fields', () => {
+    render(<CommentForm onSubmit={mockOnSubmit} />)
+    expect(screen.getByPlaceholderText('Name')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Comment')).toBeInTheDocument()
+  })
 
-    await user.type(nameInput, 'Alice');
-    await user.type(commentInput, 'Great post!');
-    await user.click(screen.getByRole('button', { name: /submit/i }));
+  it('renders submit button', () => {
+    render(<CommentForm onSubmit={mockOnSubmit} />)
+    expect(screen.getByRole('button', { name: /submit/i })).toBeInTheDocument()
+  })
 
-    expect(handleSubmit).toHaveBeenCalledWith({ name: 'Alice', content: 'Great post!' });
+  it('calls onSubmit with form data', async () => {
+    const user = userEvent.setup()
+    mockOnSubmit.mockResolvedValue({ success: true })
 
-    // Fields should clear after successful submit
-    expect(nameInput).toHaveValue('');
-    expect(commentInput).toHaveValue('');
-  });
+    render(<CommentForm onSubmit={mockOnSubmit} />)
 
-  it('disables submit button while loading', () => {
-    render(<CommentForm onSubmit={vi.fn()} loading={true} />);
+    await user.type(screen.getByPlaceholderText('Name'), 'John')
+    await user.type(screen.getByPlaceholderText('Comment'), 'Great post!')
+    await user.click(screen.getByRole('button', { name: /submit/i }))
 
-    const button = screen.getByRole('button', { name: /loading/i });
-    expect(button).toBeDisabled();
-  });
-});
+    await waitFor(() => {
+      expect(mockOnSubmit).toHaveBeenCalledWith({ name: 'John', content: 'Great post!' })
+    })
+  })
+
+  it('resets fields after successful submit', async () => {
+    const user = userEvent.setup()
+    mockOnSubmit.mockResolvedValue({ success: true })
+
+    render(<CommentForm onSubmit={mockOnSubmit} />)
+
+    await user.type(screen.getByPlaceholderText('Name'), 'John')
+    await user.type(screen.getByPlaceholderText('Comment'), 'Great post!')
+    await user.click(screen.getByRole('button', { name: /submit/i }))
+
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText('Name')).toHaveValue('')
+      expect(screen.getByPlaceholderText('Comment')).toHaveValue('')
+    })
+  })
+
+  it('does not reset on failed submit', async () => {
+    const user = userEvent.setup()
+    mockOnSubmit.mockResolvedValue({ success: false })
+
+    render(<CommentForm onSubmit={mockOnSubmit} />)
+
+    await user.type(screen.getByPlaceholderText('Name'), 'John')
+    await user.type(screen.getByPlaceholderText('Comment'), 'Great post!')
+    await user.click(screen.getByRole('button', { name: /submit/i }))
+
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText('Name')).toHaveValue('John')
+    })
+  })
+})

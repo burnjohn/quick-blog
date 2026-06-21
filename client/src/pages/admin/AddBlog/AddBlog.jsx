@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
+import { useForm, Controller } from 'react-hook-form'
 import Quill from 'quill'
 import toast from 'react-hot-toast'
 import { assets } from '../../../assets/assets'
@@ -10,11 +11,18 @@ function AddBlog() {
   const editorRef = useRef(null)
   const quillRef = useRef(null)
 
-  const [image, setImage] = useState(false)
-  const [title, setTitle] = useState('')
-  const [subTitle, setSubTitle] = useState('')
-  const [category, setCategory] = useState('Startup')
-  const [isPublished, setIsPublished] = useState(false)
+  const { register, handleSubmit, control, watch, setValue, reset } = useForm({
+    defaultValues: {
+      title: '',
+      subTitle: '',
+      category: 'Startup',
+      isPublished: false,
+      image: null,
+    }
+  })
+
+  const image = watch('image')
+  const title = watch('title')
 
   const { generateContent, isGenerating } = useBlogGenerator()
   const { createBlog, isCreating } = useCreateBlog()
@@ -26,31 +34,8 @@ function AddBlog() {
     }
   }
 
-  const onSubmitHandler = async (e) => {
-    e.preventDefault()
-
+  const onSubmit = async (data) => {
     if (!quillRef.current) return
-
-    // Validate all required fields
-    if (!title || !title.trim()) {
-      toast.error('Please enter a blog title')
-      return
-    }
-
-    if (!subTitle || !subTitle.trim()) {
-      toast.error('Please enter a sub title')
-      return
-    }
-
-    if (!image || image === false) {
-      toast.error('Please select an image')
-      return
-    }
-
-    if (!category || category === '') {
-      toast.error('Please select a category')
-      return
-    }
 
     const description = quillRef.current.root.innerHTML
     if (!description || description.trim() === '<p><br></p>' || description.trim() === '') {
@@ -58,36 +43,28 @@ function AddBlog() {
       return
     }
 
-    // Debug logging
-    console.log('Form submission:', {
-      title,
-      subTitle,
-      category,
-      isPublished,
-      imageType: typeof image,
-      imageFile: image,
-      imageName: image?.name,
-      imageSize: image?.size
-    })
-
     const blog = {
-      title,
-      subTitle,
+      title: data.title,
+      subTitle: data.subTitle,
       description,
-      category,
-      isPublished
+      category: data.category,
+      isPublished: data.isPublished
     }
 
-    const result = await createBlog(blog, image)
+    const result = await createBlog(blog, data.image)
 
     if (result.success) {
-      // Reset form
-      setImage(false)
-      setTitle('')
-      setSubTitle('')
-      quillRef.current.root.innerHTML = ''
-      setCategory('Startup')
-      setIsPublished(false)
+      reset()
+      if (quillRef.current) {
+        quillRef.current.root.innerHTML = ''
+      }
+    }
+  }
+
+  const onError = (fieldErrors) => {
+    const firstError = Object.values(fieldErrors)[0]
+    if (firstError?.message) {
+      toast.error(firstError.message)
     }
   }
 
@@ -99,32 +76,39 @@ function AddBlog() {
   }, [])
 
   return (
-    <form 
-      onSubmit={onSubmitHandler}
+    <form
+      onSubmit={handleSubmit(onSubmit, onError)}
       noValidate
       className='flex-1 bg-blue-50/50 text-gray-600 h-full overflow-scroll'
     >
       <div className='bg-white w-full max-w-3xl p-4 md:p-10 sm:m-10 shadow rounded'>
-        
+
         {/* Image Upload */}
         <div className='mb-6'>
           <label className='block mb-2 text-sm font-medium'>
             Upload Thumbnail <span className='text-red-500'>*</span>
           </label>
-          <label htmlFor='image' className='cursor-pointer'>
-            <img 
-              src={!image ? assets.upload_area : URL.createObjectURL(image)} 
-              alt='Upload preview' 
-              className='mt-2 h-16 rounded hover:opacity-80 transition-opacity'
-            />
-            <input 
-              onChange={(e) => setImage(e.target.files[0])} 
-              type='file' 
-              id='image' 
-              hidden 
-              accept='image/*'
-            />
-          </label>
+          <Controller
+            name='image'
+            control={control}
+            rules={{ validate: (v) => (v instanceof File) || 'Please select an image' }}
+            render={({ field: { onChange } }) => (
+              <label htmlFor='image' className='cursor-pointer'>
+                <img
+                  src={image instanceof File ? URL.createObjectURL(image) : assets.upload_area}
+                  alt='Upload preview'
+                  className='mt-2 h-16 rounded hover:opacity-80 transition-opacity'
+                />
+                <input
+                  onChange={(e) => onChange(e.target.files[0])}
+                  type='file'
+                  id='image'
+                  hidden
+                  accept='image/*'
+                />
+              </label>
+            )}
+          />
         </div>
 
         {/* Blog Title */}
@@ -132,9 +116,8 @@ function AddBlog() {
           label='Blog Title'
           type='text'
           placeholder='Type here'
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
           containerClassName='mb-6'
+          {...register('title', { required: 'Please enter a blog title' })}
         />
 
         {/* Sub Title */}
@@ -142,9 +125,8 @@ function AddBlog() {
           label='Sub Title'
           type='text'
           placeholder='Type here'
-          value={subTitle}
-          onChange={(e) => setSubTitle(e.target.value)}
           containerClassName='mb-6'
+          {...register('subTitle', { required: 'Please enter a sub title' })}
         />
 
         {/* Blog Description with Quill Editor */}
@@ -159,10 +141,10 @@ function AddBlog() {
                 <div className='w-8 h-8 rounded-full border-2 border-t-white border-gray-300 animate-spin'></div>
               </div>
             )}
-            <button 
-              disabled={isGenerating || !title || isCreating} 
-              type='button' 
-              onClick={handleGenerateContent} 
+            <button
+              disabled={isGenerating || !title || isCreating}
+              type='button'
+              onClick={handleGenerateContent}
               className='absolute bottom-1 right-2 ml-2 text-xs text-white bg-black/70 px-4 py-1.5 rounded hover:bg-black transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
             >
               {isGenerating ? 'Generating...' : 'Generate with AI'}
@@ -175,10 +157,8 @@ function AddBlog() {
           <label className='block mb-2 text-sm font-medium'>
             Blog Category <span className='text-red-500'>*</span>
           </label>
-          <select 
-            onChange={(e) => setCategory(e.target.value)} 
-            value={category}
-            name='category' 
+          <select
+            {...register('category', { required: 'Please select a category' })}
             className='mt-2 px-3 py-2 border text-gray-500 border-gray-300 outline-none rounded w-full max-w-lg focus:border-primary transition-colors'
             disabled={isCreating}
           >
@@ -190,13 +170,12 @@ function AddBlog() {
 
         {/* Publish Checkbox */}
         <div className='flex items-center gap-2 mb-8'>
-          <input 
-            type='checkbox' 
+          <input
+            type='checkbox'
             id='isPublished'
-            checked={isPublished} 
-            className='scale-125 cursor-pointer' 
-            onChange={(e) => setIsPublished(e.target.checked)}
+            className='scale-125 cursor-pointer'
             disabled={isCreating}
+            {...register('isPublished')}
           />
           <label htmlFor='isPublished' className='cursor-pointer select-none'>
             Publish Now
@@ -204,8 +183,8 @@ function AddBlog() {
         </div>
 
         {/* Submit Button */}
-        <Button 
-          type='submit' 
+        <Button
+          type='submit'
           variant='primary'
           loading={isCreating}
           disabled={isCreating || isGenerating}
