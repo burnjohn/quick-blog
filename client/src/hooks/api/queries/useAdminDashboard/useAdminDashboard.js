@@ -6,6 +6,8 @@ const defaultDashboard = {
   blogs: 0,
   comments: 0,
   drafts: 0,
+  blogsThisMonth: 0,
+  publishedThisMonth: 0,
   recentBlogs: []
 }
 
