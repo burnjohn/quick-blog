@@ -7,7 +7,8 @@ const variants = {
   success: 'bg-green-100 text-green-700 border-green-300',
   warning: 'bg-yellow-100 text-yellow-700 border-yellow-300',
   danger: 'bg-red-100 text-red-700 border-red-300',
-  info: 'bg-blue-100 text-blue-700 border-blue-300'
+  info: 'bg-blue-100 text-blue-700 border-blue-300',
+  pending: 'bg-orange-100 text-orange-700 border-orange-300'
 }
 
 const sizes = {
