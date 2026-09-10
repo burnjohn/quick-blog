@@ -19196,8 +19196,12 @@ const Finding = objectType({
     category: FindingCategory,
     title: stringType(),
     file: stringType(),
-    start_line: numberType().int(),
-    end_line: numberType().int(),
+    start_line: numberType()
+        .int()
+        .describe('First line of the cited code, numbered as in the NEW version of the file — copy it from the line-number prefix the diff shows for that line. Never estimate it by counting lines.'),
+    end_line: numberType()
+        .int()
+        .describe('Last line of the cited code, numbered as in the NEW version of the file (same as `start_line` for a single-line finding). A removed line has no new-side number and cannot be cited.'),
     rationale: stringType(), // markdown
     suggestion: stringType().nullish(), // markdown
     confidence: numberType().min(0).max(1),
@@ -20963,6 +20967,11 @@ const CiPreview = objectType({
     files: arrayType(CiFile),
     secrets: arrayType(CiSecretStatus),
     warnings: arrayType(stringType()),
+    /** The OTHER reviewers already installed in the target repository — the
+     *  agents this export will join rather than replace. Empty for a
+     *  first install. Names only: the wizard states who else will review,
+     *  and never needs to address them by id. */
+    existing_agents: arrayType(stringType()).default([]),
 });
 /** `GET /ci/targets` — the generator registry's own projection (AC-2/AC-2a):
  *  registering a second generator makes a second option appear with zero
@@ -21385,7 +21394,99 @@ const ModelInfo = objectType({
 
 
 
+;// CONCATENATED MODULE: ../reviewer-core/src/diff-format.ts
+/**
+ * Diff rendering for the prompt — line numbering.
+ *
+ * A raw unified diff carries exactly ONE coordinate: the `@@ … +newStart,newLines @@`
+ * hunk header. Every other line is anonymous. A model asked for `start_line` therefore
+ * has to COUNT from the hunk header to the line it wants, and counting drifts: the
+ * further into a hunk the line sits, the further off the citation lands. On a file
+ * added whole (one hunk covering all 726 lines) observed citations were low by 20 lines
+ * near the top and by 200+ near the bottom, monotonically — the signature of an
+ * accumulating undercount, not of noise. `groundFindings` cannot catch it either: with
+ * a single whole-file hunk EVERY line number intersects the hunk, so the gate degrades
+ * to "the file is in the diff".
+ *
+ * The fix is to stop asking the model to count. `numberDiffLines` prefixes each
+ * new-side line with the number it will have to cite, so reading replaces counting.
+ *
+ * INVARIANT — the numbers rendered here must equal the ones `buildLineIndex`
+ * (`grounding.ts`) derives from the parsed diff, or the prompt would advertise line
+ * numbers the citation gate then rejects. That means mirroring the line classification
+ * of the diff parsers (`agent-runner/src/diff.ts`, `server/src/adapters/git/diff-parser.ts`)
+ * EXACTLY, including their edge cases:
+ *   - `+` (but not `+++`) → an added line, consumes a new-side number
+ *   - `-` (but not `---`) → a removed line, consumes nothing (rendered unnumbered)
+ *   - anything else inside a hunk → context, consumes a new-side number
+ * The parsers live in the packages that own diff I/O and cannot be imported by this
+ * pure engine, so the invariant is enforced by a test on the agent-runner side
+ * (`diff.test.ts`) that renders a real diff and checks every emitted number against
+ * `buildLineIndex`. Change the classification in one place and that test fails.
+ *
+ * The invariant holds in one direction only, and deliberately: every number rendered
+ * here is accepted by the gate, but not every line the gate accepts is rendered.
+ * `buildLineIndex` expands a hunk with NO new-side lines (a deletion-only hunk) to its
+ * declared `newStart`/`newLines` range, covering a position where no line exists — there
+ * is nothing for this function to print there. That asymmetry is pre-existing gate
+ * leniency, pinned by its own test case; do not "fix" it by inventing a number.
+ */
+/** `@@ -old,oldLines +new,newLines @@` — only the new-side numbers matter here. */
+const HUNK_HEADER_RE = /^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@/;
+/**
+ * Prefix every new-side line of a unified diff with its line number in the new
+ * version of the file. Removed lines get blank padding (they have no new-side
+ * number); headers, the preamble and anything outside a hunk are emitted verbatim.
+ *
+ * Input that contains no hunk header is returned unchanged — `assemblePrompt`'s diff
+ * slot also accepts a plain task string, and numbering must be a no-op there.
+ */
+function numberDiffLines(raw) {
+    const lines = raw.split('\n');
+    // A diff terminated by a newline yields one phantom trailing '' from split(). The
+    // parsers pop it (counting it would over-extend the last hunk by one line); do the
+    // same here, then restore the terminator on the way out.
+    const endsWithNewline = lines.length > 0 && lines[lines.length - 1] === '';
+    if (endsWithNewline)
+        lines.pop();
+    const out = [];
+    // 0 = not inside a hunk. Real line numbers are 1-based, so 0 is a safe sentinel.
+    let cursor = 0;
+    let width = 1;
+    for (const line of lines) {
+        if (line.startsWith('diff --git')) {
+            cursor = 0;
+            out.push(line);
+            continue;
+        }
+        const header = HUNK_HEADER_RE.exec(line);
+        if (header) {
+            const newStart = Number(header[1]);
+            const newLines = header[2] ? Number(header[2]) : 1;
+            cursor = newStart;
+            // Widest number this hunk can print, so the numbers form a column.
+            width = String(Math.max(newStart + Math.max(newLines, 1) - 1, 1)).length;
+            out.push(line);
+            continue;
+        }
+        if (cursor === 0) {
+            // File preamble (`index …`, `new file mode`, `--- a/x`, `+++ b/x`) or any text
+            // that is not a diff at all.
+            out.push(line);
+            continue;
+        }
+        if (line.startsWith('-') && !line.startsWith('---')) {
+            out.push(`${' '.repeat(width)} ${line}`);
+            continue;
+        }
+        out.push(`${String(cursor).padStart(width, ' ')} ${line}`);
+        cursor++;
+    }
+    return out.join('\n') + (endsWithNewline ? '\n' : '');
+}
+
 ;// CONCATENATED MODULE: ../reviewer-core/src/prompt.ts
+
 /**
  * Prompt assembly + prompt-injection hardening.
  *
@@ -21485,7 +21586,20 @@ function assemblePrompt(parts) {
     if (parts.callers && parts.callers.trim().length > 0) {
         userSections.push(`## Callers of changed symbols\n${wrapUntrusted('callers', parts.callers)}`);
     }
-    userSections.push(`## Diff to review\n${wrapUntrusted('diff', parts.diff)}`);
+    // Line-numbered so the model READS a citation instead of counting to it — see
+    // `diff-format.ts` for why, and for the invariant tying these numbers to the
+    // grounding gate. The reading instruction is TRUSTED text and therefore sits
+    // outside the `<untrusted>` wrapper, like every other instruction here.
+    // A `diff` slot carrying a plain task (no hunk headers) comes back unchanged;
+    // the instruction is then omitted rather than describing numbers that aren't there.
+    const numberedDiff = numberDiffLines(parts.diff);
+    const diffGuide = numberedDiff === parts.diff
+        ? ''
+        : 'Each line below is prefixed with its line number in the NEW version of the ' +
+            'file; removed lines have no number. Take `start_line` / `end_line` from those ' +
+            'prefixes — read the number off the line you are citing, never estimate it by ' +
+            'counting lines.\n';
+    userSections.push(`## Diff to review\n${diffGuide}${wrapUntrusted('diff', numberedDiff)}`);
     const user = userSections.join('\n\n');
     const messages = [
         { role: 'system', content: system },
@@ -35404,6 +35518,8 @@ class OpenRouterProvider {
  */
 // Prompt assembly + prompt-injection hardening.
 
+// Diff rendering for the prompt — per-line numbering (paired with the gate below).
+
 // Citation grounding — the mandatory mechanical gate for diff findings.
 
 // Structured-output helpers (Zod → JSON Schema + parse-with-repair).
@@ -35772,7 +35888,44 @@ async function postGithubReview(ctx, token, payload, fetchImpl = fetch) {
         res = await post(base);
     }
     if (!res.ok) {
-        throw new RunnerError(`GitHub API error posting review (${url}): ${res.status} ${await res.text().catch(() => '')}`);
+        // A 5xx from this endpoint is frequently a TIMEOUT ON THE RESPONSE, not a
+        // failed write: GitHub answers 504 while having created the review anyway
+        // (observed on a large multi-agent review — 17 KB body + 26 inline
+        // comments). Treating that as a failure fails the whole CI check for a
+        // review the PR already carries, and a job re-run would then post a second
+        // copy of it. So: ask whether the review actually landed before deciding.
+        const status = res.status;
+        const detail = await res.text().catch(() => '');
+        if (status >= 500 && (await reviewAlreadyPosted(ctx, token, payload.body, fetchImpl))) {
+            return;
+        }
+        throw new RunnerError(`GitHub API error posting review (${url}): ${status} ${detail}`);
+    }
+}
+/**
+ * Is a review with exactly this body already on the PR?
+ *
+ * Matched on the body verbatim, which needs no knowledge of the runner's own
+ * identity (the token's bot login is not something this process is told). The
+ * match is deliberately exact: a near-match would risk swallowing a genuine
+ * posting failure. Note this only rescues the "the write succeeded, the
+ * response didn't" case within ONE run — a re-run regenerates the review from
+ * the model and its body may differ, which this cannot and does not dedupe.
+ *
+ * A failure to check is itself not fatal to the check: it returns false and
+ * the caller reports the original error, which is the safe direction.
+ */
+async function reviewAlreadyPosted(ctx, token, body, fetchImpl) {
+    const url = `${GITHUB_API_BASE}/repos/${ctx.owner}/${ctx.repo}/pulls/${ctx.prNumber}/reviews?per_page=100`;
+    try {
+        const res = await fetchImpl(url, { headers: authHeaders(token, 'application/vnd.github+json') });
+        if (!res.ok)
+            return false;
+        const reviews = (await res.json());
+        return Array.isArray(reviews) && reviews.some((r) => r.body === body);
+    }
+    catch {
+        return false;
     }
 }
 /** Post a plain issue comment (no review event) — `post_as: 'pr_comment'`. */
@@ -35893,16 +36046,48 @@ function mergedEvent(results) {
  *  from never having run. */
 function rosterLine(results) {
     const parts = results.map((r) => {
-        const mark = r.gateTriggered ? '🔴' : r.payload.event === 'APPROVE' ? '✅' : '🟡';
+        const mark = statusMark(r);
         return `${mark} ${r.agent}`;
     });
     return parts.join(' · ');
 }
+function statusMark(r) {
+    return r.gateTriggered ? '🔴' : r.payload.event === 'APPROVE' ? '✅' : '🟡';
+}
+function countsLine(findingsCount, c) {
+    return `**${findingsCount} finding${findingsCount === 1 ? '' : 's'}** · ${c.critical} critical · ${c.warning} warning · ${c.suggestion} suggestion`;
+}
+function totals(results) {
+    return {
+        findingsCount: results.reduce((n, r) => n + r.findingsCount, 0),
+        counts: {
+            critical: results.reduce((n, r) => n + r.counts.critical, 0),
+            warning: results.reduce((n, r) => n + r.counts.warning, 0),
+            suggestion: results.reduce((n, r) => n + r.counts.suggestion, 0),
+        },
+    };
+}
 /**
- * Compose the posted review. A single agent is NOT special-cased into a
- * different shape by accident: with one entry the body is that agent's own
- * body plus a one-line roster header, so the single-agent output stays the
- * familiar one.
+ * Each agent's findings, COLLAPSED behind a `<details>` summary.
+ *
+ * The full list is kept rather than replaced by a summary, because it is not
+ * redundant with the inline comments: a finding whose line the diff cannot
+ * anchor is dropped from the inline set by `toReviewPayload` and survives
+ * ONLY here. Collapsing keeps it reachable without making the top of the PR a
+ * page of text that repeats what is already annotated on the lines.
+ *
+ * The blank lines around the body are load-bearing: GitHub does not render
+ * markdown inside `<details>` without them.
+ */
+function collapsedSection(r) {
+    const summary = `${statusMark(r)} <strong>${r.agent}</strong> — ${r.findingsCount} finding${r.findingsCount === 1 ? '' : 's'} · ${r.counts.critical} critical · ${r.counts.warning} warning · ${r.counts.suggestion} suggestion`;
+    return `<details>\n<summary>${summary}</summary>\n\n${r.payload.body}\n\n</details>`;
+}
+/**
+ * Compose the posted review: a short, always-visible header (who ran, what
+ * the totals are, where the detail lives), then one collapsed section per
+ * agent. A single agent is NOT a separate shape — it is the one-element case
+ * of the same layout.
  */
 function mergeAgentReviews(results) {
     if (results.length === 0) {
@@ -35910,10 +36095,19 @@ function mergeAgentReviews(results) {
     }
     const event = mergedEvent(results);
     const blockers = results.reduce((n, r) => n + r.blockers, 0);
-    const header = results.length === 1
-        ? `_DevDigest — ${rosterLine(results)}_`
-        : `## DevDigest — ${results.length} reviewers\n\n${rosterLine(results)}`;
-    const body = [header, ...results.map((r) => r.payload.body)].join('\n\n---\n\n');
+    const { findingsCount, counts } = totals(results);
+    const title = results.length === 1
+        ? `## DevDigest — ${results[0].agent}`
+        : `## DevDigest — ${results.length} reviewers`;
+    const header = [
+        title,
+        rosterLine(results),
+        countsLine(findingsCount, counts),
+        findingsCount > 0
+            ? '_Findings are posted as inline comments on the lines they refer to. Expand a reviewer below for its full list._'
+            : '_No findings. Looks good._',
+    ].join('\n\n');
+    const body = [header, ...results.map(collapsedSection)].join('\n\n');
     // Inline comments carry the agent's name because a merged review shows
     // several reviewers' comments side by side on the same lines; without the
     // attribution a reader cannot tell which reviewer to argue with.
@@ -35936,6 +36130,21 @@ function mergeAgentReviews(results) {
 
 
 
+/** Severity tally over GROUNDED findings — the same shape `artifact.ts`
+ *  computes for the result document, kept local rather than shared because
+ *  the two consumers must stay free to diverge (one is a wire contract). */
+function run_severityCounts(findings) {
+    const counts = { critical: 0, warning: 0, suggestion: 0 };
+    for (const f of findings) {
+        if (f.severity === 'CRITICAL')
+            counts.critical++;
+        else if (f.severity === 'WARNING')
+            counts.warning++;
+        else
+            counts.suggestion++;
+    }
+    return counts;
+}
 async function runCi(deps) {
     const readFile = deps.readFile ?? external_node_fs_namespaceObject.readFileSync;
     const readDir = deps.readDir ?? external_node_fs_namespaceObject.readdirSync;
@@ -35998,7 +36207,15 @@ async function runCi(deps) {
             });
             const blockers = countBlockers(outcome.review.findings, manifest.ci_fail_on);
             const triggered = gateTriggered(outcome.review.findings, manifest.ci_fail_on);
-            agentPayloads.push({ agent: manifest.name, payload, gateTriggered: triggered, blockers });
+            const counts = run_severityCounts(outcome.review.findings);
+            agentPayloads.push({
+                agent: manifest.name,
+                payload,
+                gateTriggered: triggered,
+                blockers,
+                findingsCount: outcome.review.findings.length,
+                counts,
+            });
             agentResults.push({
                 agent: manifest.name,
                 findings: outcome.review.findings,
