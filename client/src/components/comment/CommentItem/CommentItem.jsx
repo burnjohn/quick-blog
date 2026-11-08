@@ -4,18 +4,19 @@ import { formatRelativeTime } from '../../../utils/formatters'
 
 function CommentItem({ comment }) {
   return (
-    <div className='relative bg-primary/2 border border-primary/5 max-w-xl p-4 rounded text-gray-600'>
-      <div className='flex items-center gap-2 mb-2'>
-        <img src={assets.user_icon} alt='' className='w-6' />
-        <p className='font-medium'>{comment.name}</p>
+    <div className='bg-card border border-border rounded-2xl p-5 text-muted-foreground'>
+      <div className='flex items-center justify-between gap-3 mb-3'>
+        <div className='flex items-center gap-3 min-w-0'>
+          <span className='flex items-center justify-center w-9 h-9 shrink-0 rounded-full bg-muted'>
+            <img src={assets.user_icon} alt='' className='w-5 dark:invert' />
+          </span>
+          <p className='font-semibold text-foreground truncate'>{comment.name}</p>
+        </div>
+        <span className='shrink-0 text-xs'>{formatRelativeTime(comment.createdAt)}</span>
       </div>
-      <p className='text-sm max-w-md ml-8'>{comment.content}</p>
-      <div className='absolute right-4 bottom-3 flex items-center gap-2 text-xs'>
-        {formatRelativeTime(comment.createdAt)}
-      </div>
+      <p className='text-sm leading-relaxed pl-12'>{comment.content}</p>
     </div>
   )
 }
 
 export default CommentItem
-

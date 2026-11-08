@@ -1,6 +1,5 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { assets } from '../../../assets/assets'
 import { Navbar, Footer } from '../../../components/layout'
 import { BlogHeader, BlogContent, SocialShare } from '../../../components/blog'
 import { CommentList, CommentForm } from '../../../components/comment'
@@ -25,16 +24,13 @@ function BlogDetail() {
   }
 
   return (
-    <div className='relative'>
-      <img 
-        src={assets.gradientBackground} 
-        alt='' 
-        className='absolute -top-50 -z-1 opacity-50'
-      />
-      
+    <div className='min-h-screen bg-background'>
       <Navbar />
+
+      <div className='bg-linear-to-b from-hero-from to-hero-to'>
       
-      <BlogHeader blog={blog} />
+        <BlogHeader blog={blog} />
+      </div>
       
       <BlogContent image={blog.image} content={blog.description} />
       

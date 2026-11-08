@@ -48,4 +48,12 @@ describe('Navbar', () => {
 
     expect(screen.getByRole('button', { name: /dashboard/i })).toBeInTheDocument();
   });
+
+  it('renders the theme toggle', () => {
+    useAppContext.mockReturnValue({ navigate: mockNavigate, token: null });
+
+    render(<Navbar />);
+
+    expect(screen.getByRole('button', { name: /toggle color theme/i })).toBeInTheDocument();
+  });
 });

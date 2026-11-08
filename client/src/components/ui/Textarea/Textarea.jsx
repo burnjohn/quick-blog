@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useId } from 'react'
 import { classNames } from '../../../utils/helpers'
 
 function Textarea({
@@ -8,30 +8,38 @@ function Textarea({
   containerClassName = '',
   rows = 4,
   required = false,
+  id,
   ...props
 }) {
+  const autoId = useId()
+  const fieldId = id ?? autoId
+  const errorId = `${fieldId}-error`
+
   return (
     <div className={classNames('w-full', containerClassName)}>
       {label && (
-        <label className='block mb-2 text-sm font-medium text-gray-700'>
+        <label htmlFor={fieldId} className='block mb-2 text-sm font-medium text-foreground'>
           {label}
-          {required && <span className='text-red-500 ml-1'>*</span>}
+          {required && <span className='text-destructive ml-1'>*</span>}
         </label>
       )}
       <textarea
+        id={fieldId}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? errorId : undefined}
         rows={rows}
         required={required}
         className={classNames(
-          'w-full p-2 border rounded outline-none transition-colors resize-none',
+          'w-full px-4 py-2.5 rounded-xl border bg-card text-foreground placeholder:text-muted-foreground outline-none focus:ring-4 transition-colors duration-200 resize-none',
           error 
-            ? 'border-red-500 focus:border-red-600' 
-            : 'border-gray-300 focus:border-primary',
+            ? 'border-destructive focus:ring-destructive/30'
+            : 'border-input focus:border-accent focus:ring-accent/40',
           className
         )}
         {...props}
       />
       {error && (
-        <p className='mt-1 text-sm text-red-500'>{error}</p>
+        <p id={errorId} role='alert' className='mt-1 text-sm text-destructive'>{error}</p>
       )}
     </div>
   )

@@ -19,11 +19,12 @@ function CommentForm({ onSubmit, loading = false }) {
   }
 
   return (
-    <div className='max-w-3xl mx-auto'>
-      <p className='font-semibold mb-4'>Add your comment</p>
-      <form onSubmit={handleSubmit} className='flex flex-col items-start gap-4 max-w-lg'>
+    <div className='max-w-3xl mx-auto px-5 md:px-0'>
+      <h3 className='font-display text-2xl font-semibold text-foreground mb-6'>Add your comment</h3>
+      <form onSubmit={handleSubmit} className='flex flex-col items-start gap-5 max-w-lg'>
         <Input
           type='text'
+          label='Your name'
           placeholder='Name'
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -31,6 +32,7 @@ function CommentForm({ onSubmit, loading = false }) {
         />
         
         <Textarea
+          label='Your comment'
           placeholder='Comment'
           value={content}
           onChange={(e) => setContent(e.target.value)}

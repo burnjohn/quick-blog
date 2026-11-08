@@ -12,44 +12,44 @@ function Dashboard() {
   }
 
   return (
-    <div className='flex-1 p-4 md:p-10 bg-blue-50/50 h-full min-h-full'>
+    <div className='flex-1 p-4 md:p-10 bg-background h-full min-h-full'>
       {/* Stats Cards */}
       <div className='flex flex-wrap gap-4'>
-        <div className='flex items-center gap-4 bg-white p-4 min-w-58 rounded shadow cursor-pointer hover:scale-105 transition-all'>
+        <div className='flex items-center gap-4 bg-card border border-border p-5 min-w-58 rounded-2xl shadow-card hover:-translate-y-0.5 hover:border-accent/40 transition-all duration-200 motion-reduce:hover:translate-y-0'>
           <img src={assets.dashboard_icon_1} alt='' />
           <div>
-            <p className='text-xl font-semibold text-gray-600'>{dashboardData.blogs}</p>
-            <p className='text-gray-400 font-light'>Blogs</p>
+            <p className='font-display text-2xl font-bold text-foreground'>{dashboardData.blogs}</p>
+            <p className='text-sm text-muted-foreground'>Blogs</p>
           </div>
         </div>
 
-        <div className='flex items-center gap-4 bg-white p-4 min-w-58 rounded shadow cursor-pointer hover:scale-105 transition-all'>
+        <div className='flex items-center gap-4 bg-card border border-border p-5 min-w-58 rounded-2xl shadow-card hover:-translate-y-0.5 hover:border-accent/40 transition-all duration-200 motion-reduce:hover:translate-y-0'>
           <img src={assets.dashboard_icon_2} alt='' />
           <div>
-            <p className='text-xl font-semibold text-gray-600'>{dashboardData.comments}</p>
-            <p className='text-gray-400 font-light'>Comments</p>
+            <p className='font-display text-2xl font-bold text-foreground'>{dashboardData.comments}</p>
+            <p className='text-sm text-muted-foreground'>Comments</p>
           </div>
         </div>
 
-        <div className='flex items-center gap-4 bg-white p-4 min-w-58 rounded shadow cursor-pointer hover:scale-105 transition-all'>
+        <div className='flex items-center gap-4 bg-card border border-border p-5 min-w-58 rounded-2xl shadow-card hover:-translate-y-0.5 hover:border-accent/40 transition-all duration-200 motion-reduce:hover:translate-y-0'>
           <img src={assets.dashboard_icon_3} alt='' />
           <div>
-            <p className='text-xl font-semibold text-gray-600'>{dashboardData.drafts}</p>
-            <p className='text-gray-400 font-light'>Drafts</p>
+            <p className='font-display text-2xl font-bold text-foreground'>{dashboardData.drafts}</p>
+            <p className='text-sm text-muted-foreground'>Drafts</p>
           </div>
         </div>
       </div>
 
       {/* Latest Blogs */}
       <div>
-        <div className='flex items-center gap-3 m-4 mt-6 text-gray-600'>
+        <div className='flex items-center gap-3 m-4 mt-8 text-foreground'>
           <img src={assets.dashboard_icon_4} alt='' />
           <p className='font-semibold'>Latest Blogs</p>
         </div>
 
-        <div className='relative max-w-4xl overflow-x-auto shadow rounded-lg scrollbar-hide bg-white'>
-          <table className='w-full text-sm text-gray-500'>
-            <thead className='text-xs text-gray-600 text-left uppercase bg-gray-50'>
+        <div className='relative max-w-4xl overflow-x-auto rounded-2xl border border-border shadow-card scrollbar-hide bg-card'>
+          <table className='w-full text-sm text-muted-foreground'>
+            <thead className='text-xs tracking-wider text-muted-foreground text-left uppercase bg-muted'>
               <tr>
                 <th scope='col' className='px-2 py-4 xl:px-6'>#</th>
                 <th scope='col' className='px-2 py-4'>Blog Title</th>
@@ -61,7 +61,7 @@ function Dashboard() {
             <tbody>
               {dashboardData.recentBlogs.length === 0 ? (
                 <tr>
-                  <td colSpan='5' className='text-center py-8 text-gray-400'>
+                  <td colSpan='5' className='text-center py-8 text-muted-foreground'>
                     No blogs found
                   </td>
                 </tr>

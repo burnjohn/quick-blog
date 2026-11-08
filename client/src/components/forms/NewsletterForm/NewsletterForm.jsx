@@ -26,15 +26,15 @@ function NewsletterForm() {
   }
 
   return (
-    <div className='flex flex-col items-center justify-center text-center space-y-2 my-32'>
-      <h1 className='md:text-4xl text-2xl font-semibold'>Never Miss a Blog!</h1>
-      <p className='md:text-lg text-gray-500/70 pb-8'>
+    <section className='mx-6 sm:mx-16 xl:mx-32 my-24 sm:my-32 rounded-3xl border border-border bg-card px-6 py-14 sm:py-20 flex flex-col items-center justify-center text-center space-y-3 shadow-card'>
+      <h2 className='font-display md:text-5xl text-3xl font-bold tracking-tight text-foreground'>Never Miss a Blog!</h2>
+      <p className='md:text-lg text-muted-foreground pb-6'>
         Subscribe to get the latest blog, new tech, and exclusive news.
       </p>
       
       <form 
         onSubmit={handleSubmit}
-        className='flex items-center justify-between max-w-2xl w-full md:h-13 h-12'
+        className='flex flex-col sm:flex-row items-stretch gap-3 max-w-xl w-full'
       >
         <input 
           type='email'
@@ -42,18 +42,19 @@ function NewsletterForm() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder='Enter your email id' 
           required
-          className='border border-gray-300 rounded-md h-full border-r-0 outline-none w-full rounded-r-none px-3 text-gray-500'
+          aria-label='Email address'
+          className='w-full h-12 rounded-full border border-input bg-background px-5 text-foreground placeholder:text-muted-foreground outline-none focus:border-accent focus:ring-4 focus:ring-accent/40 transition-colors duration-200'
         />
         <Button
           type='submit'
           variant='primary'
           loading={loading}
-          className='h-full rounded-l-none bg-primary/80 hover:bg-primary'
+          className='h-12 shrink-0'
         >
           Subscribe
         </Button>
       </form>
-    </div>
+    </section>
   )
 }
 

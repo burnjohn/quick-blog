@@ -4,19 +4,19 @@ import Badge from '../../ui/Badge'
 
 function BlogHeader({ blog, author = 'Michael Brown' }) {
   return (
-    <div className='text-center mt-20 text-gray-600'>
-      <p className='text-primary py-4 font-medium'>
+    <div className='text-center pt-16 sm:pt-24 px-6 text-muted-foreground'>
+      <p className='text-accent py-4 text-sm font-semibold uppercase tracking-widest'>
         Published on {formatDate(blog.createdAt)}
       </p>
-      <h1 className='text-2xl sm:text-5xl font-semibold max-w-2xl mx-auto text-gray-800'>
+      <h1 className='font-display text-3xl sm:text-6xl font-bold tracking-tight leading-tight max-w-3xl mx-auto text-foreground'>
         {blog.title}
       </h1>
       {blog.subTitle && (
-        <h2 className='my-5 max-w-lg truncate mx-auto'>
+        <h2 className='my-6 max-w-xl truncate mx-auto text-lg'>
           {blog.subTitle}
         </h2>
       )}
-      <Badge variant='primary' className='mb-6'>
+      <Badge variant='secondary' className='mt-2 mb-8'>
         {author}
       </Badge>
     </div>
