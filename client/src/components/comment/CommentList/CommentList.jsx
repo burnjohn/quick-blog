@@ -4,10 +4,10 @@ import { MESSAGES } from '../../../constants/messages'
 
 function CommentList({ comments }) {
   return (
-    <div className='mt-14 mb-10 max-w-3xl mx-auto'>
-      <p className='font-semibold mb-4'>Comments ({comments.length})</p>
+    <section className='mt-16 mb-12 max-w-3xl mx-auto px-5 md:px-0'>
+      <h3 className='font-display text-2xl font-semibold text-foreground mb-6'>Comments ({comments.length})</h3>
       {comments.length === 0 ? (
-        <p className='text-gray-500 text-sm'>{MESSAGES.INFO_NO_COMMENTS}</p>
+        <p className='text-muted-foreground text-sm'>{MESSAGES.INFO_NO_COMMENTS}</p>
       ) : (
         <div className='flex flex-col gap-4'>
           {comments.map((comment) => (
@@ -15,7 +15,7 @@ function CommentList({ comments }) {
           ))}
         </div>
       )}
-    </div>
+    </section>
   )
 }
 
