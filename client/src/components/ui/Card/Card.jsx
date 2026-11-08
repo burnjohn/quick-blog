@@ -12,8 +12,8 @@ function Card({
     <div
       onClick={onClick}
       className={classNames(
-        'rounded-lg overflow-hidden shadow bg-white',
-        hover && 'hover:scale-102 hover:shadow-primary/25 transition-all duration-300',
+        'rounded-card overflow-hidden border border-border bg-card text-card-foreground shadow-card',
+        hover && 'hover:-translate-y-1 hover:shadow-lg hover:border-accent/40 transition-all duration-300 motion-reduce:hover:translate-y-0',
         onClick && 'cursor-pointer',
         className
       )}
@@ -37,7 +37,7 @@ Card.Image = function CardImage({ src, alt, className = '' }) {
 Card.Badge = function CardBadge({ children, className = '' }) {
   return (
     <span className={classNames(
-      'ml-5 mt-4 px-3 py-1 inline-block bg-primary/20 rounded-full text-primary text-xs',
+      'ml-5 mt-5 px-3 py-1 inline-block bg-accent-soft rounded-full text-accent text-xs font-medium tracking-wide',
       className
     )}>
       {children}
@@ -55,7 +55,7 @@ Card.Body = function CardBody({ children, className = '' }) {
 
 Card.Title = function CardTitle({ children, className = '' }) {
   return (
-    <h5 className={classNames('mb-2 font-medium text-gray-900', className)}>
+    <h5 className={classNames('mb-2 font-display text-lg font-semibold leading-snug text-card-foreground', className)}>
       {children}
     </h5>
   )
@@ -63,7 +63,7 @@ Card.Title = function CardTitle({ children, className = '' }) {
 
 Card.Description = function CardDescription({ children, className = '' }) {
   return (
-    <p className={classNames('mb-3 text-xs text-gray-600', className)}>
+    <p className={classNames('mb-3 text-sm leading-relaxed text-muted-foreground', className)}>
       {children}
     </p>
   )

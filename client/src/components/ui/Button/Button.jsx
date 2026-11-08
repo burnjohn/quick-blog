@@ -2,36 +2,37 @@ import React from 'react'
 import { classNames } from '../../../utils/helpers'
 
 const variants = {
-  primary: 'bg-primary text-white hover:scale-105 hover:bg-primary/90',
-  secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300',
-  outline: 'border border-gray-300 hover:bg-gray-50 text-gray-700',
-  danger: 'bg-red-500 text-white hover:bg-red-600',
-  ghost: 'hover:bg-gray-100 text-gray-700'
+  primary: 'bg-accent text-accent-foreground hover:bg-accent/90 shadow-sm',
+  secondary: 'bg-secondary text-secondary-foreground hover:bg-muted',
+  outline: 'border border-border bg-card text-foreground hover:bg-muted',
+  danger: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+  ghost: 'text-foreground hover:bg-muted'
 }
 
 const sizes = {
   sm: 'px-4 py-1.5 text-sm',
-  md: 'px-8 py-2',
-  lg: 'px-10 py-2.5 text-lg'
+  md: 'px-6 py-2.5 text-sm',
+  lg: 'px-8 py-3 text-base'
 }
 
-function Button({ 
-  children, 
-  variant = 'primary', 
-  size = 'md', 
+function Button({
+  children,
+  variant = 'primary',
+  size = 'md',
   className = '',
   disabled = false,
   loading = false,
   fullWidth = false,
   type = 'button',
-  ...props 
+  ...props
 }) {
   return (
     <button
       type={type}
       disabled={disabled || loading}
       className={classNames(
-        'rounded transition-all cursor-pointer font-medium',
+        'inline-flex items-center justify-center gap-2 rounded-full font-medium cursor-pointer',
+        'transition-colors duration-200',
         variants[variant],
         sizes[size],
         fullWidth && 'w-full',
@@ -51,4 +52,3 @@ function Button({
 }
 
 export default Button
-

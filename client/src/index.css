@@ -28,6 +28,7 @@
   --destructive: #DC2626;
   --destructive-foreground: #FFFFFF;
   --success: #15803D;
+  --warning: #B45309;
   --ring: #5044E5;
   --hero-from: #EEEDFD;
   --hero-to: #FAFAFA;
@@ -53,6 +54,7 @@
   --destructive: #F87171;
   --destructive-foreground: #09090B;
   --success: #4ADE80;
+  --warning: #FBBF24;
   --ring: #8B83F0;
   --hero-from: #1E1B3A;
   --hero-to: #09090B;
@@ -78,6 +80,7 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
+  --color-warning: var(--warning);
   --color-ring: var(--ring);
   --color-hero-from: var(--hero-from);
   --color-hero-to: var(--hero-to);
