@@ -179,7 +179,7 @@ function AddBlog() {
             onChange={(e) => setCategory(e.target.value)} 
             value={category}
             name='category' 
-            className='mt-2 px-4 py-2.5 border border-input bg-card text-foreground outline-none rounded-xl w-full max-w-lg focus:border-accent focus:ring-4 focus:ring-accent/25 transition-colors duration-200'
+            className='mt-2 px-4 py-2.5 border border-input bg-card text-foreground outline-none rounded-xl w-full max-w-lg focus:border-accent focus:ring-4 focus:ring-accent/40 transition-colors duration-200'
             disabled={isCreating}
           >
             {BLOG_CATEGORIES.filter(cat => cat !== 'All').map((item, index) => (

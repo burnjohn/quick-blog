@@ -33,7 +33,7 @@ function Input({
           'w-full px-4 py-2.5 rounded-xl border bg-card text-foreground placeholder:text-muted-foreground outline-none focus:ring-4 transition-colors duration-200',
           error 
             ? 'border-destructive focus:ring-destructive/30'
-            : 'border-input focus:border-accent focus:ring-accent/25',
+            : 'border-input focus:border-accent focus:ring-accent/40',
           className
         )}
         {...props}

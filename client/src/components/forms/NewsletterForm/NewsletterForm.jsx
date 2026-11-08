@@ -43,7 +43,7 @@ function NewsletterForm() {
           placeholder='Enter your email id' 
           required
           aria-label='Email address'
-          className='w-full h-12 rounded-full border border-input bg-background px-5 text-foreground placeholder:text-muted-foreground outline-none focus:border-accent focus:ring-4 focus:ring-accent/25 transition-colors duration-200'
+          className='w-full h-12 rounded-full border border-input bg-background px-5 text-foreground placeholder:text-muted-foreground outline-none focus:border-accent focus:ring-4 focus:ring-accent/40 transition-colors duration-200'
         />
         <Button
           type='submit'

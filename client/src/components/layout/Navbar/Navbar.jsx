@@ -27,7 +27,7 @@ function Navbar() {
             className='inline-flex items-center gap-2 rounded-full text-sm font-medium cursor-pointer bg-primary text-primary-foreground px-6 sm:px-8 py-2.5 hover:opacity-90 transition-opacity duration-200'
           >
             {token ? 'Dashboard' : 'Login'}
-            <img src={assets.arrow} className='w-3 invert dark:invert-0' alt='' aria-hidden='true' />
+            <img src={assets.arrow} className='w-3 dark:invert' alt='' aria-hidden='true' />
           </button>
         </div>
       </nav>

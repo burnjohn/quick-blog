@@ -49,7 +49,7 @@ function CommentTableItem({ comment, onUpdate }) {
               className='inline-flex items-center justify-center w-8 h-8 rounded-full cursor-pointer hover:bg-muted transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
               aria-label='Approve comment'
             >
-              <img src={assets.tick_icon} className='w-5' alt='' />
+              <img src={assets.tick_icon} className='w-5 dark:invert dark:hue-rotate-180' alt='' />
             </button>
           ) : (
             <Badge variant='success' size='sm'>
@@ -62,7 +62,7 @@ function CommentTableItem({ comment, onUpdate }) {
             className='inline-flex items-center justify-center w-8 h-8 rounded-full cursor-pointer hover:bg-muted transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
             aria-label='Delete comment'
           >
-            <img src={assets.bin_icon} alt='' className='w-5' />
+            <img src={assets.bin_icon} alt='' className='w-5 dark:invert' />
           </button>
         </div>
       </td>

@@ -6,18 +6,19 @@ function Card({
   className = '',
   hover = false,
   onClick,
+  onKeyDown,
   ...props 
 }) {
+  const handleKeyDown = (e) => {
+    onKeyDown?.(e)
+    if (onClick && e.key === 'Enter') onClick(e)
+  }
+
   return (
     <div
       onClick={onClick}
-      {...(onClick && {
-        role: 'link',
-        tabIndex: 0,
-        onKeyDown: (e) => {
-          if (e.key === 'Enter') onClick(e)
-        }
-      })}
+      onKeyDown={onClick || onKeyDown ? handleKeyDown : undefined}
+      {...(onClick && { role: 'link', tabIndex: 0 })}
       className={classNames(
         'rounded-card overflow-hidden border border-border bg-card text-card-foreground shadow-card',
         hover && 'hover:-translate-y-1 hover:shadow-lg hover:border-accent/40 transition-all duration-300 motion-reduce:hover:translate-y-0',
