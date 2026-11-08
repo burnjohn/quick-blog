@@ -1,44 +1,249 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 @import "tailwindcss";
 
-*{
-  font-family: "Outfit", sans-serif;
+/* Dark theme is driven by the `.dark` class on <html> (see useTheme) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Design tokens.
+ * Light palette: UI UX Pro Max "Magazine/Blog" neutrals + QuickBlog brand accent.
+ * Dark palette: zinc neutrals, #F8FAFC text, lightened brand accent.
+ * All text pairs are >= 4.5:1 (WCAG AA).
+ */
+:root {
+  --background: #FAFAFA;
+  --foreground: #09090B;
+  --card: #FFFFFF;
+  --card-foreground: #09090B;
+  --muted: #F4F4F5;
+  --muted-foreground: #475569;
+  --border: #E4E4E7;
+  --input: #D4D4D8;
+  --primary: #18181B;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F4F4F5;
+  --secondary-foreground: #18181B;
+  --accent: #5044E5;
+  --accent-foreground: #FFFFFF;
+  --accent-soft: #EEEDFD;
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
+  --success: #15803D;
+  --ring: #5044E5;
+  --hero-from: #EEEDFD;
+  --hero-to: #FAFAFA;
+  color-scheme: light;
 }
 
-body {
-  background-color: white;
+.dark {
+  --background: #09090B;
+  --foreground: #F8FAFC;
+  --card: #18181B;
+  --card-foreground: #F8FAFC;
+  --muted: #27272A;
+  --muted-foreground: #A1A1AA;
+  --border: #27272A;
+  --input: #3F3F46;
+  --primary: #FAFAFA;
+  --primary-foreground: #18181B;
+  --secondary: #27272A;
+  --secondary-foreground: #F8FAFC;
+  --accent: #8B83F0;
+  --accent-foreground: #09090B;
+  --accent-soft: #1E1B3A;
+  --destructive: #F87171;
+  --destructive-foreground: #09090B;
+  --success: #4ADE80;
+  --ring: #8B83F0;
+  --hero-from: #1E1B3A;
+  --hero-to: #09090B;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-soft: var(--accent-soft);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-ring: var(--ring);
+  --color-hero-from: var(--hero-from);
+  --color-hero-to: var(--hero-to);
+}
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Playfair Display", ui-serif, Georgia, serif;
+  --radius-card: 1rem;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.04), 0 4px 16px rgb(0 0 0 / 0.04);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
 }
 
 ::-webkit-scrollbar {
   display: none;
 }
 
-@theme {
-  --color-primary: #5044E5; 
+/* Respect users who ask for less motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Loading spinners still communicate state, so keep them, just slower */
+  .animate-spin {
+    animation-duration: 1.5s !important;
+    animation-iteration-count: infinite !important;
+  }
 }
 
-.rich-text { font-size: 15px;  }
+/* Article body rendered from rich-text HTML */
+.rich-text {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--foreground);
+  max-width: 70ch;
+  margin-inline: auto;
+}
 
-.rich-text p { margin-bottom: 16px; color: #292929; }
+.rich-text p { margin-bottom: 1.25rem; }
 
-.rich-text h1 { font-size: 36px; font-weight: 700; color: #252525 !important; margin: 32px 0; }
+.rich-text h1,
+.rich-text h2,
+.rich-text h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--foreground);
+}
 
-.rich-text h2 { font-size: 22px; font-weight: 700; color: #252525 !important; margin: 24px 0; }
-
-.rich-text h3 { font-size: 18px; font-weight: 600; color: #333333 !important; margin: 20px 0; }
-
-.rich-text h4 { font-size: 16px; font-weight: 500; color: #444444 !important; margin: 16px 0; }
-
-.rich-text h5 { font-size: 14px; font-weight: 400; color: #555555 !important; margin: 12px 0; }
-
-.rich-text h6 { font-size: 12px; font-weight: 400; color: #666666 !important; margin: 8px 0; }
+.rich-text h1 { font-size: 2.25rem; margin: 2.5rem 0 1.25rem; }
+.rich-text h2 { font-size: 1.75rem; margin: 2.25rem 0 1rem; }
+.rich-text h3 { font-size: 1.375rem; margin: 2rem 0 0.75rem; }
+.rich-text h4 { font-size: 1.125rem; font-weight: 600; margin: 1.5rem 0 0.75rem; }
+.rich-text h5 { font-size: 1rem; font-weight: 600; margin: 1.25rem 0 0.5rem; }
+.rich-text h6 { font-size: 0.875rem; font-weight: 600; margin: 1rem 0 0.5rem; color: var(--muted-foreground); }
 
 .rich-text strong { font-weight: 700; }
 
-.rich-text ol { margin-left: 30px; list-style-type: decimal; }
+.rich-text ol { margin: 0 0 1.25rem 1.5rem; list-style-type: decimal; }
+.rich-text ul { margin: 0 0 1.25rem 1.5rem; list-style-type: disc; }
+.rich-text li { margin-bottom: 0.5rem; padding-left: 0.25rem; }
+.rich-text li::marker { color: var(--muted-foreground); }
 
-.rich-text ul { margin-left: 30px; list-style-type: disc; }
+.rich-text a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 
-.rich-text li { margin-bottom: 8px; }
+.rich-text blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: var(--muted-foreground);
+}
 
-.rich-text a { color: #007AFF }
+.rich-text pre,
+.rich-text code {
+  background-color: var(--muted);
+  border-radius: 0.375rem;
+  font-size: 0.9em;
+}
+
+.rich-text code { padding: 0.1em 0.35em; }
+.rich-text pre { padding: 1rem; overflow-x: auto; margin-bottom: 1.25rem; }
+
+.rich-text img { border-radius: 0.75rem; margin: 1.5rem 0; }
+
+/* Quill editor (snow theme) themed with design tokens */
+.ql-toolbar.ql-snow {
+  border-color: var(--border) !important;
+  border-radius: 0.75rem 0.75rem 0 0;
+  background-color: var(--muted);
+}
+
+.ql-container.ql-snow {
+  border-color: var(--border) !important;
+  border-radius: 0 0 0.75rem 0.75rem;
+  background-color: var(--card);
+  color: var(--card-foreground);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+}
+
+.ql-editor.ql-blank::before {
+  color: var(--muted-foreground) !important;
+}
+
+.ql-snow .ql-stroke {
+  stroke: var(--foreground) !important;
+}
+
+.ql-snow .ql-fill,
+.ql-snow .ql-stroke.ql-fill {
+  fill: var(--foreground) !important;
+}
+
+.ql-snow .ql-picker {
+  color: var(--foreground) !important;
+}
+
+.ql-snow .ql-picker-options {
+  background-color: var(--card) !important;
+  border-color: var(--border) !important;
+}
+
+.ql-snow button:hover .ql-stroke,
+.ql-snow .ql-active .ql-stroke {
+  stroke: var(--accent) !important;
+}
+
+.ql-snow button:hover .ql-fill,
+.ql-snow .ql-active .ql-fill {
+  fill: var(--accent) !important;
+}
