@@ -11,10 +11,17 @@ function Card({
   return (
     <div
       onClick={onClick}
+      {...(onClick && {
+        role: 'link',
+        tabIndex: 0,
+        onKeyDown: (e) => {
+          if (e.key === 'Enter') onClick(e)
+        }
+      })}
       className={classNames(
         'rounded-card overflow-hidden border border-border bg-card text-card-foreground shadow-card',
         hover && 'hover:-translate-y-1 hover:shadow-lg hover:border-accent/40 transition-all duration-300 motion-reduce:hover:translate-y-0',
-        onClick && 'cursor-pointer',
+        onClick && 'cursor-pointer focus-visible:ring-4 focus-visible:ring-accent/30',
         className
       )}
       {...props}

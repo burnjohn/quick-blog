@@ -1,28 +1,37 @@
 import React from 'react'
 import { assets } from '../../../assets/assets'
 import { useAppContext } from '../../../context/AppContext'
-import Button from '../../ui/Button'
+import ThemeToggle from '../../ui/ThemeToggle'
+import Logo from '../../ui/Logo'
 import { ROUTES } from '../../../constants/routes'
 
 function Navbar() {
   const { navigate, token } = useAppContext()
 
   return (
-    <div className='flex justify-between items-center py-5 mx-8 sm:mx-20 xl:mx-32'>
-      <img 
-        onClick={() => navigate(ROUTES.HOME)} 
-        src={assets.logo} 
-        alt='logo' 
-        className='w-32 sm:w-44 cursor-pointer hover:opacity-80 transition-opacity' 
-      />
-      <button 
-        onClick={() => navigate(ROUTES.ADMIN)}  
-        className='flex items-center gap-2 rounded-full text-sm cursor-pointer bg-primary text-white px-10 py-2.5 hover:bg-primary/90 transition-colors'
-      >
-        {token ? 'Dashboard' : 'Login'}
-        <img src={assets.arrow} className='w-3' alt='arrow' />
-      </button>
-    </div>
+    <header className='sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md'>
+      <nav className='flex justify-between items-center py-4 px-6 sm:px-16 xl:px-32'>
+        <button
+          type='button'
+          onClick={() => navigate(ROUTES.HOME)}
+          aria-label='QuickBlog home'
+          className='cursor-pointer rounded-md hover:opacity-80 transition-opacity duration-200'
+        >
+          <Logo className='w-32 sm:w-40' />
+        </button>
+
+        <div className='flex items-center gap-3'>
+          <ThemeToggle />
+          <button
+            onClick={() => navigate(ROUTES.ADMIN)}
+            className='inline-flex items-center gap-2 rounded-full text-sm font-medium cursor-pointer bg-primary text-primary-foreground px-6 sm:px-8 py-2.5 hover:opacity-90 transition-opacity duration-200'
+          >
+            {token ? 'Dashboard' : 'Login'}
+            <img src={assets.arrow} className='w-3 invert dark:invert-0' alt='' aria-hidden='true' />
+          </button>
+        </div>
+      </nav>
+    </header>
   )
 }
 
