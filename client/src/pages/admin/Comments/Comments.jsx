@@ -18,26 +18,26 @@ function Comments() {
   }
 
   return (
-    <div className='flex-1 pt-5 px-5 sm:pt-12 sm:pl-16 bg-blue-50/50 h-full min-h-full'>
+    <div className='flex-1 pt-5 px-5 sm:pt-12 sm:pl-16 bg-background h-full min-h-full'>
       <div className='flex justify-between items-center max-w-3xl mb-4'>
-        <h1 className='text-2xl font-semibold'>Comments</h1>
+        <h1 className='font-display text-3xl font-bold tracking-tight text-foreground'>Comments</h1>
         <div className='flex gap-4'>
           <button
             onClick={() => setFilter('Approved')}
-            className={`shadow-custom-sm border rounded-full px-4 py-1 cursor-pointer text-xs transition-colors ${
+            className={`border rounded-full px-4 py-1.5 cursor-pointer text-xs font-medium transition-colors duration-200 ${
               filter === 'Approved' 
-                ? 'text-primary border-primary bg-primary/10' 
-                : 'text-gray-700 hover:bg-gray-50'
+                ? 'text-accent border-accent/40 bg-accent-soft'
+                : 'text-muted-foreground border-border bg-card hover:bg-muted hover:text-foreground'
             }`}
           >
             Approved
           </button>
           <button
             onClick={() => setFilter('Not Approved')}
-            className={`shadow-custom-sm border rounded-full px-4 py-1 cursor-pointer text-xs transition-colors ${
+            className={`border rounded-full px-4 py-1.5 cursor-pointer text-xs font-medium transition-colors duration-200 ${
               filter === 'Not Approved' 
-                ? 'text-primary border-primary bg-primary/10' 
-                : 'text-gray-700 hover:bg-gray-50'
+                ? 'text-accent border-accent/40 bg-accent-soft'
+                : 'text-muted-foreground border-border bg-card hover:bg-muted hover:text-foreground'
             }`}
           >
             Not Approved
@@ -45,9 +45,9 @@ function Comments() {
         </div>
       </div>
 
-      <div className='relative h-4/5 max-w-3xl overflow-x-auto mt-4 bg-white shadow rounded-lg scrollbar-hide'>
-        <table className='w-full text-sm text-gray-500'>
-          <thead className='text-xs text-gray-700 text-left uppercase bg-gray-50'>
+      <div className='relative h-4/5 max-w-3xl overflow-x-auto mt-4 bg-card rounded-2xl border border-border shadow-card scrollbar-hide'>
+        <table className='w-full text-sm text-muted-foreground'>
+          <thead className='text-xs tracking-wider text-muted-foreground text-left uppercase bg-muted'>
             <tr>
               <th scope='col' className='px-6 py-3'>Details</th>
               <th scope='col' className='px-6 py-3 max-sm:hidden'>Date</th>
@@ -57,7 +57,7 @@ function Comments() {
           <tbody>
             {filteredComments.length === 0 ? (
               <tr>
-                <td colSpan='3' className='text-center py-8 text-gray-400'>
+                <td colSpan='3' className='text-center py-8 text-muted-foreground'>
                   No {filter.toLowerCase()} comments found
                 </td>
               </tr>

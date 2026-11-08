@@ -102,20 +102,20 @@ function AddBlog() {
     <form 
       onSubmit={onSubmitHandler}
       noValidate
-      className='flex-1 bg-blue-50/50 text-gray-600 h-full overflow-scroll'
+      className='flex-1 bg-background text-foreground h-full overflow-scroll'
     >
-      <div className='bg-white w-full max-w-3xl p-4 md:p-10 sm:m-10 shadow rounded'>
+      <div className='bg-card text-card-foreground w-full max-w-3xl p-5 md:p-10 sm:m-10 border border-border shadow-card rounded-3xl'>
         
         {/* Image Upload */}
         <div className='mb-6'>
           <label className='block mb-2 text-sm font-medium'>
-            Upload Thumbnail <span className='text-red-500'>*</span>
+            Upload Thumbnail <span className='text-destructive'>*</span>
           </label>
           <label htmlFor='image' className='cursor-pointer'>
             <img 
               src={!image ? assets.upload_area : URL.createObjectURL(image)} 
               alt='Upload preview' 
-              className='mt-2 h-16 rounded hover:opacity-80 transition-opacity'
+              className='mt-2 h-16 rounded-xl border border-border hover:opacity-80 transition-opacity duration-200'
             />
             <input 
               onChange={(e) => setImage(e.target.files[0])} 
@@ -150,20 +150,20 @@ function AddBlog() {
         {/* Blog Description with Quill Editor */}
         <div className='mb-6'>
           <label className='block mb-2 text-sm font-medium'>
-            Blog Description <span className='text-red-500'>*</span>
+            Blog Description <span className='text-destructive'>*</span>
           </label>
           <div className='max-w-lg h-74 pb-16 sm:pb-10 pt-2 relative'>
             <div ref={editorRef}></div>
             {isGenerating && (
-              <div className='absolute right-0 top-0 bottom-0 left-0 flex items-center justify-center bg-black/10 mt-2 rounded'>
-                <div className='w-8 h-8 rounded-full border-2 border-t-white border-gray-300 animate-spin'></div>
+              <div className='absolute right-0 top-0 bottom-0 left-0 flex items-center justify-center bg-foreground/10 mt-2 rounded-xl'>
+                <div className='w-8 h-8 rounded-full border-2 border-muted border-t-accent animate-spin'></div>
               </div>
             )}
             <button 
               disabled={isGenerating || !title || isCreating} 
               type='button' 
               onClick={handleGenerateContent} 
-              className='absolute bottom-1 right-2 ml-2 text-xs text-white bg-black/70 px-4 py-1.5 rounded hover:bg-black transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
+              className='absolute bottom-1 right-2 ml-2 text-xs font-medium text-primary-foreground bg-primary px-4 py-1.5 rounded-full hover:opacity-90 transition-opacity duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
             >
               {isGenerating ? 'Generating...' : 'Generate with AI'}
             </button>
@@ -173,13 +173,13 @@ function AddBlog() {
         {/* Blog Category */}
         <div className='mb-6'>
           <label className='block mb-2 text-sm font-medium'>
-            Blog Category <span className='text-red-500'>*</span>
+            Blog Category <span className='text-destructive'>*</span>
           </label>
           <select 
             onChange={(e) => setCategory(e.target.value)} 
             value={category}
             name='category' 
-            className='mt-2 px-3 py-2 border text-gray-500 border-gray-300 outline-none rounded w-full max-w-lg focus:border-primary transition-colors'
+            className='mt-2 px-4 py-2.5 border border-input bg-card text-foreground outline-none rounded-xl w-full max-w-lg focus:border-accent focus:ring-4 focus:ring-accent/25 transition-colors duration-200'
             disabled={isCreating}
           >
             {BLOG_CATEGORIES.filter(cat => cat !== 'All').map((item, index) => (
@@ -194,7 +194,7 @@ function AddBlog() {
             type='checkbox' 
             id='isPublished'
             checked={isPublished} 
-            className='scale-125 cursor-pointer' 
+            className='scale-125 cursor-pointer accent-accent' 
             onChange={(e) => setIsPublished(e.target.checked)}
             disabled={isCreating}
           />

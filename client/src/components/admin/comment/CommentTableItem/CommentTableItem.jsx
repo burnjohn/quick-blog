@@ -23,17 +23,17 @@ function CommentTableItem({ comment, onUpdate }) {
   }
 
   return (
-    <tr className='border-y border-gray-300 hover:bg-gray-50 transition-colors'>
+    <tr className='border-t border-border hover:bg-muted/60 transition-colors duration-200'>
       <td className='px-6 py-4'>
         <div className='space-y-2'>
           <p>
-            <span className='font-medium text-gray-600'>Blog:</span> {blog.title}
+            <span className='font-medium text-foreground'>Blog:</span> {blog.title}
           </p>
           <p>
-            <span className='font-medium text-gray-600'>Name:</span> {comment.name}
+            <span className='font-medium text-foreground'>Name:</span> {comment.name}
           </p>
           <p>
-            <span className='font-medium text-gray-600'>Comment:</span> {comment.content}
+            <span className='font-medium text-foreground'>Comment:</span> {comment.content}
           </p>
         </div>
       </td>
@@ -46,7 +46,7 @@ function CommentTableItem({ comment, onUpdate }) {
             <button
               onClick={handleApprove}
               disabled={inProgress}
-              className='hover:scale-110 transition-transform disabled:opacity-50 disabled:cursor-not-allowed'
+              className='inline-flex items-center justify-center w-8 h-8 rounded-full cursor-pointer hover:bg-muted transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
               aria-label='Approve comment'
             >
               <img src={assets.tick_icon} className='w-5' alt='' />
@@ -59,7 +59,7 @@ function CommentTableItem({ comment, onUpdate }) {
           <button
             onClick={handleDelete}
             disabled={inProgress}
-            className='hover:scale-110 transition-transform disabled:opacity-50 disabled:cursor-not-allowed'
+            className='inline-flex items-center justify-center w-8 h-8 rounded-full cursor-pointer hover:bg-muted transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
             aria-label='Delete comment'
           >
             <img src={assets.bin_icon} alt='' className='w-5' />

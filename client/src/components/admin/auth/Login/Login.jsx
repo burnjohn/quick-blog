@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useAppContext } from '../../../../context/AppContext'
 import { adminApi } from '../../../../api'
-import { Button, Input } from '../../../ui'
+import { Button, Input, ThemeToggle } from '../../../ui'
 import toast from 'react-hot-toast'
 import { MESSAGES } from '../../../../constants/messages'
 
@@ -33,17 +33,18 @@ function Login() {
   }
 
   return (
-    <div className='flex items-center justify-center h-screen'>
-      <div className='w-full max-w-sm p-6 max-md:m-6 border border-primary/30 shadow-xl shadow-primary/15 rounded-lg'>
+    <div className='relative flex items-center justify-center min-h-screen px-6 bg-linear-to-b from-hero-from to-hero-to'>
+      <ThemeToggle className='absolute top-5 right-5' />
+      <div className='w-full max-w-sm p-8 bg-card text-card-foreground border border-border shadow-card rounded-3xl'>
         <div className='flex flex-col items-center justify-center'>
           <div className='w-full py-6 text-center'>
-            <h1 className='text-3xl font-bold'>
-              <span className='text-primary'>Admin</span> Login
+            <h1 className='font-display text-3xl font-bold tracking-tight'>
+              <span className='text-accent'>Admin</span> Login
             </h1>
-            <p className='font-light'>Enter your credentials to access the admin panel</p>
+            <p className='mt-2 text-sm text-muted-foreground'>Enter your credentials to access the admin panel</p>
           </div>
           
-          <form onSubmit={handleSubmit} className='mt-6 w-full sm:max-w-md text-gray-600'>
+          <form onSubmit={handleSubmit} className='mt-4 w-full sm:max-w-md space-y-5'>
             <Input
               label='Email'
               type='email'
@@ -51,7 +52,6 @@ function Login() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder='your email id'
               required
-              className='border-b-2 border-gray-300 mb-6 rounded-none border-x-0 border-t-0'
             />
             
             <Input
@@ -61,7 +61,6 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder='your password'
               required
-              className='border-b-2 border-gray-300 mb-6 rounded-none border-x-0 border-t-0'
             />
             
             <Button 
@@ -69,7 +68,7 @@ function Login() {
               variant='primary'
               fullWidth
               loading={loading}
-              className='py-3'
+              className='py-3 mt-2'
             >
               Login
             </Button>

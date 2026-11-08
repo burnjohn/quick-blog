@@ -13,7 +13,15 @@ function App() {
 
   return (
     <div>
-      <Toaster />
+      <Toaster
+        toastOptions={{
+          style: {
+            background: 'var(--card)',
+            color: 'var(--card-foreground)',
+            border: '1px solid var(--border)'
+          }
+        }}
+      />
       <Routes>
         <Route path={ROUTES.HOME} element={<Home />} />
         <Route path={ROUTES.BLOG_DETAIL} element={<BlogDetail />} />

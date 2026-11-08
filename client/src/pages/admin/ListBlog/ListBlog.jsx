@@ -11,12 +11,12 @@ function ListBlog() {
   }
 
   return (
-    <div className='flex-1 pt-5 px-5 sm:pt-12 sm:pl-16 bg-blue-50/50 h-full min-h-full'>
-      <h1 className='text-2xl font-semibold mb-4'>All Blogs</h1>
+    <div className='flex-1 pt-5 px-5 sm:pt-12 sm:pl-16 bg-background h-full min-h-full'>
+      <h1 className='font-display text-3xl font-bold tracking-tight text-foreground mb-4'>All Blogs</h1>
 
-      <div className='relative h-4/5 mt-4 max-w-4xl overflow-x-auto shadow rounded-lg scrollbar-hide bg-white'>
-        <table className='w-full text-sm text-gray-500'>
-          <thead className='text-xs text-gray-600 text-left uppercase bg-gray-50'>
+      <div className='relative h-4/5 mt-4 max-w-4xl overflow-x-auto rounded-2xl border border-border shadow-card scrollbar-hide bg-card'>
+        <table className='w-full text-sm text-muted-foreground'>
+          <thead className='text-xs tracking-wider text-muted-foreground text-left uppercase bg-muted'>
             <tr>
               <th scope='col' className='px-2 py-4 xl:px-6'>#</th>
               <th scope='col' className='px-2 py-4'>Blog Title</th>
@@ -28,7 +28,7 @@ function ListBlog() {
           <tbody>
             {blogs.length === 0 ? (
               <tr>
-                <td colSpan='5' className='text-center py-8 text-gray-400'>
+                <td colSpan='5' className='text-center py-8 text-muted-foreground'>
                   No blogs found
                 </td>
               </tr>
