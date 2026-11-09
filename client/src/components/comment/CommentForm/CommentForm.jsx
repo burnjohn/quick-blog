@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Button from '../../ui/Button'
 import Input from '../../ui/Input'
 import Textarea from '../../ui/Textarea'
+import Panel from '../../ui/Panel'
 
 function CommentForm({ onSubmit, loading = false }) {
   const [name, setName] = useState('')
@@ -19,9 +20,9 @@ function CommentForm({ onSubmit, loading = false }) {
   }
 
   return (
-    <div className='max-w-3xl mx-auto'>
-      <p className='font-semibold mb-4'>Add your comment</p>
-      <form onSubmit={handleSubmit} className='flex flex-col items-start gap-4 max-w-lg'>
+    <Panel className='mx-5 max-w-[72ch] p-6 sm:p-8 md:mx-auto'>
+      <p className='font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted mb-5'>Add your comment</p>
+      <form onSubmit={handleSubmit} className='flex flex-col items-start gap-4'>
         <Input
           type='text'
           placeholder='Name'
@@ -46,7 +47,7 @@ function CommentForm({ onSubmit, loading = false }) {
           Submit
         </Button>
       </form>
-    </div>
+    </Panel>
   )
 }
 
