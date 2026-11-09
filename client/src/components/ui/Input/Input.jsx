@@ -13,25 +13,25 @@ function Input({
   return (
     <div className={classNames('w-full', containerClassName)}>
       {label && (
-        <label className='block mb-2 text-sm font-medium text-gray-700'>
+        <label className='block mb-2 font-mono text-xs uppercase tracking-[0.14em] text-muted'>
           {label}
-          {required && <span className='text-red-500 ml-1'>*</span>}
+          {required && <span className='text-lime ml-1'>*</span>}
         </label>
       )}
       <input
         type={type}
         required={required}
         className={classNames(
-          'w-full p-2 border rounded outline-none transition-colors',
+          'w-full px-4 py-3 rounded-xl border bg-white/[0.04] text-ink outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
           error 
-            ? 'border-red-500 focus:border-red-600' 
-            : 'border-gray-300 focus:border-primary',
+            ? 'border-rose-400/60 focus:border-rose-400' 
+            : 'border-white/10 hover:border-white/20 focus:border-primary focus:bg-white/[0.06]',
           className
         )}
         {...props}
       />
       {error && (
-        <p className='mt-1 text-sm text-red-500'>{error}</p>
+        <p className='mt-1.5 text-sm text-rose-300'>{error}</p>
       )}
     </div>
   )

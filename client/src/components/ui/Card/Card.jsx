@@ -12,8 +12,8 @@ function Card({
     <div
       onClick={onClick}
       className={classNames(
-        'rounded-lg overflow-hidden shadow bg-white',
-        hover && 'hover:scale-102 hover:shadow-primary/25 transition-all duration-300',
+        'group relative rounded-3xl overflow-hidden border border-white/10 bg-white/[0.03] backdrop-blur-md',
+        hover && 'transition-all duration-500 ease-out hover:-translate-y-1 hover:border-primary/40 hover:shadow-glow',
         onClick && 'cursor-pointer',
         className
       )}
@@ -29,7 +29,7 @@ Card.Image = function CardImage({ src, alt, className = '' }) {
     <img 
       src={src} 
       alt={alt} 
-      className={classNames('aspect-video w-full object-cover', className)} 
+      className={classNames('aspect-video w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105', className)} 
     />
   )
 }
@@ -37,7 +37,7 @@ Card.Image = function CardImage({ src, alt, className = '' }) {
 Card.Badge = function CardBadge({ children, className = '' }) {
   return (
     <span className={classNames(
-      'ml-5 mt-4 px-3 py-1 inline-block bg-primary/20 rounded-full text-primary text-xs',
+      'px-3 py-1 inline-block rounded-full border border-cyan/30 bg-cyan/10 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-cyan',
       className
     )}>
       {children}
@@ -55,7 +55,7 @@ Card.Body = function CardBody({ children, className = '' }) {
 
 Card.Title = function CardTitle({ children, className = '' }) {
   return (
-    <h5 className={classNames('mb-2 font-medium text-gray-900', className)}>
+    <h5 className={classNames('mb-2 font-display text-xl font-medium leading-snug tracking-tight text-ink', className)}>
       {children}
     </h5>
   )
@@ -63,7 +63,7 @@ Card.Title = function CardTitle({ children, className = '' }) {
 
 Card.Description = function CardDescription({ children, className = '' }) {
   return (
-    <p className={classNames('mb-3 text-xs text-gray-600', className)}>
+    <p className={classNames('mb-3 text-sm leading-relaxed text-muted', className)}>
       {children}
     </p>
   )
