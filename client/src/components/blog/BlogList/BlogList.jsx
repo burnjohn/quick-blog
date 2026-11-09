@@ -27,13 +27,17 @@ function BlogList() {
   }, [blogs, input, activeCategory])
 
   return (
-    <div>
+    <section aria-label='Latest posts' className='mx-auto max-w-7xl px-6 py-16 sm:px-10'>
+      <div className='flex items-center justify-between border-b border-white/10 pb-4 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted'>
+        <span>[ 02 ] LATEST</span>
+        <span>{String(filteredBlogs.length).padStart(2, '0')} ENTRIES</span>
+      </div>
       <CategoryFilter 
         activeCategory={activeCategory}
         onCategoryChange={setActiveCategory}
       />
       <BlogGrid blogs={filteredBlogs} />
-    </div>
+    </section>
   )
 }
 
