@@ -6,13 +6,15 @@ import { NewsletterForm } from '../../../components/forms'
 
 function Home() {
   return (
-    <>
+    <div className='overflow-x-clip'>
       <Navbar />
-      <Header />
-      <BlogList />
-      <NewsletterForm />
+      <main>
+        <Header />
+        <BlogList />
+        <NewsletterForm />
+      </main>
       <Footer />
-    </>
+    </div>
   )
 }
 

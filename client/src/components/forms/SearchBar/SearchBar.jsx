@@ -23,19 +23,19 @@ function SearchBar({ onSearch, onClear, hasSearchTerm = false }) {
     <div>
       <form 
         onSubmit={handleSubmit} 
-        className='flex justify-between max-w-lg max-sm:scale-75 mx-auto border border-gray-300 bg-white rounded overflow-hidden'
+        className='mx-auto flex max-w-xl items-center justify-between overflow-hidden rounded-full border border-white/10 bg-white/[0.05] p-1.5 backdrop-blur-xl transition focus-within:border-primary/50 focus-within:shadow-glow'
       >
         <input 
           ref={inputRef}
           type='text' 
           placeholder='Search for blogs' 
           required 
-          className='w-full pl-4 outline-none'
+          className='w-full min-w-0 bg-transparent pl-5 text-ink outline-none placeholder:text-muted'
         />
         <Button 
           type='submit' 
           variant='primary'
-          className='m-1.5'
+          className='shrink-0'
         >
           Search
         </Button>
@@ -45,7 +45,7 @@ function SearchBar({ onSearch, onClear, hasSearchTerm = false }) {
         <div className='text-center mt-4'>
           <button 
             onClick={handleClear}
-            className='border font-light text-xs py-1 px-3 rounded-sm shadow-custom-sm cursor-pointer hover:bg-gray-50 transition-colors'
+            className='cursor-pointer rounded-full border border-white/15 px-4 py-1.5 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-ink transition-colors hover:border-lime hover:text-lime'
           >
             Clear Search
           </button>
