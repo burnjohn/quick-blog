@@ -4,24 +4,27 @@ import Badge from '../../ui/Badge'
 
 function BlogHeader({ blog, author = 'Michael Brown' }) {
   return (
-    <div className='text-center mt-20 text-gray-600'>
-      <p className='text-primary py-4 font-medium'>
-        Published on {formatDate(blog.createdAt)}
-      </p>
-      <h1 className='text-2xl sm:text-5xl font-semibold max-w-2xl mx-auto text-gray-800'>
+    <header className='mx-5 mt-28 sm:mt-36 max-w-5xl md:mx-auto'>
+      <div className='flex flex-wrap items-center gap-3'>
+        <span className='size-1.5 rounded-full bg-lime' aria-hidden='true' />
+        <p className='font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted'>
+          Published on {formatDate(blog.createdAt)}
+        </p>
+      </div>
+      <h1 className='mt-6 font-display text-[clamp(2.5rem,8vw,6.5rem)] font-semibold leading-[0.95] tracking-tighter text-ink break-words'>
         {blog.title}
       </h1>
       {blog.subTitle && (
-        <h2 className='my-5 max-w-lg truncate mx-auto'>
+        <h2 className='mt-6 max-w-2xl text-lg sm:text-xl text-muted'>
           {blog.subTitle}
         </h2>
       )}
-      <Badge variant='primary' className='mb-6'>
-        {author}
-      </Badge>
-    </div>
+      <div className='mt-8 flex flex-wrap items-center gap-2 border-t border-white/10 pt-6'>
+        {blog.category && <Badge variant='secondary'>{blog.category}</Badge>}
+        <Badge variant='primary'>{author}</Badge>
+      </div>
+    </header>
   )
 }
 
 export default BlogHeader
-
