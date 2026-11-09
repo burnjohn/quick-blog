@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useAppContext } from '../../../../context/AppContext'
 import { adminApi } from '../../../../api'
-import { Button, Input } from '../../../ui'
+import { Button, Input, Panel } from '../../../ui'
 import toast from 'react-hot-toast'
 import { MESSAGES } from '../../../../constants/messages'
 
@@ -33,49 +33,49 @@ function Login() {
   }
 
   return (
-    <div className='flex items-center justify-center h-screen'>
-      <div className='w-full max-w-sm p-6 max-md:m-6 border border-primary/30 shadow-xl shadow-primary/15 rounded-lg'>
-        <div className='flex flex-col items-center justify-center'>
-          <div className='w-full py-6 text-center'>
-            <h1 className='text-3xl font-bold'>
-              <span className='text-primary'>Admin</span> Login
-            </h1>
-            <p className='font-light'>Enter your credentials to access the admin panel</p>
-          </div>
-          
-          <form onSubmit={handleSubmit} className='mt-6 w-full sm:max-w-md text-gray-600'>
-            <Input
-              label='Email'
-              type='email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder='your email id'
-              required
-              className='border-b-2 border-gray-300 mb-6 rounded-none border-x-0 border-t-0'
-            />
-            
-            <Input
-              label='Password'
-              type='password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder='your password'
-              required
-              className='border-b-2 border-gray-300 mb-6 rounded-none border-x-0 border-t-0'
-            />
-            
-            <Button 
-              type='submit' 
-              variant='primary'
-              fullWidth
-              loading={loading}
-              className='py-3'
-            >
-              Login
-            </Button>
-          </form>
+    <div className='flex min-h-screen items-center justify-center p-4'>
+      <Panel variant='strong' className='w-full max-w-sm p-6 sm:p-8 shadow-glow'>
+        <p className='flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted'>
+          <span className='size-1.5 rounded-full bg-lime' />
+          SYS / ADMIN
+        </p>
+        <div className='py-6'>
+          <h1 className='font-display text-4xl font-bold tracking-tighter leading-[0.95] text-ink'>
+            Admin Login
+          </h1>
+          <p className='mt-3 font-light text-muted'>Enter your credentials to access the admin panel</p>
         </div>
-      </div>
+
+        <form onSubmit={handleSubmit} className='w-full space-y-5'>
+          <Input
+            label='Email'
+            type='email'
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder='your email id'
+            required
+          />
+
+          <Input
+            label='Password'
+            type='password'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder='your password'
+            required
+          />
+
+          <Button
+            type='submit'
+            variant='primary'
+            fullWidth
+            loading={loading}
+            className='py-3'
+          >
+            Login
+          </Button>
+        </form>
+      </Panel>
     </div>
   )
 }
