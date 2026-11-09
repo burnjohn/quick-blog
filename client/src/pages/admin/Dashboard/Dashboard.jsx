@@ -16,7 +16,7 @@ function Dashboard() {
       {/* Stats Cards */}
       <div className='grid gap-4 sm:grid-cols-3 max-w-4xl'>
         <Panel className='flex items-center gap-4 p-5 transition-colors duration-300 hover:border-white/20'>
-          <img src={assets.dashboard_icon_1} alt='' className='size-10 invert opacity-80' />
+          <img src={assets.dashboard_icon_1} alt='' className='size-10 invert hue-rotate-180 opacity-90' />
           <div>
             <p className='font-mono text-3xl font-semibold text-ink'>{dashboardData.blogs}</p>
             <p className='font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted'>Blogs</p>
@@ -24,7 +24,7 @@ function Dashboard() {
         </Panel>
 
         <Panel className='flex items-center gap-4 p-5 transition-colors duration-300 hover:border-white/20'>
-          <img src={assets.dashboard_icon_2} alt='' className='size-10 invert opacity-80' />
+          <img src={assets.dashboard_icon_2} alt='' className='size-10 invert hue-rotate-180 opacity-90' />
           <div>
             <p className='font-mono text-3xl font-semibold text-ink'>{dashboardData.comments}</p>
             <p className='font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted'>Comments</p>
@@ -32,7 +32,7 @@ function Dashboard() {
         </Panel>
 
         <Panel className='flex items-center gap-4 p-5 transition-colors duration-300 hover:border-white/20'>
-          <img src={assets.dashboard_icon_3} alt='' className='size-10 invert opacity-80' />
+          <img src={assets.dashboard_icon_3} alt='' className='size-10 invert hue-rotate-180 opacity-90' />
           <div>
             <p className='font-mono text-3xl font-semibold text-ink'>{dashboardData.drafts}</p>
             <p className='font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted'>Drafts</p>
@@ -43,7 +43,7 @@ function Dashboard() {
       {/* Latest Blogs */}
       <div className='max-w-4xl'>
         <div className='mb-4 mt-8 flex items-center gap-3'>
-          <img src={assets.dashboard_icon_4} alt='' className='size-6 invert opacity-80' />
+          <img src={assets.dashboard_icon_4} alt='' className='size-6 invert hue-rotate-180 opacity-90' />
           <p className='font-display text-lg font-semibold tracking-tight text-ink'>Latest Blogs</p>
         </div>
 
