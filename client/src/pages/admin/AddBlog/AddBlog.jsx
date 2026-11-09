@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Quill from 'quill'
 import toast from 'react-hot-toast'
-import { assets } from '../../../assets/assets'
 import { BLOG_CATEGORIES } from '../../../constants/categories'
-import { Button, Input } from '../../../components/ui'
+import { Button, Input, Panel } from '../../../components/ui'
+import ThumbnailUpload from './ThumbnailUpload'
+import DescriptionEditor from './DescriptionEditor'
 import { useBlogGenerator, useCreateBlog } from '../../../hooks'
 
 function AddBlog() {
@@ -58,18 +59,6 @@ function AddBlog() {
       return
     }
 
-    // Debug logging
-    console.log('Form submission:', {
-      title,
-      subTitle,
-      category,
-      isPublished,
-      imageType: typeof image,
-      imageFile: image,
-      imageName: image?.name,
-      imageSize: image?.size
-    })
-
     const blog = {
       title,
       subTitle,
@@ -99,87 +88,53 @@ function AddBlog() {
   }, [])
 
   return (
-    <form 
+    <form
       onSubmit={onSubmitHandler}
       noValidate
-      className='flex-1 bg-blue-50/50 text-gray-600 h-full overflow-scroll'
+      className='max-w-3xl p-4 md:p-10'
     >
-      <div className='bg-white w-full max-w-3xl p-4 md:p-10 sm:m-10 shadow rounded'>
-        
-        {/* Image Upload */}
-        <div className='mb-6'>
-          <label className='block mb-2 text-sm font-medium'>
-            Upload Thumbnail <span className='text-red-500'>*</span>
-          </label>
-          <label htmlFor='image' className='cursor-pointer'>
-            <img 
-              src={!image ? assets.upload_area : URL.createObjectURL(image)} 
-              alt='Upload preview' 
-              className='mt-2 h-16 rounded hover:opacity-80 transition-opacity'
-            />
-            <input 
-              onChange={(e) => setImage(e.target.files[0])} 
-              type='file' 
-              id='image' 
-              hidden 
-              accept='image/*'
-            />
-          </label>
-        </div>
+      <p className='font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted'>SYS / NEW ENTRY</p>
+      <h1 className='mb-6 mt-2 font-display text-3xl font-bold tracking-tighter text-ink'>Add Blog</h1>
 
-        {/* Blog Title */}
+      <Panel className='mb-4 space-y-6 p-5 md:p-8'>
+        <ThumbnailUpload image={image} onChange={(e) => setImage(e.target.files[0])} />
+
         <Input
           label='Blog Title'
           type='text'
           placeholder='Type here'
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          containerClassName='mb-6'
         />
 
-        {/* Sub Title */}
         <Input
           label='Sub Title'
           type='text'
           placeholder='Type here'
           value={subTitle}
           onChange={(e) => setSubTitle(e.target.value)}
-          containerClassName='mb-6'
+        />
+      </Panel>
+
+      <Panel className='mb-4 space-y-6 p-5 md:p-8'>
+        <DescriptionEditor
+          editorRef={editorRef}
+          isGenerating={isGenerating}
+          isCreating={isCreating}
+          title={title}
+          onGenerate={handleGenerateContent}
         />
 
-        {/* Blog Description with Quill Editor */}
-        <div className='mb-6'>
-          <label className='block mb-2 text-sm font-medium'>
-            Blog Description <span className='text-red-500'>*</span>
+        <div>
+          <label htmlFor='category' className='mb-2 block font-mono text-xs uppercase tracking-[0.14em] text-muted'>
+            Blog Category <span className='text-lime'>*</span>
           </label>
-          <div className='max-w-lg h-74 pb-16 sm:pb-10 pt-2 relative'>
-            <div ref={editorRef}></div>
-            {isGenerating && (
-              <div className='absolute right-0 top-0 bottom-0 left-0 flex items-center justify-center bg-black/10 mt-2 rounded'>
-                <div className='w-8 h-8 rounded-full border-2 border-t-white border-gray-300 animate-spin'></div>
-              </div>
-            )}
-            <button 
-              disabled={isGenerating || !title || isCreating} 
-              type='button' 
-              onClick={handleGenerateContent} 
-              className='absolute bottom-1 right-2 ml-2 text-xs text-white bg-black/70 px-4 py-1.5 rounded hover:bg-black transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
-            >
-              {isGenerating ? 'Generating...' : 'Generate with AI'}
-            </button>
-          </div>
-        </div>
-
-        {/* Blog Category */}
-        <div className='mb-6'>
-          <label className='block mb-2 text-sm font-medium'>
-            Blog Category <span className='text-red-500'>*</span>
-          </label>
-          <select 
-            onChange={(e) => setCategory(e.target.value)} 
+          <select
+            id='category'
+            onChange={(e) => setCategory(e.target.value)}
             value={category}
-            name='category' 
-            className='mt-2 px-3 py-2 border text-gray-500 border-gray-300 outline-none rounded w-full max-w-lg focus:border-primary transition-colors'
+            name='category'
+            className='w-full max-w-lg rounded-xl border border-white/10 bg-surface px-4 py-3 text-ink outline-none transition-colors hover:border-white/20 focus:border-primary disabled:opacity-50'
             disabled={isCreating}
           >
             {BLOG_CATEGORIES.filter(cat => cat !== 'All').map((item, index) => (
@@ -188,32 +143,30 @@ function AddBlog() {
           </select>
         </div>
 
-        {/* Publish Checkbox */}
-        <div className='flex items-center gap-2 mb-8'>
-          <input 
-            type='checkbox' 
+        <div className='flex items-center gap-3'>
+          <input
+            type='checkbox'
             id='isPublished'
-            checked={isPublished} 
-            className='scale-125 cursor-pointer' 
+            checked={isPublished}
+            className='size-5 cursor-pointer accent-lime'
             onChange={(e) => setIsPublished(e.target.checked)}
             disabled={isCreating}
           />
-          <label htmlFor='isPublished' className='cursor-pointer select-none'>
+          <label htmlFor='isPublished' className='cursor-pointer select-none text-ink'>
             Publish Now
           </label>
         </div>
+      </Panel>
 
-        {/* Submit Button */}
-        <Button 
-          type='submit' 
-          variant='primary'
-          loading={isCreating}
-          disabled={isCreating || isGenerating}
-          className='w-40'
-        >
-          Add Blog
-        </Button>
-      </div>
+      <Button
+        type='submit'
+        variant='primary'
+        loading={isCreating}
+        disabled={isCreating || isGenerating}
+        className='w-40'
+      >
+        Add Blog
+      </Button>
     </form>
   )
 }
