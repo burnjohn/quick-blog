@@ -1,5 +1,4 @@
 import React from 'react'
-import { assets } from '../../../../assets/assets'
 import { useBlogActions } from '../../../../hooks'
 import { formatDate } from '../../../../utils/formatters'
 
@@ -22,31 +21,31 @@ function BlogTableItem({ blog, onUpdate, index }) {
   }
 
   return (
-    <tr className='border-y border-gray-300 hover:bg-gray-50 transition-colors'>
-      <th className='px-2 py-4 font-normal'>{index}</th>
-      <td className='px-2 py-4'>{title}</td>
+    <tr className='text-muted transition-colors hover:bg-white/[0.04]'>
+      <th className='px-2 py-4 font-mono font-normal text-faint xl:px-6'>{index}</th>
+      <td className='px-2 py-4 text-ink'>{title}</td>
       <td className='px-2 py-4 max-sm:hidden'>{formatDate(createdAt)}</td>
       <td className='px-2 py-4 max-sm:hidden'>
-        <span className={blog.isPublished ? 'text-green-600' : 'text-orange-700'}>
+        <span className={`inline-block w-28 font-mono text-xs uppercase tracking-wider ${blog.isPublished ? 'text-lime' : 'text-ember'}`}>
           {blog.isPublished ? 'Published' : 'Unpublished'}
         </span>
       </td>
       <td className='px-2 py-4'>
-        <div className='flex items-center text-xs gap-3'>
-          <button 
+        <div className='flex items-center gap-2 text-xs'>
+          <button
             onClick={handleTogglePublish}
             disabled={inProgress}
-            className='border px-2 py-1 rounded cursor-pointer hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+            className='w-24 cursor-pointer rounded-full border border-white/15 bg-white/5 px-3 py-1 text-center text-ink transition-colors hover:border-white/30 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50'
           >
             {blog.isPublished ? 'Unpublish' : 'Publish'}
           </button>
           <button
             onClick={handleDelete}
             disabled={inProgress}
-            className='hover:scale-110 transition-transform disabled:opacity-50 disabled:cursor-not-allowed'
+            className='grid size-8 cursor-pointer place-items-center rounded-full border border-rose-400/30 bg-rose-500/10 transition hover:border-rose-400/60 hover:bg-ember/10 disabled:cursor-not-allowed disabled:opacity-50'
             aria-label='Delete blog'
           >
-            <img src={assets.cross_icon} className='w-8' alt='' />
+            <svg viewBox='0 0 24 24' aria-hidden='true' className='size-3.5 fill-none stroke-rose-300 stroke-2 [stroke-linecap:round]'><path d='M6 6l12 12M18 6L6 18' /></svg>
           </button>
         </div>
       </td>

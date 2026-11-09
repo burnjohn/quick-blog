@@ -1,7 +1,7 @@
 import React from 'react'
 import { assets } from '../../../assets/assets'
 import { BlogTableItem } from '../../../components/admin'
-import { Loader } from '../../../components/ui'
+import { Loader, Panel } from '../../../components/ui'
 import { useAdminDashboard } from '../../../hooks'
 
 function Dashboard() {
@@ -12,72 +12,74 @@ function Dashboard() {
   }
 
   return (
-    <div className='flex-1 p-4 md:p-10 bg-blue-50/50 h-full min-h-full'>
+    <div className='p-4 md:p-10'>
       {/* Stats Cards */}
-      <div className='flex flex-wrap gap-4'>
-        <div className='flex items-center gap-4 bg-white p-4 min-w-58 rounded shadow cursor-pointer hover:scale-105 transition-all'>
-          <img src={assets.dashboard_icon_1} alt='' />
+      <div className='grid gap-4 sm:grid-cols-3 max-w-4xl'>
+        <Panel className='flex items-center gap-4 p-5 transition-colors duration-300 hover:border-white/20'>
+          <img src={assets.dashboard_icon_1} alt='' className='size-10 invert hue-rotate-180 opacity-90' />
           <div>
-            <p className='text-xl font-semibold text-gray-600'>{dashboardData.blogs}</p>
-            <p className='text-gray-400 font-light'>Blogs</p>
+            <p className='font-mono text-3xl font-semibold text-ink'>{dashboardData.blogs}</p>
+            <p className='font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted'>Blogs</p>
           </div>
-        </div>
+        </Panel>
 
-        <div className='flex items-center gap-4 bg-white p-4 min-w-58 rounded shadow cursor-pointer hover:scale-105 transition-all'>
-          <img src={assets.dashboard_icon_2} alt='' />
+        <Panel className='flex items-center gap-4 p-5 transition-colors duration-300 hover:border-white/20'>
+          <img src={assets.dashboard_icon_2} alt='' className='size-10 invert hue-rotate-180 opacity-90' />
           <div>
-            <p className='text-xl font-semibold text-gray-600'>{dashboardData.comments}</p>
-            <p className='text-gray-400 font-light'>Comments</p>
+            <p className='font-mono text-3xl font-semibold text-ink'>{dashboardData.comments}</p>
+            <p className='font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted'>Comments</p>
           </div>
-        </div>
+        </Panel>
 
-        <div className='flex items-center gap-4 bg-white p-4 min-w-58 rounded shadow cursor-pointer hover:scale-105 transition-all'>
-          <img src={assets.dashboard_icon_3} alt='' />
+        <Panel className='flex items-center gap-4 p-5 transition-colors duration-300 hover:border-white/20'>
+          <img src={assets.dashboard_icon_3} alt='' className='size-10 invert hue-rotate-180 opacity-90' />
           <div>
-            <p className='text-xl font-semibold text-gray-600'>{dashboardData.drafts}</p>
-            <p className='text-gray-400 font-light'>Drafts</p>
+            <p className='font-mono text-3xl font-semibold text-ink'>{dashboardData.drafts}</p>
+            <p className='font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted'>Drafts</p>
           </div>
-        </div>
+        </Panel>
       </div>
 
       {/* Latest Blogs */}
-      <div>
-        <div className='flex items-center gap-3 m-4 mt-6 text-gray-600'>
-          <img src={assets.dashboard_icon_4} alt='' />
-          <p className='font-semibold'>Latest Blogs</p>
+      <div className='max-w-4xl'>
+        <div className='mb-4 mt-8 flex items-center gap-3'>
+          <img src={assets.dashboard_icon_4} alt='' className='size-6 invert hue-rotate-180 opacity-90' />
+          <p className='font-display text-lg font-semibold tracking-tight text-ink'>Latest Blogs</p>
         </div>
 
-        <div className='relative max-w-4xl overflow-x-auto shadow rounded-lg scrollbar-hide bg-white'>
-          <table className='w-full text-sm text-gray-500'>
-            <thead className='text-xs text-gray-600 text-left uppercase bg-gray-50'>
-              <tr>
-                <th scope='col' className='px-2 py-4 xl:px-6'>#</th>
-                <th scope='col' className='px-2 py-4'>Blog Title</th>
-                <th scope='col' className='px-2 py-4 max-sm:hidden'>Date</th>
-                <th scope='col' className='px-2 py-4 max-sm:hidden'>Status</th>
-                <th scope='col' className='px-2 py-4'>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dashboardData.recentBlogs.length === 0 ? (
+        <Panel className='overflow-hidden'>
+          <div className='overflow-x-auto'>
+            <table className='w-full text-sm'>
+              <thead className='border-b border-white/10 text-left'>
                 <tr>
-                  <td colSpan='5' className='text-center py-8 text-gray-400'>
-                    No blogs found
-                  </td>
+                  <th scope='col' className='px-2 py-4 font-mono text-[0.7rem] font-normal uppercase tracking-[0.2em] text-muted xl:px-6'>#</th>
+                  <th scope='col' className='px-2 py-4 font-mono text-[0.7rem] font-normal uppercase tracking-[0.2em] text-muted'>Blog Title</th>
+                  <th scope='col' className='px-2 py-4 font-mono text-[0.7rem] font-normal uppercase tracking-[0.2em] text-muted max-sm:hidden'>Date</th>
+                  <th scope='col' className='px-2 py-4 font-mono text-[0.7rem] font-normal uppercase tracking-[0.2em] text-muted max-sm:hidden'>Status</th>
+                  <th scope='col' className='px-2 py-4 font-mono text-[0.7rem] font-normal uppercase tracking-[0.2em] text-muted'>Actions</th>
                 </tr>
-              ) : (
-                dashboardData.recentBlogs.map((blog, index) => (
-                  <BlogTableItem 
-                    key={blog._id} 
-                    blog={blog} 
-                    onUpdate={refetch}
-                    index={index + 1}
-                  />
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className='divide-y divide-white/10'>
+                {dashboardData.recentBlogs.length === 0 ? (
+                  <tr>
+                    <td colSpan='5' className='py-8 text-center text-muted'>
+                      No blogs found
+                    </td>
+                  </tr>
+                ) : (
+                  dashboardData.recentBlogs.map((blog, index) => (
+                    <BlogTableItem
+                      key={blog._id}
+                      blog={blog}
+                      onUpdate={refetch}
+                      index={index + 1}
+                    />
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Panel>
       </div>
     </div>
   )

@@ -19,28 +19,25 @@ function Layout() {
   }
 
   return (
-    <>
-      <div className='flex items-center justify-between py-2 h-[70px] px-4 sm:px-12 border-b border-gray-200 bg-white'>
-        <img 
-          src={assets.logo} 
-          alt='logo' 
-          className='w-32 sm:w-40 cursor-pointer hover:opacity-80 transition-opacity' 
+    <div className='flex h-screen flex-col'>
+      <header className='flex h-[70px] shrink-0 items-center justify-between border-b border-white/10 bg-surface/60 px-4 backdrop-blur-xl sm:px-12'>
+        <img
+          src={assets.logo}
+          alt='logo'
+          className='w-32 cursor-pointer brightness-0 invert transition-opacity hover:opacity-80 sm:w-40'
           onClick={() => navigate(ROUTES.HOME)}
         />
-        <button 
-          onClick={handleLogout}
-          className='text-sm px-8 py-2 bg-primary text-white rounded-full cursor-pointer hover:bg-primary/90 transition-colors'
-        >
+        <Button variant='secondary' size='sm' onClick={handleLogout}>
           Logout
-        </button>
-      </div>
-      <div className='flex h-[calc(100vh-70px)]'>
+        </Button>
+      </header>
+      <div className='flex min-h-0 flex-1'>
         <Sidebar />
-        <div className='flex-1 overflow-auto h-full'>
+        <main className='h-full min-w-0 flex-1 overflow-auto'>
           <Outlet />
-        </div>
+        </main>
       </div>
-    </>
+    </div>
   )
 }
 

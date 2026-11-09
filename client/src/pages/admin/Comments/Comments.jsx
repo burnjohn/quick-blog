@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import { CommentTableItem } from '../../../components/admin'
-import { Loader } from '../../../components/ui'
+import { Loader, Panel } from '../../../components/ui'
 import { useAdminComments } from '../../../hooks'
 
 function Comments() {
@@ -18,26 +18,31 @@ function Comments() {
   }
 
   return (
-    <div className='flex-1 pt-5 px-5 sm:pt-12 sm:pl-16 bg-blue-50/50 h-full min-h-full'>
-      <div className='flex justify-between items-center max-w-3xl mb-4'>
-        <h1 className='text-2xl font-semibold'>Comments</h1>
-        <div className='flex gap-4'>
+    <div className='max-w-3xl p-4 md:p-10'>
+      <div className='mb-6 flex flex-wrap items-center justify-between gap-3'>
+        <div>
+          <p className='font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted'>SYS / COMMENTS</p>
+          <h1 className='mt-2 font-display text-3xl font-bold tracking-tighter text-ink'>Comments</h1>
+        </div>
+        <div className='flex gap-3'>
           <button
             onClick={() => setFilter('Approved')}
-            className={`shadow-custom-sm border rounded-full px-4 py-1 cursor-pointer text-xs transition-colors ${
-              filter === 'Approved' 
-                ? 'text-primary border-primary bg-primary/10' 
-                : 'text-gray-700 hover:bg-gray-50'
+            aria-pressed={filter === 'Approved'}
+            className={`cursor-pointer rounded-full border px-4 py-1 text-xs transition-colors ${
+              filter === 'Approved'
+                ? 'border-primary bg-primary/10 text-primary'
+                : 'border-white/15 text-muted hover:bg-white/5 hover:text-ink'
             }`}
           >
             Approved
           </button>
           <button
             onClick={() => setFilter('Not Approved')}
-            className={`shadow-custom-sm border rounded-full px-4 py-1 cursor-pointer text-xs transition-colors ${
-              filter === 'Not Approved' 
-                ? 'text-primary border-primary bg-primary/10' 
-                : 'text-gray-700 hover:bg-gray-50'
+            aria-pressed={filter === 'Not Approved'}
+            className={`cursor-pointer rounded-full border px-4 py-1 text-xs transition-colors ${
+              filter === 'Not Approved'
+                ? 'border-primary bg-primary/10 text-primary'
+                : 'border-white/15 text-muted hover:bg-white/5 hover:text-ink'
             }`}
           >
             Not Approved
@@ -45,34 +50,36 @@ function Comments() {
         </div>
       </div>
 
-      <div className='relative h-4/5 max-w-3xl overflow-x-auto mt-4 bg-white shadow rounded-lg scrollbar-hide'>
-        <table className='w-full text-sm text-gray-500'>
-          <thead className='text-xs text-gray-700 text-left uppercase bg-gray-50'>
-            <tr>
-              <th scope='col' className='px-6 py-3'>Details</th>
-              <th scope='col' className='px-6 py-3 max-sm:hidden'>Date</th>
-              <th scope='col' className='px-6 py-3'>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredComments.length === 0 ? (
+      <Panel className='overflow-hidden'>
+        <div className='overflow-x-auto'>
+          <table className='w-full text-sm'>
+            <thead className='border-b border-white/10 text-left'>
               <tr>
-                <td colSpan='3' className='text-center py-8 text-gray-400'>
-                  No {filter.toLowerCase()} comments found
-                </td>
+                <th scope='col' className='px-4 py-3 sm:px-6 font-mono text-[0.7rem] font-normal uppercase tracking-[0.2em] text-muted'>Details</th>
+                <th scope='col' className='px-4 py-3 sm:px-6 font-mono text-[0.7rem] font-normal uppercase tracking-[0.2em] text-muted max-sm:hidden'>Date</th>
+                <th scope='col' className='px-4 py-3 sm:px-6 font-mono text-[0.7rem] font-normal uppercase tracking-[0.2em] text-muted'>Actions</th>
               </tr>
-            ) : (
-              filteredComments.map((comment) => (
-                <CommentTableItem 
-                  key={comment._id} 
-                  comment={comment} 
-                  onUpdate={refetch}
-                />
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody className='divide-y divide-white/10'>
+              {filteredComments.length === 0 ? (
+                <tr>
+                  <td colSpan='3' className='py-8 text-center text-muted'>
+                    No {filter.toLowerCase()} comments found
+                  </td>
+                </tr>
+              ) : (
+                filteredComments.map((comment) => (
+                  <CommentTableItem
+                    key={comment._id}
+                    comment={comment}
+                    onUpdate={refetch}
+                  />
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Panel>
     </div>
   )
 }

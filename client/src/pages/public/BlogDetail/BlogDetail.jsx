@@ -1,10 +1,10 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { assets } from '../../../assets/assets'
 import { Navbar, Footer } from '../../../components/layout'
 import { BlogHeader, BlogContent, SocialShare } from '../../../components/blog'
 import { CommentList, CommentForm } from '../../../components/comment'
 import { Loader } from '../../../components/ui'
+import { ReadingProgress, Reveal } from '../../../components/effects'
 import { useBlog, useComments } from '../../../hooks'
 
 function BlogDetail() {
@@ -25,24 +25,26 @@ function BlogDetail() {
   }
 
   return (
-    <div className='relative'>
-      <img 
-        src={assets.gradientBackground} 
-        alt='' 
-        className='absolute -top-50 -z-1 opacity-50'
-      />
-      
+    <div className='relative overflow-x-clip'>
+      <ReadingProgress />
+
       <Navbar />
       
       <BlogHeader blog={blog} />
       
       <BlogContent image={blog.image} content={blog.description} />
       
-      <CommentList comments={comments} />
-      
-      <CommentForm onSubmit={handleAddComment} />
-      
-      <SocialShare />
+      <Reveal>
+        <CommentList comments={comments} />
+      </Reveal>
+
+      <Reveal>
+        <CommentForm onSubmit={handleAddComment} />
+      </Reveal>
+
+      <Reveal>
+        <SocialShare />
+      </Reveal>
       
       <Footer />
     </div>

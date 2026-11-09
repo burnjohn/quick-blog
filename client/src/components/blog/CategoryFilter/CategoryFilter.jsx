@@ -1,32 +1,35 @@
 import React from 'react'
-import { motion } from 'motion/react' // eslint-disable-line no-unused-vars
+import { motion } from 'motion/react'
 import { BLOG_CATEGORIES } from '../../../constants/categories'
+
+const MotionSpan = motion.span
 
 function CategoryFilter({ activeCategory, onCategoryChange }) {
   return (
-    <div className='flex justify-center gap-4 sm:gap-8 my-10 relative'>
-      {BLOG_CATEGORIES.map((category) => (
-        <div key={category} className='relative'>
-          <button 
+    <div className='mx-auto my-10 flex max-w-full flex-wrap justify-center gap-2 px-4'>
+      {BLOG_CATEGORIES.map((category) => {
+        const isActive = activeCategory === category
+        return (
+          <button
+            key={category}
             onClick={() => onCategoryChange(category)}
-            className={`cursor-pointer text-gray-500 ${
-              activeCategory === category && 'text-white px-4 pt-0.5'
+            className={`relative cursor-pointer rounded-full border border-white/10 px-5 py-2 font-mono text-xs uppercase tracking-[0.14em] transition-colors ${
+              isActive ? 'text-void' : 'text-muted hover:text-ink'
             }`}
           >
-            {category}
-            {activeCategory === category && (
-              <motion.div 
-                layoutId='underline' 
+            {isActive && (
+              <MotionSpan
+                layoutId='underline'
                 transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                className='absolute left-0 right-0 top-0 h-7 -z-1 bg-primary rounded-full'
+                className='absolute inset-0 rounded-full bg-lime'
               />
             )}
+            <span className='relative'>{category}</span>
           </button>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }
 
 export default CategoryFilter
-

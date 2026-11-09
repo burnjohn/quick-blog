@@ -245,15 +245,28 @@ export const dashboard_data = {
 
 export const footer_data = [
       {
-          title: "Quick Links",
-          links: ["Home", "Best Sellers", "Offers & Deals", "Contact Us", "FAQs"]
+          title: "Explore",
+          links: [
+              { label: "Technology", href: "#" },
+              { label: "Startup", href: "#" },
+              { label: "Lifestyle", href: "#" },
+              { label: "Finance", href: "#" }
+          ]
       },
       {
-          title: "Need Help?",
-          links: ["Delivery Information", "Return & Refund Policy", "Payment Methods", "Track your Order", "Contact Us"]
+          title: "Platform",
+          links: [
+              { label: "Admin login", href: "/admin" },
+              { label: "Write a post", href: "/admin" },
+              { label: "Newsletter", href: "#" }
+          ]
       },
       {
-          title: "Follow Us",
-          links: ["Instagram", "Twitter", "Facebook", "YouTube"]
+          title: "Social",
+          links: [
+              { label: "Twitter", href: "#" },
+              { label: "Instagram", href: "#" },
+              { label: "Facebook", href: "#" }
+          ]
       }
   ];

@@ -2,12 +2,12 @@ import React from 'react'
 import { classNames } from '../../../utils/helpers'
 
 const variants = {
-  primary: 'bg-primary/20 text-primary border-primary/35',
-  secondary: 'bg-gray-200 text-gray-700 border-gray-300',
-  success: 'bg-green-100 text-green-700 border-green-300',
-  warning: 'bg-yellow-100 text-yellow-700 border-yellow-300',
-  danger: 'bg-red-100 text-red-700 border-red-300',
-  info: 'bg-blue-100 text-blue-700 border-blue-300'
+  primary: 'bg-primary/10 text-primary border-primary/30',
+  secondary: 'bg-white/5 text-muted border-white/10',
+  success: 'bg-lime/10 text-lime border-lime/30',
+  warning: 'bg-ember/10 text-ember border-ember/30',
+  danger: 'bg-rose-500/10 text-rose-300 border-rose-400/30',
+  info: 'bg-cyan/10 text-cyan border-cyan/30'
 }
 
 const sizes = {
@@ -26,7 +26,7 @@ function Badge({
   return (
     <span
       className={classNames(
-        'inline-block rounded-full font-medium border',
+        'inline-flex items-center gap-1.5 rounded-full border font-mono uppercase tracking-[0.14em] text-[0.7rem]',
         variants[variant],
         sizes[size],
         className
