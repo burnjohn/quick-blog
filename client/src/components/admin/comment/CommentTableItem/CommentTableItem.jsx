@@ -23,33 +23,33 @@ function CommentTableItem({ comment, onUpdate }) {
   }
 
   return (
-    <tr className='border-y border-gray-300 hover:bg-gray-50 transition-colors'>
-      <td className='px-6 py-4'>
-        <div className='space-y-2'>
+    <tr className='text-muted transition-colors hover:bg-white/[0.04]'>
+      <td className='px-4 py-4 sm:px-6'>
+        <div className='space-y-2 break-words'>
           <p>
-            <span className='font-medium text-gray-600'>Blog:</span> {blog.title}
+            <span className='font-medium text-ink'>Blog:</span> {blog.title}
           </p>
           <p>
-            <span className='font-medium text-gray-600'>Name:</span> {comment.name}
+            <span className='font-medium text-ink'>Name:</span> {comment.name}
           </p>
           <p>
-            <span className='font-medium text-gray-600'>Comment:</span> {comment.content}
+            <span className='font-medium text-ink'>Comment:</span> {comment.content}
           </p>
         </div>
       </td>
-      <td className='px-6 py-4 max-sm:hidden'>
+      <td className='px-4 py-4 sm:px-6 max-sm:hidden'>
         {formatDate(createdAt)}
       </td>
-      <td className='px-6 py-4'>
+      <td className='px-4 py-4 sm:px-6'>
         <div className='inline-flex items-center gap-4'>
           {!comment.isApproved ? (
             <button
               onClick={handleApprove}
               disabled={inProgress}
-              className='hover:scale-110 transition-transform disabled:opacity-50 disabled:cursor-not-allowed'
+              className='grid size-8 cursor-pointer place-items-center rounded-full border border-white/10 bg-white/5 transition hover:border-white/30 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50'
               aria-label='Approve comment'
             >
-              <img src={assets.tick_icon} className='w-5' alt='' />
+              <img src={assets.tick_icon} className='w-4 invert opacity-80' alt='' />
             </button>
           ) : (
             <Badge variant='success' size='sm'>
@@ -59,10 +59,10 @@ function CommentTableItem({ comment, onUpdate }) {
           <button
             onClick={handleDelete}
             disabled={inProgress}
-            className='hover:scale-110 transition-transform disabled:opacity-50 disabled:cursor-not-allowed'
+            className='grid size-8 cursor-pointer place-items-center rounded-full border border-white/10 bg-white/5 transition hover:border-white/30 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50'
             aria-label='Delete comment'
           >
-            <img src={assets.bin_icon} alt='' className='w-5' />
+            <img src={assets.bin_icon} alt='' className='w-4 invert opacity-80' />
           </button>
         </div>
       </td>
