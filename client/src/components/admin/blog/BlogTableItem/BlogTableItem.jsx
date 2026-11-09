@@ -1,5 +1,4 @@
 import React from 'react'
-import { assets } from '../../../../assets/assets'
 import { useBlogActions } from '../../../../hooks'
 import { formatDate } from '../../../../utils/formatters'
 
@@ -27,7 +26,7 @@ function BlogTableItem({ blog, onUpdate, index }) {
       <td className='px-2 py-4 text-ink'>{title}</td>
       <td className='px-2 py-4 max-sm:hidden'>{formatDate(createdAt)}</td>
       <td className='px-2 py-4 max-sm:hidden'>
-        <span className={`font-mono text-xs uppercase tracking-wider ${blog.isPublished ? 'text-lime' : 'text-ember'}`}>
+        <span className={`inline-block min-w-[11ch] font-mono text-xs uppercase tracking-wider ${blog.isPublished ? 'text-lime' : 'text-ember'}`}>
           {blog.isPublished ? 'Published' : 'Unpublished'}
         </span>
       </td>
@@ -43,10 +42,10 @@ function BlogTableItem({ blog, onUpdate, index }) {
           <button
             onClick={handleDelete}
             disabled={inProgress}
-            className='grid size-8 cursor-pointer place-items-center rounded-full border border-white/10 bg-white/5 transition hover:border-ember/50 hover:bg-ember/10 disabled:cursor-not-allowed disabled:opacity-50'
+            className='grid size-8 cursor-pointer place-items-center rounded-full border border-rose-400/30 bg-rose-500/10 transition hover:border-rose-400/60 hover:bg-ember/10 disabled:cursor-not-allowed disabled:opacity-50'
             aria-label='Delete blog'
           >
-            <img src={assets.cross_icon} className='w-5 invert opacity-80' alt='' />
+            <svg viewBox='0 0 24 24' aria-hidden='true' className='size-3.5 fill-none stroke-rose-300 stroke-2 [stroke-linecap:round]'><path d='M6 6l12 12M18 6L6 18' /></svg>
           </button>
         </div>
       </td>

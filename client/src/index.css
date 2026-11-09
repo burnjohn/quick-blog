@@ -44,6 +44,7 @@
 
 @layer base {
   html {
+    position: relative;
     color-scheme: dark;
     background-color: var(--color-void);
   }
@@ -136,9 +137,9 @@
 }
 .ql-editor { color: var(--color-ink); min-height: 16rem; }
 .ql-editor.ql-blank::before { color: var(--color-faint); font-style: normal; }
-.ql-snow .ql-stroke { stroke: #b9bdc9; }
-.ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill { fill: #b9bdc9; }
-.ql-snow .ql-picker { color: #b9bdc9; }
+.ql-snow .ql-stroke { stroke: #dfe1e8; }
+.ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill { fill: #dfe1e8; }
+.ql-snow .ql-picker { color: #dfe1e8; }
 .ql-snow .ql-picker-options { background: var(--color-surface); border-color: rgb(255 255 255 / 0.1) !important; }
 .ql-snow.ql-toolbar button:hover .ql-stroke, .ql-snow.ql-toolbar button.ql-active .ql-stroke,
 .ql-snow .ql-picker-label:hover .ql-stroke { stroke: var(--color-lime); }

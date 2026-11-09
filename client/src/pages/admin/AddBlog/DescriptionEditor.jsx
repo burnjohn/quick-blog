@@ -6,7 +6,7 @@ function DescriptionEditor({ editorRef, isGenerating, isCreating, title, onGener
       <p className='mb-2 font-mono text-xs uppercase tracking-[0.14em] text-muted'>
         Blog Description <span className='text-lime'>*</span>
       </p>
-      <div className='relative h-74 max-w-lg pb-16 pt-2 sm:pb-10'>
+      <div className='relative h-74 w-full pb-16 pt-2 sm:pb-10'>
         <div ref={editorRef}></div>
         {isGenerating && (
           <div className='absolute inset-0 mt-2 flex items-center justify-center rounded-xl bg-void/60'>
