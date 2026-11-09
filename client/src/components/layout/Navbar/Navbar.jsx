@@ -1,28 +1,36 @@
 import React from 'react'
 import { assets } from '../../../assets/assets'
 import { useAppContext } from '../../../context/AppContext'
-import Button from '../../ui/Button'
 import { ROUTES } from '../../../constants/routes'
 
 function Navbar() {
   const { navigate, token } = useAppContext()
 
   return (
-    <div className='flex justify-between items-center py-5 mx-8 sm:mx-20 xl:mx-32'>
-      <img 
-        onClick={() => navigate(ROUTES.HOME)} 
-        src={assets.logo} 
-        alt='logo' 
-        className='w-32 sm:w-44 cursor-pointer hover:opacity-80 transition-opacity' 
-      />
-      <button 
-        onClick={() => navigate(ROUTES.ADMIN)}  
-        className='flex items-center gap-2 rounded-full text-sm cursor-pointer bg-primary text-white px-10 py-2.5 hover:bg-primary/90 transition-colors'
+    <header className='fixed inset-x-0 top-4 z-40 px-4 sm:px-8'>
+      <nav
+        aria-label='Main'
+        className='mx-auto flex max-w-6xl items-center justify-between rounded-full border border-white/10 bg-void/50 py-2 pl-5 pr-2 backdrop-blur-xl'
       >
-        {token ? 'Dashboard' : 'Login'}
-        <img src={assets.arrow} className='w-3' alt='arrow' />
-      </button>
-    </div>
+        <img
+          onClick={() => navigate(ROUTES.HOME)}
+          src={assets.logo}
+          alt='logo'
+          className='w-28 cursor-pointer brightness-0 invert transition-opacity hover:opacity-80 sm:w-36'
+        />
+        <button
+          onClick={() => navigate(ROUTES.ADMIN)}
+          className='group flex cursor-pointer items-center gap-2 rounded-full bg-lime px-5 py-2 text-sm font-medium text-void shadow-glow-lime transition hover:brightness-110'
+        >
+          {token ? 'Dashboard' : 'Login'}
+          <img
+            src={assets.arrow}
+            className='w-3 transition-transform duration-300 group-hover:translate-x-0.5'
+            alt='arrow'
+          />
+        </button>
+      </nav>
+    </header>
   )
 }
 
