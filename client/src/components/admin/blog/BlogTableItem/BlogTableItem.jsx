@@ -26,7 +26,7 @@ function BlogTableItem({ blog, onUpdate, index }) {
       <td className='px-2 py-4 text-ink'>{title}</td>
       <td className='px-2 py-4 max-sm:hidden'>{formatDate(createdAt)}</td>
       <td className='px-2 py-4 max-sm:hidden'>
-        <span className={`inline-block min-w-[11ch] font-mono text-xs uppercase tracking-wider ${blog.isPublished ? 'text-lime' : 'text-ember'}`}>
+        <span className={`inline-block w-28 font-mono text-xs uppercase tracking-wider ${blog.isPublished ? 'text-lime' : 'text-ember'}`}>
           {blog.isPublished ? 'Published' : 'Unpublished'}
         </span>
       </td>
@@ -35,7 +35,7 @@ function BlogTableItem({ blog, onUpdate, index }) {
           <button
             onClick={handleTogglePublish}
             disabled={inProgress}
-            className='cursor-pointer rounded-full border border-white/15 bg-white/5 px-3 py-1 text-ink transition-colors hover:border-white/30 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50'
+            className='w-24 cursor-pointer rounded-full border border-white/15 bg-white/5 px-3 py-1 text-center text-ink transition-colors hover:border-white/30 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50'
           >
             {blog.isPublished ? 'Unpublish' : 'Publish'}
           </button>
