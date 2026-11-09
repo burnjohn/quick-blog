@@ -27,6 +27,7 @@ function Comments() {
         <div className='flex gap-3'>
           <button
             onClick={() => setFilter('Approved')}
+            aria-pressed={filter === 'Approved'}
             className={`cursor-pointer rounded-full border px-4 py-1 text-xs transition-colors ${
               filter === 'Approved'
                 ? 'border-primary bg-primary/10 text-primary'
@@ -37,6 +38,7 @@ function Comments() {
           </button>
           <button
             onClick={() => setFilter('Not Approved')}
+            aria-pressed={filter === 'Not Approved'}
             className={`cursor-pointer rounded-full border px-4 py-1 text-xs transition-colors ${
               filter === 'Not Approved'
                 ? 'border-primary bg-primary/10 text-primary'
@@ -49,7 +51,7 @@ function Comments() {
       </div>
 
       <Panel className='overflow-hidden'>
-        <div className='overflow-x-auto scrollbar-hide'>
+        <div className='overflow-x-auto'>
           <table className='w-full text-sm'>
             <thead className='border-b border-white/10 text-left'>
               <tr>

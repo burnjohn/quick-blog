@@ -48,7 +48,7 @@ function Dashboard() {
         </div>
 
         <Panel className='overflow-hidden'>
-          <div className='overflow-x-auto scrollbar-hide'>
+          <div className='overflow-x-auto'>
             <table className='w-full text-sm'>
               <thead className='border-b border-white/10 text-left'>
                 <tr>

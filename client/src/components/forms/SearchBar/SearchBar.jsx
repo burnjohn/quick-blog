@@ -23,7 +23,7 @@ function SearchBar({ onSearch, onClear, hasSearchTerm = false }) {
     <div>
       <form 
         onSubmit={handleSubmit} 
-        className='mx-auto flex max-w-xl items-center justify-between overflow-hidden rounded-full border border-white/10 bg-white/[0.05] p-1.5 backdrop-blur-xl transition focus-within:border-primary/50 focus-within:shadow-glow'
+        className='mx-auto flex max-w-xl items-center justify-between overflow-hidden rounded-full border border-white/10 bg-white/[0.05] p-1.5 backdrop-blur-xl transition focus-within:border-primary/50 focus-within:shadow-glow focus-within:ring-2 focus-within:ring-lime/70'
       >
         <input 
           ref={inputRef}

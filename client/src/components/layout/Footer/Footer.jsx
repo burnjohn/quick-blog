@@ -38,7 +38,7 @@ function Footer() {
 
       <div
         aria-hidden='true'
-        className='pointer-events-none select-none text-center font-display text-[clamp(3rem,17vw,16rem)] font-bold leading-[0.8] tracking-tighter text-white/[0.06]'
+        className='pointer-events-none select-none text-center font-display text-[clamp(2.5rem,14vw,16rem)] font-bold leading-[0.8] tracking-tighter text-white/[0.06]'
       >
         QUICKBLOG
       </div>

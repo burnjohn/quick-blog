@@ -16,7 +16,7 @@ function ListBlog() {
       <h1 className='mb-6 mt-2 font-display text-3xl font-bold tracking-tighter text-ink'>All Blogs</h1>
 
       <Panel className='overflow-hidden'>
-        <div className='overflow-x-auto scrollbar-hide'>
+        <div className='overflow-x-auto'>
           <table className='w-full text-sm'>
             <thead className='border-b border-white/10 text-left'>
               <tr>
