@@ -1,44 +1,158 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300..700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
-*{
-  font-family: "Outfit", sans-serif;
+/*
+  QuickBlog "Signal" design system.
+  Contrast (WCAG, on --color-void #05060A): ink 17.5:1, muted 6.9:1 (6.4:1 on glass white/5),
+  faint/placeholder 5.1:1, primary 7.4:1, cyan 11.2:1, black on lime 18.2:1, white on violet-deep 7.1:1.
+*/
+@theme {
+  --color-void: #05060a;
+  --color-surface: #0c0d14;
+  --color-ink: #edeef3;
+  --color-muted: #9097a8;
+  --color-faint: #7f8596;
+  --color-primary: #a78bfa;
+  --color-violet-deep: #6d28d9;
+  --color-cyan: #22d3ee;
+  --color-lime: #d4ff3a;
+  --color-ember: #fb923c;
+
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --shadow-custom-sm: 0 1px 0 0 rgb(255 255 255 / 0.06) inset, 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  --shadow-glow: 0 0 0 1px rgb(167 139 250 / 0.35), 0 10px 40px -10px rgb(139 92 246 / 0.55);
+  --shadow-glow-lime: 0 10px 40px -12px rgb(212 255 58 / 0.55);
+
+  --animate-aurora: aurora-drift 18s ease-in-out infinite alternate;
+  --animate-aurora-slow: aurora-drift 26s ease-in-out infinite alternate-reverse;
+  --animate-marquee: marquee 40s linear infinite;
 }
 
-body {
-  background-color: white;
+@keyframes aurora-drift {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(6%, -4%, 0) scale(1.08); }
+  100% { transform: translate3d(-5%, 5%, 0) scale(0.96); }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background-color: var(--color-void);
+  }
+
+  body {
+    background-color: var(--color-void);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background: rgb(212 255 58 / 0.85);
+    color: #05060a;
+  }
+
+  ::placeholder {
+    color: var(--color-faint);
+    opacity: 1;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-lime);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  button, [role="button"], a, label[for], select, summary {
+    cursor: pointer;
+  }
+
+  select option {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+  }
 }
 
 ::-webkit-scrollbar {
   display: none;
 }
 
-@theme {
-  --color-primary: #5044E5; 
+/* Film grain for the aurora background (decorative, pointer-events none). */
+.grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
 }
 
-.rich-text { font-size: 15px;  }
-
-.rich-text p { margin-bottom: 16px; color: #292929; }
-
-.rich-text h1 { font-size: 36px; font-weight: 700; color: #252525 !important; margin: 32px 0; }
-
-.rich-text h2 { font-size: 22px; font-weight: 700; color: #252525 !important; margin: 24px 0; }
-
-.rich-text h3 { font-size: 18px; font-weight: 600; color: #333333 !important; margin: 20px 0; }
-
-.rich-text h4 { font-size: 16px; font-weight: 500; color: #444444 !important; margin: 16px 0; }
-
-.rich-text h5 { font-size: 14px; font-weight: 400; color: #555555 !important; margin: 12px 0; }
-
-.rich-text h6 { font-size: 12px; font-weight: 400; color: #666666 !important; margin: 8px 0; }
-
-.rich-text strong { font-weight: 700; }
-
-.rich-text ol { margin-left: 30px; list-style-type: decimal; }
-
-.rich-text ul { margin-left: 30px; list-style-type: disc; }
-
+/* Post body HTML comes from the database, so it is styled here rather than with utilities. */
+.rich-text { font-size: 17px; line-height: 1.75; color: #c9ccd6; }
+.rich-text p { margin-bottom: 20px; color: #c9ccd6; }
+.rich-text h1 { font-family: var(--font-display); font-size: 40px; line-height: 1.1; font-weight: 600; color: var(--color-ink) !important; margin: 40px 0 20px; letter-spacing: -0.02em; }
+.rich-text h2 { font-family: var(--font-display); font-size: 28px; line-height: 1.2; font-weight: 600; color: var(--color-ink) !important; margin: 36px 0 16px; letter-spacing: -0.015em; }
+.rich-text h3 { font-family: var(--font-display); font-size: 22px; font-weight: 600; color: var(--color-ink) !important; margin: 28px 0 12px; }
+.rich-text h4 { font-size: 18px; font-weight: 600; color: #dfe1e8 !important; margin: 20px 0 10px; }
+.rich-text h5 { font-size: 16px; font-weight: 500; color: #cfd2db !important; margin: 16px 0 8px; }
+.rich-text h6 { font-family: var(--font-mono); font-size: 13px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-muted) !important; margin: 12px 0 8px; }
+.rich-text strong { font-weight: 700; color: var(--color-ink); }
+.rich-text em { color: #dfe1e8; }
+.rich-text ol { margin: 0 0 20px 28px; list-style-type: decimal; }
+.rich-text ul { margin: 0 0 20px 28px; list-style-type: disc; }
 .rich-text li { margin-bottom: 8px; }
+.rich-text li::marker { color: var(--color-cyan); }
+.rich-text a { color: var(--color-cyan); text-decoration: underline; text-underline-offset: 3px; }
+.rich-text a:hover { color: var(--color-lime); }
+.rich-text blockquote { border-left: 2px solid var(--color-primary); padding: 4px 0 4px 20px; margin: 24px 0; color: var(--color-ink); font-size: 20px; }
+.rich-text code { font-family: var(--font-mono); font-size: 0.9em; background: rgb(255 255 255 / 0.06); padding: 2px 6px; border-radius: 6px; }
+.rich-text pre { font-family: var(--font-mono); background: rgb(255 255 255 / 0.04); border: 1px solid rgb(255 255 255 / 0.08); padding: 16px; border-radius: 12px; overflow-x: auto; margin-bottom: 20px; }
+.rich-text img { border-radius: 16px; margin: 24px 0; }
 
-.rich-text a { color: #007AFF }
+/* Quill (snow theme) is third-party markup: dark overrides. */
+.ql-toolbar.ql-snow {
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 14px 14px 0 0;
+  background: rgb(255 255 255 / 0.04);
+  font-family: var(--font-sans);
+}
+.ql-container.ql-snow {
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-top: 0;
+  border-radius: 0 0 14px 14px;
+  background: rgb(0 0 0 / 0.25);
+  font-family: var(--font-sans);
+  font-size: 15px;
+}
+.ql-editor { color: var(--color-ink); min-height: 16rem; }
+.ql-editor.ql-blank::before { color: var(--color-faint); font-style: normal; }
+.ql-snow .ql-stroke { stroke: #b9bdc9; }
+.ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill { fill: #b9bdc9; }
+.ql-snow .ql-picker { color: #b9bdc9; }
+.ql-snow .ql-picker-options { background: var(--color-surface); border-color: rgb(255 255 255 / 0.1) !important; }
+.ql-snow.ql-toolbar button:hover .ql-stroke, .ql-snow.ql-toolbar button.ql-active .ql-stroke,
+.ql-snow .ql-picker-label:hover .ql-stroke { stroke: var(--color-lime); }
+.ql-snow.ql-toolbar button:hover .ql-fill, .ql-snow.ql-toolbar button.ql-active .ql-fill { fill: var(--color-lime); }
+.ql-snow.ql-toolbar button:hover, .ql-snow.ql-toolbar button.ql-active,
+.ql-snow .ql-picker-label:hover, .ql-snow .ql-picker-item:hover, .ql-snow .ql-picker-item.ql-selected { color: var(--color-lime); }
+.ql-snow .ql-tooltip { background: var(--color-surface); color: var(--color-ink); border-color: rgb(255 255 255 / 0.12); box-shadow: none; }
+.ql-snow .ql-tooltip input[type=text] { background: transparent; color: var(--color-ink); border-color: rgb(255 255 255 / 0.2); }
+
+@media (prefers-reduced-motion: reduce) {
+  *:not(.animate-spin), *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
