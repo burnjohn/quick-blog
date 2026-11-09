@@ -4,6 +4,7 @@ import { MotionConfig } from 'motion/react'
 import { Home, BlogDetail } from './pages/public'
 import { Layout, Dashboard, AddBlog, ListBlog, Comments } from './pages/admin'
 import { Login } from './components/admin'
+import { AuroraBackground } from './components/effects'
 import { useAppContext } from './context/AppContext'
 import { Toaster } from 'react-hot-toast'
 import { ROUTES } from './constants/routes'
@@ -20,7 +21,8 @@ function App() {
 
   return (
     <MotionConfig reducedMotion='user'>
-      <div className='relative min-h-screen bg-void text-ink'>
+      <div className='relative isolate min-h-screen bg-void text-ink'>
+        <AuroraBackground />
         <Toaster position='bottom-right' toastOptions={TOAST_OPTIONS} />
         <Routes>
           <Route path={ROUTES.HOME} element={<Home />} />
