@@ -37,6 +37,13 @@ describe('PostDetailDialog', () => {
     expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'))
   })
 
+  it('shows the skeleton instead of a previous post while another post loads', () => {
+    hook.mockReturnValue(state({ post, loading: true }))
+    render(<PostDetailDialog postId='p2' onClose={() => {}} />)
+    expect(screen.getByRole('status', { name: 'Loading post details' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Hello World' })).not.toBeInTheDocument()
+  })
+
   it('calls onClose on cancel event', () => {
     hook.mockReturnValue(state({ post }))
     const onClose = vi.fn()

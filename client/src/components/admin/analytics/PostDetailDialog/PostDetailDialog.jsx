@@ -59,10 +59,10 @@ function PostDetailDialog({ postId, params, onClose, returnFocusRef }) {
 
   let body = null
   if (postId) {
-    if (loading && !post) body = <Skeleton />
+    if ((loading && !post) || (post && post.id !== postId && !error)) body = <Skeleton />
     else if (notFound) body = <ErrorState title='Post not found' message='This post no longer exists or is outside the selected range.' />
     else if (error) body = <ErrorState title='Could not load post' message='We could not load this post.' onRetry={refetch} />
-    else if (post) body = <PostDetailContent post={post} titleId={titleId} />
+    else if (post && post.id === postId) body = <PostDetailContent post={post} titleId={titleId} />
   }
 
   return (
