@@ -2,6 +2,7 @@ import React from 'react'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import { getBlogDetailPath } from '../../../../constants/routes'
 import { KPI_META, SOURCE_LABELS, DEVICE_LABELS, DELTA_COLORS, SERIES_COLORS } from '../../../../constants/analytics'
+import { widthClass } from '../../../../utils/widthClass'
 import { formatByType, formatDate, formatNumber, formatPercent } from '../../../../utils/analyticsFormat'
 
 const ARROWS = { up: '▲', down: '▼', flat: '–', new: '●' }
@@ -33,9 +34,8 @@ function ShareList({ title, items = [], labels }) {
             </div>
             <div className='mt-1 h-1.5 overflow-hidden rounded-full bg-white/10'>
               <div
-                className='h-full rounded-full bg-accent-violet'
+                className={`h-full rounded-full bg-accent-violet ${widthClass(item.share || 0, 1)}`}
                 role='presentation'
-                ref={(el) => el && el.style.setProperty('width', `${Math.round((item.share || 0) * 100)}%`)}
               />
             </div>
           </li>

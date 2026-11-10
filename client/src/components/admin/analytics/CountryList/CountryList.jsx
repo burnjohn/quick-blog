@@ -1,10 +1,9 @@
 import React from 'react'
 import ChartCard from '../ChartCard'
+import { widthClass } from '../../../../utils/widthClass'
 import { formatNumber, formatPercent } from '../../../../utils/analyticsFormat'
 
 const TOP = 10
-const WIDTHS = ['w-[4%]', 'w-[10%]', 'w-[20%]', 'w-[30%]', 'w-[40%]', 'w-[50%]', 'w-[60%]', 'w-[70%]', 'w-[80%]', 'w-[90%]', 'w-full']
-const widthFor = (value, max) => WIDTHS[max > 0 ? Math.max(0, Math.min(10, Math.round((value / max) * 10))) : 0]
 
 // 'US' -> regional indicator symbols
 const flagEmoji = (code) =>
@@ -51,7 +50,7 @@ function CountryList({ countries = [] }) {
               </span>
             </div>
             <div className='h-1.5 rounded-full bg-white/5'>
-              <div className={`h-full rounded-full bg-linear-to-r from-accent-cyan to-accent-violet transition-all duration-500 ${widthFor(c.views, max)}`} />
+              <div className={`h-full rounded-full bg-linear-to-r from-accent-cyan to-accent-violet transition-all duration-500 ${widthClass(c.views, max)}`} />
             </div>
           </li>
         ))}

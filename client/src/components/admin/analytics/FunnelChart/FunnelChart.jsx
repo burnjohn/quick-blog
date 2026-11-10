@@ -1,28 +1,14 @@
 import React from 'react'
 import ChartCard from '../ChartCard'
+import { widthClass } from '../../../../utils/widthClass'
 import { formatNumber, formatPercent } from '../../../../utils/analyticsFormat'
 
-const WIDTH_CLASSES = ['w-full', 'w-5/6', 'w-2/3', 'w-1/2', 'w-1/3', 'w-1/4', 'w-1/6', 'w-[8%]']
 const BAR_GRADIENTS = [
   'from-accent-violet to-accent-violet/50',
   'from-accent-cyan to-accent-cyan/50',
   'from-accent-pink to-accent-pink/50',
   'from-accent-amber to-accent-amber/50'
 ]
-
-// Quantize each stage's share of the first stage to a Tailwind width class
-const widthClass = (value, top) => {
-  if (!top || value <= 0) return 'w-[2%]'
-  const ratio = value / top
-  if (ratio > 0.9) return WIDTH_CLASSES[0]
-  if (ratio > 0.75) return WIDTH_CLASSES[1]
-  if (ratio > 0.55) return WIDTH_CLASSES[2]
-  if (ratio > 0.4) return WIDTH_CLASSES[3]
-  if (ratio > 0.25) return WIDTH_CLASSES[4]
-  if (ratio > 0.15) return WIDTH_CLASSES[5]
-  if (ratio > 0.08) return WIDTH_CLASSES[6]
-  return WIDTH_CLASSES[7]
-}
 
 const conversion = (prev, cur) => (prev > 0 ? (cur / prev) * 100 : null)
 
