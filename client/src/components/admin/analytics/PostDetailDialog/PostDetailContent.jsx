@@ -3,6 +3,7 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'rec
 import { getBlogDetailPath } from '../../../../constants/routes'
 import { KPI_META, SOURCE_LABELS, DEVICE_LABELS, DELTA_COLORS, SERIES_COLORS } from '../../../../constants/analytics'
 import { widthClass } from '../../../../utils/widthClass'
+import ChartTooltip from '../ChartTooltip'
 import { formatByType, formatDate, formatNumber, formatPercent } from '../../../../utils/analyticsFormat'
 
 const ARROWS = { up: '▲', down: '▼', flat: '–', new: '●' }
@@ -84,10 +85,7 @@ function PostDetailContent({ post, titleId }) {
           <AreaChart data={series} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
             <XAxis dataKey='date' tick={{ fill: '#a6a6c0', fontSize: 10 }} tickFormatter={(d) => formatDate(d, { month: 'short', day: 'numeric' })} minTickGap={24} />
             <YAxis hide />
-            <Tooltip
-              contentStyle={{ background: '#11111f', border: '1px solid #26263d', borderRadius: 12 }}
-              labelFormatter={(d) => formatDate(d)}
-            />
+            <Tooltip content={<ChartTooltip isDate />} />
             <Area type='monotone' dataKey='views' name='Views' stroke={SERIES_COLORS.views} fill={SERIES_COLORS.views} fillOpacity={0.25} isAnimationActive={false} />
           </AreaChart>
         </ResponsiveContainer>
