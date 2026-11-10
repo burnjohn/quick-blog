@@ -8,6 +8,8 @@ import { users } from '../fixtures/users.js'
 import { blogs } from '../fixtures/blogs.js'
 import { comments } from '../fixtures/comments.js'
 
+const DAY_MS = 24 * 60 * 60 * 1000
+
 // Connect to database
 const connectDB = async () => {
   try {
@@ -42,15 +44,21 @@ const seedDatabase = async () => {
     })
     console.log()
 
-    // Create blogs with alternating authors
+    // Create blogs; authors and publish dates come from the fixture
+    const usersByEmail = new Map(createdUsers.map(user => [user.email, user]))
+    const now = Date.now()
     const createdBlogs = []
-    for (let i = 0; i < blogs.length; i++) {
-      const author = createdUsers[i % createdUsers.length]
+    for (const { authorEmail, publishedDaysAgo, ...blogData } of blogs) {
+      const author = usersByEmail.get(authorEmail)
+      if (!author) throw new Error(`Unknown authorEmail in blog fixture: ${authorEmail}`)
+      const createdAt = new Date(now - publishedDaysAgo * DAY_MS)
       const blog = await Blog.create({
-        ...blogs[i],
+        ...blogData,
         author: author._id,
         authorName: author.name,
-        isPublished: true
+        isPublished: true,
+        createdAt,
+        updatedAt: createdAt
       })
       createdBlogs.push(blog)
       dbLogger.logCreate('blogs', blog)

@@ -8,6 +8,7 @@ const blogSchema = new mongoose.Schema({
   author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   authorName: { type: String, required: true }, // Denormalized for performance
   image: { type: String, required: true },
+  tags: { type: [String], default: [] },
   isPublished: { type: Boolean, default: false }
 }, { timestamps: true })
 
