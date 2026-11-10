@@ -27,6 +27,11 @@ function Sidebar() {
         <p className='hidden md:inline-block'>Blog lists</p>
       </NavLink>
 
+      <NavLink to={ROUTES.ADMIN_ANALYTICS} className={navLinkClass}>
+        <img src={assets.analytics_icon} alt='' className='min-w-4 w-5' />
+        <p className='hidden md:inline-block'>Analytics</p>
+      </NavLink>
+
       <NavLink to={ROUTES.ADMIN_COMMENTS} className={navLinkClass}>
         <img src={assets.comment_icon} alt='' className='min-w-4 w-5' />
         <p className='hidden md:inline-block'>Comments</p>

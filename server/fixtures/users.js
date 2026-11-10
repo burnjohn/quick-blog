@@ -14,6 +14,13 @@ export const users = [
     role: 'author',
     bio: 'Tech enthusiast and startup advisor. Passionate about helping entrepreneurs succeed.',
     isActive: true
+  },
+  {
+    email: 'alex@quickblog.com',
+    password: 'alex123',
+    name: 'Alex Rivera',
+    role: 'author',
+    bio: 'Full-stack engineer writing about React, Node.js and developer productivity.',
+    isActive: true
   }
 ]
-

@@ -17,5 +17,11 @@ export const API_ENDPOINTS = {
   ADMIN_STATS: '/api/admin/stats',
   ADMIN_BLOGS: '/api/admin/blogs',
   ADMIN_COMMENTS: '/api/admin/comments',
+
+  // Admin analytics endpoints
+  ANALYTICS_META: '/api/admin/analytics/meta',
+  ANALYTICS_OVERVIEW: '/api/admin/analytics/overview',
+  ANALYTICS_POST: (id) => `/api/admin/analytics/posts/${id}`,
+  ANALYTICS_EXPORT: '/api/admin/analytics/export',
 }
 

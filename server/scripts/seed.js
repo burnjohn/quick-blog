@@ -3,10 +3,15 @@ import 'dotenv/config'
 import User from '../src/models/User.js'
 import Blog from '../src/models/Blog.js'
 import Comment from '../src/models/Comment.js'
+import AnalyticsDaily from '../src/models/AnalyticsDaily.js'
+import { buildAnalyticsDocs } from '../src/utils/analyticsGenerator.js'
 import dbLogger from '../src/utils/dbLogger.js'
 import { users } from '../fixtures/users.js'
 import { blogs } from '../fixtures/blogs.js'
 import { comments } from '../fixtures/comments.js'
+
+const DAY_MS = 24 * 60 * 60 * 1000
+const ANALYTICS_BATCH_SIZE = 2000
 
 // Connect to database
 const connectDB = async () => {
@@ -28,6 +33,7 @@ const seedDatabase = async () => {
     await User.deleteMany({})
     await Blog.deleteMany({})
     await Comment.deleteMany({})
+    await AnalyticsDaily.deleteMany({})
     console.log('🗑️  Cleared existing data\n')
 
     // Create users
@@ -42,15 +48,21 @@ const seedDatabase = async () => {
     })
     console.log()
 
-    // Create blogs with alternating authors
+    // Create blogs; authors and publish dates come from the fixture
+    const usersByEmail = new Map(createdUsers.map(user => [user.email, user]))
+    const now = Date.now()
     const createdBlogs = []
-    for (let i = 0; i < blogs.length; i++) {
-      const author = createdUsers[i % createdUsers.length]
+    for (const { authorEmail, publishedDaysAgo, ...blogData } of blogs) {
+      const author = usersByEmail.get(authorEmail)
+      if (!author) throw new Error(`Unknown authorEmail in blog fixture: ${authorEmail}`)
+      const createdAt = new Date(now - publishedDaysAgo * DAY_MS)
       const blog = await Blog.create({
-        ...blogs[i],
+        ...blogData,
         author: author._id,
         authorName: author.name,
-        isPublished: true
+        isPublished: true,
+        createdAt,
+        updatedAt: createdAt
       })
       createdBlogs.push(blog)
       dbLogger.logCreate('blogs', blog)
@@ -70,6 +82,14 @@ const seedDatabase = async () => {
       }
     }
     console.log(`✅ Created ${commentCount} comments\n`)
+
+    // Generate deterministic daily analytics for the last 365 days
+    const analyticsDocs = buildAnalyticsDocs(createdBlogs, new Date())
+    for (let i = 0; i < analyticsDocs.length; i += ANALYTICS_BATCH_SIZE) {
+      await AnalyticsDaily.insertMany(analyticsDocs.slice(i, i + ANALYTICS_BATCH_SIZE))
+    }
+    console.log(`✅ Created ${analyticsDocs.length} daily analytics rows\n`)
+    dbLogger.logEvent('SEED_ANALYTICS', `Created ${analyticsDocs.length} analytics rows`)
 
     dbLogger.logEvent('SEED_COMPLETE', 'Database seeded successfully')
     console.log('🎉 Database seeded successfully!\n')
