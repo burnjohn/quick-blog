@@ -30,7 +30,7 @@ function PeriodPicker({ period, from, to, dateBounds, onPeriodChange, onCustomRa
 
   return (
     <div className='flex flex-wrap items-start gap-2'>
-      <div role='group' aria-label='Period' className='flex gap-1 rounded-xl border border-white/10 bg-white/[0.04] p-1 backdrop-blur'>
+      <div role='group' aria-label='Period' className='flex max-w-full flex-wrap gap-1 rounded-xl border border-white/10 bg-white/[0.04] p-1 backdrop-blur'>
         {PERIOD_PRESETS.map((preset) => (
           <button
             key={preset.key}
