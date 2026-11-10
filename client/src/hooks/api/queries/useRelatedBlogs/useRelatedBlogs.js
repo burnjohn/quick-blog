@@ -7,6 +7,8 @@ export function useRelatedBlogs(id) {
   const [blogs, setBlogs] = useState([])
   const [loading, setLoading] = useState(Boolean(id))
   const [error, setError] = useState(null)
+  // The id the current `blogs` belong to; a mismatch means a new id is still loading
+  const [loadedId, setLoadedId] = useState(null)
 
   useEffect(() => {
     if (!id) {
@@ -34,7 +36,10 @@ export function useRelatedBlogs(id) {
         setBlogs([])
         setError(err.response?.data?.message || err.message)
       } finally {
-        if (!ignore) setLoading(false)
+        if (!ignore) {
+          setLoadedId(id)
+          setLoading(false)
+        }
       }
     }
 
@@ -45,5 +50,10 @@ export function useRelatedBlogs(id) {
     }
   }, [id])
 
-  return { blogs, loading, error }
+  const isStale = Boolean(id) && loadedId !== id
+  return {
+    blogs: isStale ? [] : blogs,
+    loading: loading || isStale,
+    error: isStale ? null : error,
+  }
 }

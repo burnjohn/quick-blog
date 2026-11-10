@@ -82,4 +82,28 @@ describe('useRelatedBlogs', () => {
 
     expect(result.current.blogs).toEqual([{ _id: 'b', title: 'For 2' }])
   })
+
+  it('never returns the previous post\'s blogs on the first render after the id changes', async () => {
+    blogApi.getRelated.mockResolvedValueOnce({
+      data: { success: true, blogs: [{ _id: 'a', title: 'For 1' }] },
+    })
+    blogApi.getRelated.mockReturnValueOnce(new Promise(() => {}))
+    const renders = []
+
+    const { result, rerender } = renderHook(({ id }) => {
+      const value = useRelatedBlogs(id)
+      renders.push({ id, ...value })
+      return value
+    }, { initialProps: { id: '1' } })
+    await waitFor(() => expect(result.current.blogs).toHaveLength(1))
+
+    rerender({ id: '2' })
+
+    renders
+      .filter((r) => r.id === '2')
+      .forEach((r) => {
+        expect(r.blogs).toEqual([])
+        expect(r.loading).toBe(true)
+      })
+  })
 })
