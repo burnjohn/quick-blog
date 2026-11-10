@@ -17,6 +17,17 @@ describe('escapeCsvField', () => {
     expect(escapeCsvField('line1\nline2')).toBe('"line1\nline2"')
     expect(escapeCsvField('a\r\nb')).toBe('"a\r\nb"')
   })
+
+  it('prefixes a quote on string fields that could be read as formulas', () => {
+    expect(escapeCsvField('=SUM(A1)')).toBe("'=SUM(A1)")
+    expect(escapeCsvField('+1')).toBe("'+1")
+    expect(escapeCsvField('-1+2')).toBe("'-1+2")
+    expect(escapeCsvField('@cmd')).toBe("'@cmd")
+    expect(escapeCsvField('\tx')).toBe("'\tx")
+    expect(escapeCsvField('=HYPERLINK("u","x")')).toBe('"\'=HYPERLINK(""u"",""x"")"')
+    expect(escapeCsvField('a=b')).toBe('a=b')
+    expect(escapeCsvField(-5)).toBe('-5')
+  })
 })
 
 describe('buildCsv', () => {

@@ -3,9 +3,15 @@ export const CSV_HEADER = [
   'Avg scroll depth (%)', 'Likes', 'Comments', 'Shares', 'Subscriptions', 'Engagement rate (%)'
 ]
 
+const FORMULA_RE = /^[=+\-@\t\r]/
+
+// Neutralizes spreadsheet formula injection for string fields only (numbers stay numeric)
+const guardFormula = (value) => (typeof value === 'string' && FORMULA_RE.test(value) ? `'${value}` : value)
+
 // RFC 4180: quote fields containing comma, quote, CR or LF; double inner quotes
 export const escapeCsvField = (value) => {
-  const text = value === null || value === undefined ? '' : String(value)
+  const guarded = guardFormula(value)
+  const text = guarded === null || guarded === undefined ? '' : String(guarded)
   return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text
 }
 
