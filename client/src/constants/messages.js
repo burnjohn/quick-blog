@@ -20,6 +20,8 @@ export const MESSAGES = {
   ERROR_ADD_COMMENT: 'Failed to add comment.',
   ERROR_DELETE_COMMENT: 'Failed to delete comment.',
   ERROR_LOGIN: 'Login failed. Please check your credentials.',
+  ERROR_FETCH_ANALYTICS: 'Failed to load analytics.',
+  ERROR_EXPORT_ANALYTICS: 'Failed to export CSV.',
   ERROR_UNAUTHORIZED: 'You are not authorized to perform this action.',
   
   // Validation messages
@@ -30,6 +32,7 @@ export const MESSAGES = {
   // Info messages
   INFO_NO_BLOGS: 'No blogs found.',
   INFO_NO_COMMENTS: 'No comments yet. Be the first!',
+  INFO_NO_ANALYTICS: 'No data for the selected filters.',
   INFO_LOADING: 'Loading...'
 }
 
