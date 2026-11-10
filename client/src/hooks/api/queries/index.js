@@ -1,5 +1,6 @@
 export { useBlog } from './useBlog'
 export { useBlogs } from './useBlogs'
+export { useRelatedBlogs } from './useRelatedBlogs'
 export { useComments } from './useComments'
 export { useAdminBlogs } from './useAdminBlogs'
 export { useAdminComments } from './useAdminComments'

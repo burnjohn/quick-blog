@@ -12,6 +12,11 @@ export const blogApi = {
     return await axios.get(API_ENDPOINTS.BLOG_BY_ID(id))
   },
 
+  // Get published blogs from the same category
+  getRelated: async (id) => {
+    return await axios.get(API_ENDPOINTS.BLOG_RELATED(id))
+  },
+
   // Create new blog
   create: async (formData) => {
     return await axios.post(API_ENDPOINTS.BLOG_CREATE, formData, {
