@@ -12,6 +12,7 @@ import { apiLimiter } from './src/middleware/rateLimiter.js'
 // Import routes
 import appRouter from './src/routes/appRoutes.js'
 import adminRouter from './src/routes/adminRoutes.js'
+import analyticsRouter from './src/routes/analyticsRoutes.js'
 import blogRouter from './src/routes/blogRoutes.js'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -72,6 +73,7 @@ app.use(httpLogger)
 
 // Routes
 app.use('/', appRouter)
+app.use('/api/admin/analytics', analyticsRouter)
 app.use('/api/admin', adminRouter)
 app.use('/api/blog', blogRouter)
 
