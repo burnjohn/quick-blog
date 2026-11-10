@@ -62,7 +62,7 @@ function TrendChart({ series = [], bucket = 'day', compare = false }) {
     >
       <div aria-hidden='true' className='h-72 w-full'>
         <ResponsiveContainer width='100%' height='100%'>
-          <AreaChart data={series} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+          <AreaChart accessibilityLayer={false} data={series} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
             <defs>
               {SERIES.map((s) => (
                 <linearGradient key={s.key} id={`${uid}-${s.key}`} x1='0' y1='0' x2='0' y2='1'>

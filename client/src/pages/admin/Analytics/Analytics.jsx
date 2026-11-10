@@ -93,7 +93,7 @@ function Analytics() {
           <div role='status' aria-label='Refreshing data' className='analytics-shimmer h-0.5 w-full rounded-full' />
         )}
         {meta && (
-          <div className='sticky top-2 z-20'>
+          <div className='sticky top-0 z-20 -mx-3 rounded-b-3xl bg-ink-950/85 px-3 pt-2 pb-2 backdrop-blur-xl'>
             <FilterBar
               filters={filters}
               meta={meta}

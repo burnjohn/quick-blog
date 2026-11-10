@@ -37,10 +37,10 @@ function DonutChart({ title, description, data = [], labels = {}, onSelect, sele
 
   return (
     <ChartCard title={title} description={description} alternative={alternative}>
-      <div className='flex flex-col items-center gap-4 sm:flex-row'>
+      <div className='flex flex-col items-center gap-4'>
         <div aria-hidden='true' className='relative h-48 w-48 shrink-0'>
           <ResponsiveContainer width='100%' height='100%'>
-            <PieChart>
+            <PieChart accessibilityLayer={false}>
               <Tooltip content={<ChartTooltip />} />
               <Pie
                 data={rows}

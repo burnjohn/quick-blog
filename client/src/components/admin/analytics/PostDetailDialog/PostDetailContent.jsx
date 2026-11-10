@@ -82,7 +82,7 @@ function PostDetailContent({ post, titleId }) {
 
       <section aria-label='Views trend' className='h-40'>
         <ResponsiveContainer width='100%' height='100%' minWidth={0}>
-          <AreaChart data={series} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+          <AreaChart accessibilityLayer={false} data={series} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
             <XAxis dataKey='date' tick={{ fill: '#a6a6c0', fontSize: 10 }} tickFormatter={(d) => formatDate(d, { month: 'short', day: 'numeric' })} minTickGap={24} />
             <YAxis hide />
             <Tooltip content={<ChartTooltip isDate />} />

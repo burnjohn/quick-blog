@@ -44,7 +44,7 @@ function TopPostsBarChart({ posts = [], onOpenPost }) {
     >
       <div aria-hidden='true' className='h-80 w-full'>
         <ResponsiveContainer width='100%' height='100%'>
-          <BarChart data={data} layout='vertical' margin={{ top: 4, right: 12, left: 0, bottom: 0 }}>
+          <BarChart accessibilityLayer={false} data={data} layout='vertical' margin={{ top: 4, right: 12, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id={`${uid}-bar`} x1='0' y1='0' x2='1' y2='0'>
                 <stop offset='0%' stopColor='#f472b6' stopOpacity={0.5} />
