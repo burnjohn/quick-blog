@@ -7,7 +7,7 @@ export const originalBlogs = [
     category: 'Lifestyle',
     image: '/uploads/seed/blog_pic_1.png',
     tags: ['lifestyle', 'habits', 'productivity'],
-    publishedDaysAgo: 340,
+    publishedDaysAgo: 364,
     authorEmail: 'sarah@quickblog.com'
   },
   {
@@ -17,7 +17,7 @@ export const originalBlogs = [
     category: 'Startup',
     image: '/uploads/seed/blog_pic_2.png',
     tags: ['startup', 'roadmap', 'strategy'],
-    publishedDaysAgo: 310,
+    publishedDaysAgo: 320,
     authorEmail: 'admin@quickblog.com'
   },
   {
@@ -27,7 +27,7 @@ export const originalBlogs = [
     category: 'Technology',
     image: '/uploads/seed/blog_pic_3.png',
     tags: ['career', 'javascript', 'learning'],
-    publishedDaysAgo: 270,
+    publishedDaysAgo: 275,
     authorEmail: 'sarah@quickblog.com'
   },
   {
@@ -37,7 +37,7 @@ export const originalBlogs = [
     category: 'Lifestyle',
     image: '/uploads/seed/blog_pic_4.png',
     tags: ['wellbeing', 'productivity', 'remote-work'],
-    publishedDaysAgo: 225,
+    publishedDaysAgo: 228,
     authorEmail: 'admin@quickblog.com'
   },
   {
@@ -47,7 +47,7 @@ export const originalBlogs = [
     category: 'Technology',
     image: '/uploads/seed/blog_pic_5.png',
     tags: ['react', 'javascript', 'frontend'],
-    publishedDaysAgo: 180,
+    publishedDaysAgo: 182,
     authorEmail: 'alex@quickblog.com'
   },
   {

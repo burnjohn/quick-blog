@@ -3,12 +3,15 @@ import 'dotenv/config'
 import User from '../src/models/User.js'
 import Blog from '../src/models/Blog.js'
 import Comment from '../src/models/Comment.js'
+import AnalyticsDaily from '../src/models/AnalyticsDaily.js'
+import { buildAnalyticsDocs } from '../src/utils/analyticsGenerator.js'
 import dbLogger from '../src/utils/dbLogger.js'
 import { users } from '../fixtures/users.js'
 import { blogs } from '../fixtures/blogs.js'
 import { comments } from '../fixtures/comments.js'
 
 const DAY_MS = 24 * 60 * 60 * 1000
+const ANALYTICS_BATCH_SIZE = 2000
 
 // Connect to database
 const connectDB = async () => {
@@ -30,6 +33,7 @@ const seedDatabase = async () => {
     await User.deleteMany({})
     await Blog.deleteMany({})
     await Comment.deleteMany({})
+    await AnalyticsDaily.deleteMany({})
     console.log('🗑️  Cleared existing data\n')
 
     // Create users
@@ -78,6 +82,14 @@ const seedDatabase = async () => {
       }
     }
     console.log(`✅ Created ${commentCount} comments\n`)
+
+    // Generate deterministic daily analytics for the last 365 days
+    const analyticsDocs = buildAnalyticsDocs(createdBlogs, new Date())
+    for (let i = 0; i < analyticsDocs.length; i += ANALYTICS_BATCH_SIZE) {
+      await AnalyticsDaily.insertMany(analyticsDocs.slice(i, i + ANALYTICS_BATCH_SIZE))
+    }
+    console.log(`✅ Created ${analyticsDocs.length} daily analytics rows\n`)
+    dbLogger.logEvent('SEED_ANALYTICS', `Created ${analyticsDocs.length} analytics rows`)
 
     dbLogger.logEvent('SEED_COMPLETE', 'Database seeded successfully')
     console.log('🎉 Database seeded successfully!\n')
