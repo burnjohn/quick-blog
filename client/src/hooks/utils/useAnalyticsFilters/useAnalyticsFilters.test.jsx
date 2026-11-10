@@ -30,10 +30,10 @@ describe('useAnalyticsFilters', () => {
     const key = result.current.api.queryKey
 
     act(() => result.current.api.setSort('likes', 'asc'))
-    act(() => result.current.api.setPost('abc123'))
+    act(() => result.current.api.setPost('64b7f0c2a1b2c3d4e5f60718'))
     act(() => result.current.api.setCompare(false))
 
-    expect(result.current.api.filters).toMatchObject({ sort: 'likes', post: 'abc123', compare: false })
+    expect(result.current.api.filters).toMatchObject({ sort: 'likes', post: '64b7f0c2a1b2c3d4e5f60718', compare: false })
     expect(result.current.api.queryKey).toBe(key)
   })
 
@@ -65,7 +65,7 @@ describe('useAnalyticsFilters', () => {
   })
 
   it('removes post from the URL when closed', () => {
-    const { result } = setup('/admin/analytics?post=abc')
+    const { result } = setup('/admin/analytics?post=64b7f0c2a1b2c3d4e5f60718')
     act(() => result.current.api.setPost(null))
     expect(result.current.location.search).toBe('')
   })

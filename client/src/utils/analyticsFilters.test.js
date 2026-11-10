@@ -41,12 +41,13 @@ describe('parseFilters', () => {
   })
 
   it('parses sort, dir, compare and post', () => {
-    const f = parse('sort=likes&dir=asc&compare=0&post=abc123')
-    expect(f).toMatchObject({ sort: 'likes', dir: 'asc', compare: false, post: 'abc123' })
+    const f = parse('sort=likes&dir=asc&compare=0&post=64b7f0c2a1b2c3d4e5f60718')
+    expect(f).toMatchObject({ sort: 'likes', dir: 'asc', compare: false, post: '64b7f0c2a1b2c3d4e5f60718' })
   })
 
   it('ignores invalid sort, dir and post', () => {
     const f = parse('sort=hack&dir=up&post=a/b')
+    expect(parse('post=abc')).toMatchObject({ post: null })
     expect(f).toMatchObject({ sort: 'views', dir: 'desc', post: null })
   })
 })
@@ -60,7 +61,7 @@ describe('serializeFilters', () => {
     const state = {
       period: 'custom', from: '2026-01-01', to: '2026-02-01', compare: false,
       tags: ['react', 'css'], authors: [AUTHOR], sources: ['search'],
-      sort: 'title', dir: 'asc', post: 'abc',
+      sort: 'title', dir: 'asc', post: '64b7f0c2a1b2c3d4e5f60718',
     }
     expect(parseFilters(serializeFilters(state))).toEqual(state)
   })

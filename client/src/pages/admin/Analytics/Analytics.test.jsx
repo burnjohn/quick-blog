@@ -72,6 +72,8 @@ const state = (overrides = {}) => ({
   overview: null, loading: false, error: null, refetch: vi.fn(), ...overrides,
 })
 
+const POST_ID = '64b7f0c2a1b2c3d4e5f60718'
+
 describe('Analytics page', () => {
   beforeEach(() => {
     mocks.meta.mockReturnValue({ meta: META, loading: false, error: null, refetch: vi.fn() })
@@ -168,13 +170,13 @@ describe('Analytics page', () => {
     it('opens the post dialog from the post param', () => {
       mocks.post.mockReturnValue({
         post: {
-          id: 'p1', title: 'Deep Dive', category: 'Tech', tags: [], author: { id: 'a1', name: 'Sarah' },
+          id: POST_ID, title: 'Deep Dive', category: 'Tech', tags: [], author: { id: 'a1', name: 'Sarah' },
           publishedAt: '2026-03-01', kpis: [], series: [], sources: [], devices: [],
         },
         loading: false, error: null, notFound: false, refetch: vi.fn(),
       })
-      renderPage('/admin/analytics?post=p1')
-      expect(mocks.post).toHaveBeenCalledWith('p1', expect.any(Object))
+      renderPage(`/admin/analytics?post=${POST_ID}`)
+      expect(mocks.post).toHaveBeenCalledWith(POST_ID, expect.any(Object))
       expect(screen.getByRole('heading', { name: 'Deep Dive' })).toBeInTheDocument()
     })
 

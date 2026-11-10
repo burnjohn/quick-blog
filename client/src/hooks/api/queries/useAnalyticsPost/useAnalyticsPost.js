@@ -3,10 +3,12 @@ import { useApiQuery } from '../../../core'
 import { analyticsApi } from '../../../../api'
 import { MESSAGES } from '../../../../constants/messages'
 
-// Post drill-down. `notFound` is true when the API answered 404
+const NOT_FOUND_STATUSES = [400, 404]
+
+// Post drill-down. `notFound` is true when the API answered 400/404 for the current id
 // so the dialog can show "Post not found" instead of a Retry error.
 export function useAnalyticsPost(id, params = {}) {
-  const [status, setStatus] = useState(null)
+  const [failure, setFailure] = useState({ id: null, status: null })
   const key = [id, params.from, params.to, params.sources].map((part) => part ?? '').join('|')
 
   const { data, loading, error, refetch } = useApiQuery(
@@ -17,10 +19,10 @@ export function useAnalyticsPost(id, params = {}) {
           to: params.to,
           sources: params.sources
         })
-        setStatus(null)
+        setFailure({ id: null, status: null })
         return response
       } catch (err) {
-        setStatus(err.response?.status ?? null)
+        setFailure({ id, status: err.response?.status ?? null })
         throw err
       }
     },
@@ -36,7 +38,7 @@ export function useAnalyticsPost(id, params = {}) {
     post: data?.post ?? null,
     loading,
     error,
-    notFound: Boolean(error) && status === 404,
+    notFound: Boolean(error) && failure.id === id && NOT_FOUND_STATUSES.includes(failure.status),
     refetch
   }
 }

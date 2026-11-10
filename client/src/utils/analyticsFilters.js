@@ -25,7 +25,6 @@ export const DEFAULT_FILTERS = {
 const DAY_MS = 24 * 60 * 60 * 1000
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 const ID_RE = /^[a-f0-9]{24}$/i
-const POST_RE = /^[A-Za-z0-9_-]{1,64}$/
 
 export const isValidDate = (value) => {
   if (typeof value !== 'string' || !DATE_RE.test(value)) return false
@@ -56,7 +55,7 @@ export const parseFilters = (searchParams) => {
 
   const sort = SORT_COLUMNS.includes(get('sort')) ? get('sort') : DEFAULT_SORT
   const dir = ['asc', 'desc'].includes(get('dir')) ? get('dir') : DEFAULT_DIR
-  const post = POST_RE.test(get('post') || '') ? get('post') : null
+  const post = ID_RE.test(get('post') || '') ? get('post') : null
 
   return {
     period,
