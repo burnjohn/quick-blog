@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { motion, useReducedMotion } from 'motion/react' // eslint-disable-line no-unused-vars
 import { useAnalyticsMeta, useAnalyticsOverview } from '../../../hooks/api/queries'
 import { useAnalyticsFilters } from '../../../hooks/utils'
@@ -7,8 +7,12 @@ import {
   AnalyticsSkeleton,
   EmptyState,
   ErrorState,
+  FilterBar,
+  PostDetailDialog,
 } from '../../../components/admin/analytics'
 import { formatDateRange } from '../../../utils/analyticsFormat'
+import AnalyticsDashboard from './AnalyticsDashboard'
+import { useAnalyticsExport } from './useAnalyticsExport'
 import { MESSAGES } from '../../../constants/messages'
 
 const isEmptyOverview = (overview) => {
@@ -20,13 +24,21 @@ const isEmptyOverview = (overview) => {
 function Analytics() {
   const reduceMotion = useReducedMotion()
   const { meta, error: metaError, refetch: refetchMeta } = useAnalyticsMeta()
-  const { filters, params, queryKey, hasActiveFilters, resetAll } =
+  const { filters, params, queryKey, hasActiveFilters, resetAll, resetFilters, ...actions } =
     useAnalyticsFilters(meta?.dateBounds)
+  const returnFocusRef = useRef(null)
   const { overview, loading, error, refetch } = useAnalyticsOverview(
     params,
     queryKey,
     { enabled: Boolean(meta) }
   )
+
+  const { exporting, exportCsv } = useAnalyticsExport(params, overview?.range)
+
+  const handleOpenPost = (id, triggerEl) => {
+    returnFocusRef.current = triggerEl || document.getElementById('top-posts-heading')
+    actions.setPost(id)
+  }
 
   const failure = metaError || error
   const handleRetry = () => {
@@ -49,13 +61,12 @@ function Analytics() {
       )
     }
     return (
-      <div className='space-y-6'>
-        {/* T7 slot: FilterBar (period, compare, tags/authors/sources, reset, Export CSV) */}
-        {/* T8 slot: KpiGrid (filters.compare toggles deltas) */}
-        {/* T9/T10 slots: TrendChart, TagsBarChart, DonutChart x2, FunnelChart, CountryList,
-            ActivityHeatmap, TopPostsBarChart */}
-        {/* T11 slot: TopPostsTable (filters.sort/dir) and PostDetailDialog (filters.post) */}
-      </div>
+      <AnalyticsDashboard
+        overview={overview}
+        filters={filters}
+        actions={actions}
+        onOpenPost={handleOpenPost}
+      />
     )
   }
 
@@ -81,7 +92,32 @@ function Analytics() {
         {loading && overview && (
           <div role='status' aria-label='Refreshing data' className='analytics-shimmer h-0.5 w-full rounded-full' />
         )}
+        {meta && (
+          <div className='sticky top-2 z-20'>
+            <FilterBar
+              filters={filters}
+              meta={meta}
+              dateBounds={meta.dateBounds}
+              onPeriodChange={actions.setPeriod}
+              onCustomRange={actions.setCustomRange}
+              onCompareChange={actions.setCompare}
+              onTagsChange={actions.setTags}
+              onAuthorsChange={actions.setAuthors}
+              onSourcesChange={actions.setSources}
+              onReset={resetFilters}
+              hasActiveFilters={hasActiveFilters}
+              onExport={exportCsv}
+              exporting={exporting}
+            />
+          </div>
+        )}
         {renderBody()}
+        <PostDetailDialog
+          postId={filters.post}
+          params={params}
+          onClose={() => actions.setPost(null)}
+          returnFocusRef={returnFocusRef}
+        />
       </div>
     </AnalyticsShell>
   )
