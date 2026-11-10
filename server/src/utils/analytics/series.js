@@ -1,4 +1,4 @@
-import { bucketKey, formatDay, listBuckets } from './dateRange.js'
+import { addDays, bucketKey, diffDays, formatDay, listBuckets } from './dateRange.js'
 
 const sumByBucket = (rows, bucket) => {
   const map = new Map()
@@ -12,14 +12,23 @@ const sumByBucket = (rows, bucket) => {
   return map
 }
 
-// Trend series with the previous period aligned by bucket index
+// Same as sumByBucket, but maps each previous-period day onto the matching current day (by offset
+// from the range start) so both series share the current bucket list
+const sumPreviousByBucket = (rows, range, previous) => {
+  const shifted = rows.map(row => ({
+    ...row,
+    date: new Date(`${addDays(formatDay(row.date), diffDays(previous.from, range.from))}T00:00:00.000Z`)
+  }))
+  return sumByBucket(shifted, range.bucket)
+}
+
+// Trend series with the previous period aligned by day offset from the range start
 export const buildSeries = (currentRows, previousRows, range, previous) => {
   const current = sumByBucket(currentRows, range.bucket)
-  const prior = sumByBucket(previousRows, range.bucket)
-  const priorKeys = listBuckets({ ...previous, bucket: range.bucket })
-  return listBuckets(range).map((date, i) => {
+  const prior = sumPreviousByBucket(previousRows, range, previous)
+  return listBuckets(range).map((date) => {
     const cur = current.get(date)
-    const prev = prior.get(priorKeys[i])
+    const prev = prior.get(date)
     return {
       date,
       views: cur?.views || 0,

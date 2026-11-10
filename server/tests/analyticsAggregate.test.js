@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildRange, previousRange } from '../src/utils/analytics/dateRange.js'
+import { buildRange, previousRange, listDays, listBuckets } from '../src/utils/analytics/dateRange.js'
 import { sumRows, computeDelta, kpiValue, buildKpis, KPI_KEYS } from '../src/utils/analytics/kpi.js'
 import { buildSeries } from '../src/utils/analytics/series.js'
 import {
@@ -71,6 +71,18 @@ describe('series', () => {
     const series = buildSeries([row('2026-01-05'), row('2026-01-11'), row('2026-01-12')], [], range, previousRange(range))
     expect(series[0]).toMatchObject({ date: '2026-01-05', views: 200 })
     expect(series[1]).toMatchObject({ date: '2026-01-12', views: 100 })
+  })
+
+  it('counts the whole previous period for non-Monday-aligned weekly ranges', () => {
+    const range = buildRange('2026-01-07', '2026-05-10') // Wednesday start, 124 days
+    const previous = previousRange(range)
+    const prevRows = listDays(previous).map(day => row(day, { views: 1, uniqueVisitors: 1 }))
+    const curRows = listDays(range).map(day => row(day, { views: 2, uniqueVisitors: 2 }))
+    const series = buildSeries(curRows, prevRows, range, previous)
+    expect(series).toHaveLength(listBuckets(range).length)
+    expect(series.reduce((sum, p) => sum + p.previousViews, 0)).toBe(range.days)
+    expect(series.reduce((sum, p) => sum + p.previousUniqueVisitors, 0)).toBe(range.days)
+    expect(series.reduce((sum, p) => sum + p.views, 0)).toBe(range.days * 2)
   })
 })
 
