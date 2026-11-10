@@ -4,11 +4,10 @@ import { motion, animate, useMotionValue, useMotionValueEvent, useReducedMotion 
 import { useRelatedBlogs } from '../../../hooks'
 import ReadNextCard from '../ReadNextCard'
 import ReadNextSkeleton from '../ReadNextSkeleton'
+import { useDragClickGuard } from './useDragClickGuard'
 
 export const MAX_RELATED_POSTS = 6
 const CARD_GAP_PX = 16
-// A pointer that moved further than this is a swipe, not a click on a card
-const DRAG_CLICK_THRESHOLD_PX = 6
 const EDGE_TOLERANCE_PX = 1
 const SLIDE_SPRING = { type: 'spring', stiffness: 260, damping: 32 }
 
@@ -69,10 +68,13 @@ function ReadNextCarousel({ blogs, titleId }) {
   const trackId = useId()
   const viewportRef = useRef(null)
   const trackRef = useRef(null)
-  const dragDistance = useRef(0)
   const x = useMotionValue(0)
+  // Where the last button/focus slide is heading, so quick repeated clicks
+  // step from the destination instead of a mid-animation position
+  const targetRef = useRef(null)
   const [offset, setOffset] = useState(0)
   const { maxScroll, step } = useTrackMetrics(viewportRef, trackRef, blogs.length)
+  const dragGuard = useDragClickGuard()
 
   useMotionValueEvent(x, 'change', setOffset)
 
@@ -80,10 +82,12 @@ function ReadNextCarousel({ blogs, titleId }) {
   useEffect(() => {
     const bounded = clamp(x.get(), -maxScroll, 0)
     if (bounded !== x.get()) x.set(bounded)
+    targetRef.current = null
   }, [maxScroll, x])
 
   const slideTo = (target) => {
     const bounded = clamp(target, -maxScroll, 0)
+    targetRef.current = bounded
     if (reduceMotion) {
       x.set(bounded)
     } else {
@@ -91,24 +95,32 @@ function ReadNextCarousel({ blogs, titleId }) {
     }
   }
 
+  const slideBy = (delta) => slideTo((targetRef.current ?? x.get()) + delta)
+
+  // Tabbing to a clipped card: bring it into view via `x` (the viewport itself never scrolls)
+  const handleFocusCapture = (event) => {
+    const viewport = viewportRef.current
+    const item = event.target.closest('li')
+    if (!viewport || !item) return
+    viewport.scrollLeft = 0
+    const visibleStart = -(targetRef.current ?? x.get())
+    const visibleEnd = visibleStart + viewport.clientWidth
+    const itemStart = item.offsetLeft
+    const itemEnd = itemStart + item.offsetWidth
+    if (itemStart < visibleStart) slideTo(-itemStart)
+    else if (itemEnd > visibleEnd) slideTo(-(itemEnd - viewport.clientWidth))
+  }
+
   const canPrev = offset < -EDGE_TOLERANCE_PX
   const canNext = offset > -maxScroll + EDGE_TOLERANCE_PX
-
-  // Swallow the click that ends a swipe so dragging never opens a post
-  const handleClickCapture = (event) => {
-    if (dragDistance.current > DRAG_CLICK_THRESHOLD_PX) {
-      event.preventDefault()
-      event.stopPropagation()
-    }
-  }
 
   return (
     <>
       <div className='absolute right-5 top-6 hidden gap-2 sm:right-8 sm:top-8 sm:flex'>
-        <NavButton direction='prev' disabled={!canPrev} onClick={() => slideTo(x.get() + step)} controls={trackId} />
-        <NavButton direction='next' disabled={!canNext} onClick={() => slideTo(x.get() - step)} controls={trackId} />
+        <NavButton direction='prev' disabled={!canPrev} onClick={() => slideBy(step)} controls={trackId} />
+        <NavButton direction='next' disabled={!canNext} onClick={() => slideBy(-step)} controls={trackId} />
       </div>
-      <div ref={viewportRef} className='-m-2 overflow-hidden p-2'>
+      <div ref={viewportRef} className='-m-2 overflow-clip p-2'>
         <motion.ul
           id={trackId}
           ref={trackRef}
@@ -119,23 +131,21 @@ function ReadNextCarousel({ blogs, titleId }) {
           dragConstraints={{ left: -maxScroll, right: 0 }}
           dragElastic={0.12}
           dragMomentum={!reduceMotion}
+          onPointerDown={dragGuard.onPointerDown}
           onDragStart={() => {
-            dragDistance.current = 0
+            targetRef.current = null
+            dragGuard.onDragStart()
           }}
-          onDrag={(_, info) => {
-            dragDistance.current = Math.max(dragDistance.current, Math.abs(info.offset.x))
-          }}
-          onPointerDown={() => {
-            dragDistance.current = 0
-          }}
-          onClickCapture={handleClickCapture}
+          onDrag={dragGuard.onDrag}
+          onClickCapture={dragGuard.onClickCapture}
+          onFocusCapture={handleFocusCapture}
         >
           {blogs.map((blog, index) => (
             <motion.li
               key={blog._id}
               className='w-[80%] shrink-0 sm:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-2rem)/3)]'
               initial={reduceMotion ? false : { opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.45, ease: 'easeOut', delay: index * 0.06 }}
             >

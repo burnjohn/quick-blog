@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import ReadNext from '.'
@@ -90,7 +90,9 @@ describe('ReadNext', () => {
   describe('navigation buttons', () => {
     const originals = {}
     const define = (prop, value) => {
-      originals[prop] = Object.getOwnPropertyDescriptor(HTMLElement.prototype, prop)
+      if (!(prop in originals)) {
+        originals[prop] = Object.getOwnPropertyDescriptor(HTMLElement.prototype, prop)
+      }
       Object.defineProperty(HTMLElement.prototype, prop, { configurable: true, get: () => value })
     }
 
@@ -130,6 +132,54 @@ describe('ReadNext', () => {
       await user.click(prev)
       expect(prev).toBeDisabled()
       expect(next).toBeEnabled()
+    })
+
+    it('slides a keyboard-focused off-screen card into view', async () => {
+      const user = userEvent.setup()
+      useRelatedBlogs.mockReturnValue({ blogs: makeBlogs(4), loading: false, error: null })
+
+      renderReadNext()
+      screen.getAllByRole('listitem').forEach((item, index) => {
+        Object.defineProperty(item, 'offsetLeft', { configurable: true, value: index * 316 })
+      })
+
+      const next = screen.getByRole('button', { name: 'Next posts' })
+      // "Previous" is disabled at the start, so the first stop is "Next"; then tab through the cards
+      await user.tab()
+      expect(next).toHaveFocus()
+      for (let i = 0; i < 4; i += 1) await user.tab()
+
+      expect(screen.getByRole('link', { name: /post 3/i })).toHaveFocus()
+      expect(next).toBeDisabled()
+      expect(screen.getByRole('button', { name: 'Previous posts' })).toBeEnabled()
+    })
+
+    it('re-clamps the position when the track gets narrower', async () => {
+      const user = userEvent.setup()
+      let notifyResize
+      vi.stubGlobal(
+        'ResizeObserver',
+        class {
+          constructor(callback) {
+            notifyResize = callback
+          }
+          observe() {}
+          disconnect() {}
+        }
+      )
+      useRelatedBlogs.mockReturnValue({ blogs: makeBlogs(4), loading: false, error: null })
+
+      renderReadNext()
+      const prev = screen.getByRole('button', { name: 'Previous posts' })
+      await user.click(screen.getByRole('button', { name: 'Next posts' }))
+      expect(prev).toBeEnabled()
+
+      // Viewport widened: everything fits now
+      define('scrollWidth', 600)
+      act(() => notifyResize())
+
+      expect(prev).toBeDisabled()
+      expect(screen.getByRole('button', { name: 'Next posts' })).toBeDisabled()
     })
 
     it('disables both buttons when all cards fit', () => {
