@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import BlogDetail from '.'
@@ -34,10 +34,12 @@ const mockComments = [
 
 const mockUseBlog = vi.fn()
 const mockUseComments = vi.fn()
+const mockUseRelatedBlogs = vi.fn()
 
 vi.mock('../../../hooks', () => ({
   useBlog: (...args) => mockUseBlog(...args),
   useComments: (...args) => mockUseComments(...args),
+  useRelatedBlogs: (...args) => mockUseRelatedBlogs(...args),
 }))
 
 const renderBlogDetail = () =>
@@ -50,6 +52,11 @@ const renderBlogDetail = () =>
   )
 
 describe('BlogDetail', () => {
+  beforeEach(() => {
+    window.scrollTo = vi.fn()
+    mockUseRelatedBlogs.mockReturnValue({ blogs: [], loading: true, error: null })
+  })
+
   it('shows loader while fetching', () => {
     mockUseBlog.mockReturnValue({ blog: null, loading: true })
     mockUseComments.mockReturnValue({ comments: [], addComment: vi.fn() })
@@ -71,5 +78,28 @@ describe('BlogDetail', () => {
     expect(screen.getByText('Test Blog Title')).toBeInTheDocument()
     expect(screen.getByText('Alice')).toBeInTheDocument()
     expect(screen.getByText('Great post!')).toBeInTheDocument()
+  })
+
+  it('places Read next after the comment form and before social share', () => {
+    mockUseBlog.mockReturnValue({ blog: mockBlog, loading: false })
+    mockUseComments.mockReturnValue({ comments: mockComments, addComment: vi.fn() })
+
+    renderBlogDetail()
+
+    const commentForm = screen.getByText('Add your comment')
+    const readNext = screen.getByRole('heading', { name: 'Read next' })
+    const share = screen.getByText('Share this article on social media')
+    expect(commentForm.compareDocumentPosition(readNext) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(readNext.compareDocumentPosition(share) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(mockUseRelatedBlogs).toHaveBeenCalledWith('1')
+  })
+
+  it('scrolls to the top when the post id changes', () => {
+    mockUseBlog.mockReturnValue({ blog: null, loading: true })
+    mockUseComments.mockReturnValue({ comments: [], addComment: vi.fn() })
+
+    renderBlogDetail()
+
+    expect(window.scrollTo).toHaveBeenCalledWith(0, 0)
   })
 })
