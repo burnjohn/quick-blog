@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Space+Grotesk:wght@400..700&family=JetBrains+Mono:wght@400..700&display=swap');
 @import "tailwindcss";
 
 *{
@@ -15,6 +15,22 @@ body {
 
 @theme {
   --color-primary: #5044E5; 
+
+  /* Analytics (dark) tokens */
+  --color-ink-950: #07070f;
+  --color-ink-900: #0b0b17;
+  --color-ink-800: #11111f;
+  --color-ink-700: #1a1a2e;
+  --color-ink-600: #26263d;
+  --color-ink-text: #ececf8;
+  --color-ink-muted: #a6a6c0;
+  --color-accent-violet: #8b8cff;
+  --color-accent-cyan: #22d3ee;
+  --color-accent-pink: #f472b6;
+  --color-accent-amber: #fbbf24;
+
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
 .rich-text { font-size: 15px;  }
@@ -42,3 +58,50 @@ body {
 .rich-text li { margin-bottom: 8px; }
 
 .rich-text a { color: #007AFF }
+
+/* ---------- Read next (dark glass inset, design from PR #40, scoped to .read-next-shell) ---------- */
+
+/* The global `*` font rule is unlayered, so scoped overrides must be too */
+.read-next-shell { font-family: "Outfit", ui-sans-serif, system-ui, sans-serif; }
+.read-next-shell * { font-family: inherit; }
+.read-next-shell .font-display { font-family: var(--font-display); }
+.read-next-shell .font-mono { font-family: var(--font-mono); }
+
+.read-next-glow {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60rem 36rem at 10% -10%, rgb(99 102 241 / 0.28), transparent 60%),
+    radial-gradient(48rem 30rem at 95% 5%, rgb(34 211 238 / 0.16), transparent 60%),
+    radial-gradient(52rem 34rem at 60% 105%, rgb(244 114 182 / 0.14), transparent 60%);
+}
+
+.read-next-grain {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@keyframes read-next-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.read-next-shimmer {
+  background-image: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 0.08) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: read-next-shimmer 1.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .read-next-shell *,
+  .read-next-shell *::before,
+  .read-next-shell *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
