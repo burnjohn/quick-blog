@@ -6,6 +6,7 @@ import helmet from 'helmet'
 import { notFound, errorHandler } from './middleware/errorHandler.js'
 import appRouter from './routes/appRoutes.js'
 import adminRouter from './routes/adminRoutes.js'
+import analyticsRouter from './routes/analyticsRoutes.js'
 import blogRouter from './routes/blogRoutes.js'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -19,6 +20,7 @@ app.use(express.json({ limit: '10mb' }))
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')))
 
 app.use('/', appRouter)
+app.use('/api/admin/analytics', analyticsRouter)
 app.use('/api/admin', adminRouter)
 app.use('/api/blog', blogRouter)
 

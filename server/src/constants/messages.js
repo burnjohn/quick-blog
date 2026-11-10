@@ -14,7 +14,14 @@ export const ERROR_MESSAGES = {
   BLOG_NOT_FOUND: 'Blog not found',
   COMMENT_NOT_FOUND: 'Comment not found',
   UNAUTHORIZED: 'Unauthorized access',
-  SERVER_ERROR: 'Internal server error'
+  SERVER_ERROR: 'Internal server error',
+  ANALYTICS_RANGE_INCOMPLETE: 'Both "from" and "to" are required together',
+  ANALYTICS_INVALID_DATE: 'Dates must be valid and formatted as YYYY-MM-DD',
+  ANALYTICS_INVALID_RANGE: '"from" must not be after "to"',
+  ANALYTICS_INVALID_SOURCE: 'Unknown traffic source',
+  ANALYTICS_INVALID_AUTHOR: 'Author ids must be valid ids',
+  ANALYTICS_TOO_MANY_TAGS: 'Too many tags in filter',
+  ANALYTICS_INVALID_POST_ID: 'Invalid post id'
 }
 
 export const HTTP_STATUS = {
