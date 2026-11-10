@@ -7,6 +7,7 @@ import {
   getAllBlogs,
   getBlogById,
   getBlogComments,
+  getRelatedBlogs,
   publishBlog,
   unpublishBlog
 } from '../controllers/blogController.js'
@@ -20,6 +21,7 @@ const blogRouter = express.Router()
 // Public routes
 blogRouter.get('/all', getAllBlogs)
 blogRouter.get('/:blogId', getBlogById)
+blogRouter.get('/:blogId/related', getRelatedBlogs)
 blogRouter.post('/add-comment', commentLimiter, validateComment, addComment)
 blogRouter.post('/comments', getBlogComments)
 
