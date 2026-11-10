@@ -11,6 +11,17 @@ const CARD_GAP_PX = 16
 const EDGE_TOLERANCE_PX = 1
 const SLIDE_SPRING = { type: 'spring', stiffness: 260, damping: 32 }
 
+// Cards fade in together with the track (not each on its own visibility), so a
+// card peeking in from the clipped edge is visible as a hint that more follow
+const TRACK_VARIANTS = {
+  hidden: {},
+  shown: { transition: { staggerChildren: 0.06 } },
+}
+const CARD_VARIANTS = {
+  hidden: { opacity: 0, y: 24 },
+  shown: { opacity: 1, y: 0, transition: { duration: 0.45, ease: 'easeOut' } },
+}
+
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
 
 const ArrowIcon = ({ direction }) => (
@@ -46,7 +57,8 @@ const useTrackMetrics = (viewportRef, trackRef, itemCount) => {
     if (!viewport || !track) return
     const firstItem = track.firstElementChild
     setMetrics({
-      maxScroll: Math.max(0, track.scrollWidth - viewport.clientWidth),
+      // The track's own box is the visible window (the viewport adds focus-ring padding)
+      maxScroll: Math.max(0, track.scrollWidth - track.clientWidth),
       step: firstItem ? firstItem.offsetWidth + CARD_GAP_PX : 0,
     })
   }, [viewportRef, trackRef])
@@ -100,15 +112,16 @@ function ReadNextCarousel({ blogs, titleId }) {
   // Tabbing to a clipped card: bring it into view via `x` (the viewport itself never scrolls)
   const handleFocusCapture = (event) => {
     const viewport = viewportRef.current
+    const track = trackRef.current
     const item = event.target.closest('li')
-    if (!viewport || !item) return
+    if (!viewport || !track || !item) return
     viewport.scrollLeft = 0
     const visibleStart = -(targetRef.current ?? x.get())
-    const visibleEnd = visibleStart + viewport.clientWidth
+    const visibleEnd = visibleStart + track.clientWidth
     const itemStart = item.offsetLeft
     const itemEnd = itemStart + item.offsetWidth
     if (itemStart < visibleStart) slideTo(-itemStart)
-    else if (itemEnd > visibleEnd) slideTo(-(itemEnd - viewport.clientWidth))
+    else if (itemEnd > visibleEnd) slideTo(-(itemEnd - track.clientWidth))
   }
 
   const canPrev = offset < -EDGE_TOLERANCE_PX
@@ -139,15 +152,16 @@ function ReadNextCarousel({ blogs, titleId }) {
           onDrag={dragGuard.onDrag}
           onClickCapture={dragGuard.onClickCapture}
           onFocusCapture={handleFocusCapture}
+          variants={TRACK_VARIANTS}
+          initial={reduceMotion ? false : 'hidden'}
+          whileInView={reduceMotion ? undefined : 'shown'}
+          viewport={{ once: true, amount: 0.2 }}
         >
-          {blogs.map((blog, index) => (
+          {blogs.map((blog) => (
             <motion.li
               key={blog._id}
               className='w-[80%] shrink-0 sm:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-2rem)/3)]'
-              initial={reduceMotion ? false : { opacity: 0, y: 24 }}
-              whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.45, ease: 'easeOut', delay: index * 0.06 }}
+              variants={CARD_VARIANTS}
             >
               <ReadNextCard blog={blog} />
             </motion.li>
