@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import mongoose from 'mongoose'
 import Blog from '../models/Blog.js'
 import Comment from '../models/Comment.js'
 import main from '../configs/gemini.js'
@@ -73,6 +74,37 @@ export const getBlogById = asyncHandler(async (req, res) => {
     return res.status(404).json({ success: false, message: 'Blog not found' })
   }
   res.json({ success: true, blog: transformBlogImage(blog, req) })
+})
+
+const RELATED_BLOGS_LIMIT = 6
+const RELATED_BLOG_FIELDS = 'title subTitle category image createdAt'
+
+// Published posts from the same category, excluding the given post, newest first
+export const getRelatedBlogs = asyncHandler(async (req, res) => {
+  const { blogId } = req.params
+  if (!mongoose.isValidObjectId(blogId)) {
+    return res.status(400).json({ success: false, message: 'Invalid blog id' })
+  }
+
+  const blog = await Blog.findById(blogId).select('category')
+  if (!blog) {
+    return res.status(404).json({ success: false, message: 'Blog not found' })
+  }
+
+  const blogs = await Blog.find({
+    _id: { $ne: blog._id },
+    category: blog.category,
+    isPublished: true
+  })
+    .sort({ createdAt: -1 })
+    .limit(RELATED_BLOGS_LIMIT)
+    .select(RELATED_BLOG_FIELDS)
+
+  res.json({
+    success: true,
+    count: blogs.length,
+    blogs: transformBlogsImages(blogs, req)
+  })
 })
 
 export const deleteBlogById = asyncHandler(async (req, res) => {
