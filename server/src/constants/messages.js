@@ -18,6 +18,7 @@ export const ERROR_MESSAGES = {
   ANALYTICS_RANGE_INCOMPLETE: 'Both "from" and "to" are required together',
   ANALYTICS_INVALID_DATE: 'Dates must be valid and formatted as YYYY-MM-DD',
   ANALYTICS_INVALID_RANGE: '"from" must not be after "to"',
+  ANALYTICS_RANGE_OUT_OF_BOUNDS: 'Date range is too long or outside the supported years',
   ANALYTICS_INVALID_SOURCE: 'Unknown traffic source',
   ANALYTICS_INVALID_AUTHOR: 'Author ids must be valid ids',
   ANALYTICS_TOO_MANY_TAGS: 'Too many tags in filter',

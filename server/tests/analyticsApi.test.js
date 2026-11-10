@@ -44,6 +44,10 @@ describe('Analytics API', () => {
       ['from after to', '?from=2026-03-12&to=2026-03-10'],
       ['invalid date', '?from=2026-02-30&to=2026-03-10'],
       ['bad format', '?from=10-03-2026&to=2026-03-11'],
+      ['range far beyond supported bounds', '?from=0001-01-01&to=9999-12-31'],
+      ['range longer than 3660 days', '?from=2010-01-01&to=2020-02-01'],
+      ['year before 1970', '?from=1969-12-31&to=1970-01-05'],
+      ['year after 2100', '?from=2100-12-30&to=2101-01-02'],
       ['only from', '?from=2026-03-10'],
       ['unknown source', '?from=2026-03-10&to=2026-03-11&sources=twitter'],
       ['invalid author id', '?authors=123']
