@@ -92,6 +92,13 @@
     transition-duration: 0.01ms !important;
   }
 
+  /* Hover / press transforms (image zoom, arrow nudges, logo tilt) */
+  .group:hover,
+  .group:hover *,
+  *:active {
+    transform: none !important;
+  }
+
   .marquee-track {
     animation: none !important;
     transform: none !important;

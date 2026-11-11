@@ -24,7 +24,7 @@ function Sidebar() {
 
   return (
     <nav aria-label='Admin' className='flex min-h-full flex-col gap-1 bg-ink pt-6'>
-      <p className='mb-3 hidden px-6 font-mono text-[10px] uppercase tracking-[0.2em] text-paper/40 md:block'>
+      <p className='mb-3 hidden px-6 font-mono text-[10px] uppercase tracking-[0.2em] text-paper/60 md:block'>
         Menu
       </p>
       {NAV_ITEMS.map((item) => (

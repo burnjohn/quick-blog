@@ -8,7 +8,7 @@ function CoverUpload({ image, onChange, disabled = false }) {
       </p>
       <label
         htmlFor='image'
-        className='group flex cursor-pointer items-center gap-5 border border-dashed border-ink bg-paper p-4 transition-colors hover:bg-signal/30'
+        className='group flex cursor-pointer items-center gap-5 border border-dashed border-ink bg-paper p-4 transition-colors hover:bg-signal/30 has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-3 has-[:focus-visible]:outline-ink'
       >
         {image ? (
           <img
@@ -28,15 +28,15 @@ function CoverUpload({ image, onChange, disabled = false }) {
           <span className='block font-medium text-ink'>{image ? image.name : 'Choose a cover image'}</span>
           PNG, JPG or WebP
         </span>
+        <input
+          onChange={(e) => onChange(e.target.files[0])}
+          type='file'
+          id='image'
+          className='sr-only'
+          accept='image/*'
+          disabled={disabled}
+        />
       </label>
-      <input
-        onChange={(e) => onChange(e.target.files[0])}
-        type='file'
-        id='image'
-        hidden
-        accept='image/*'
-        disabled={disabled}
-      />
     </div>
   )
 }

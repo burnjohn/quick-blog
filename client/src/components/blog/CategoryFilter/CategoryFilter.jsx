@@ -17,7 +17,7 @@ function CategoryFilter({ activeCategory, onCategoryChange }) {
                 onClick={() => onCategoryChange(category)}
                 aria-pressed={isActive}
                 className={classNames(
-                  'relative min-h-12 px-4 font-mono text-xs font-medium uppercase tracking-[0.14em] cursor-pointer transition-colors sm:px-6',
+                  'relative min-h-12 px-4 focus-visible:outline-offset-[-3px] focus-visible:shadow-none font-mono text-xs font-medium uppercase tracking-[0.14em] cursor-pointer transition-colors sm:px-6',
                   isActive ? 'text-ink' : 'text-ink-muted hover:text-ink'
                 )}
               >

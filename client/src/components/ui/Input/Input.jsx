@@ -33,7 +33,7 @@ function Input({
         aria-invalid={error ? 'true' : undefined}
         aria-describedby={error ? errorId : undefined}
         className={classNames(
-          'w-full min-h-12 px-4 bg-surface border text-base text-ink placeholder:text-ink-muted/70 outline-none transition-colors',
+          'w-full min-h-12 px-4 bg-surface border text-base text-ink placeholder:text-ink-muted outline-none transition-colors',
           error
             ? 'border-danger focus:border-danger'
             : 'border-line hover:border-ink focus:border-ink',

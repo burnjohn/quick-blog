@@ -33,7 +33,7 @@ function Textarea({
         aria-invalid={error ? 'true' : undefined}
         aria-describedby={error ? errorId : undefined}
         className={classNames(
-          'w-full p-4 bg-surface border text-base text-ink placeholder:text-ink-muted/70 outline-none transition-colors resize-none',
+          'w-full p-4 bg-surface border text-base text-ink placeholder:text-ink-muted outline-none transition-colors resize-none',
           error
             ? 'border-danger focus:border-danger'
             : 'border-line hover:border-ink focus:border-ink',
