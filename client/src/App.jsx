@@ -5,6 +5,7 @@ import { Layout, Dashboard, AddBlog, ListBlog, Comments } from './pages/admin'
 import { Login } from './components/admin'
 import { useAppContext } from './context/AppContext'
 import { Toaster } from 'react-hot-toast'
+import { MotionConfig } from 'motion/react'
 import { ROUTES } from './constants/routes'
 import 'quill/dist/quill.snow.css'
 
@@ -12,8 +13,13 @@ function App() {
   const { token } = useAppContext()
 
   return (
-    <div>
-      <Toaster />
+    <MotionConfig reducedMotion='user'>
+      <Toaster
+        position='bottom-right'
+        toastOptions={{
+          className: '!rounded-none !border !border-ink !bg-surface !text-ink !font-sans !shadow-[4px_4px_0_0_var(--color-ink)]'
+        }}
+      />
       <Routes>
         <Route path={ROUTES.HOME} element={<Home />} />
         <Route path={ROUTES.BLOG_DETAIL} element={<BlogDetail />} />
@@ -24,7 +30,7 @@ function App() {
           <Route path='comments' element={<Comments />} />
         </Route>
       </Routes>
-    </div>
+    </MotionConfig>
   )
 }
 

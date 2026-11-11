@@ -1,21 +1,29 @@
 import React from 'react'
-import { assets } from '../../../assets/assets'
-import { formatRelativeTime } from '../../../utils/formatters'
+import { formatRelativeTime, getInitials } from '../../../utils/formatters'
 
 function CommentItem({ comment }) {
   return (
-    <div className='relative bg-primary/2 border border-primary/5 max-w-xl p-4 rounded text-gray-600'>
-      <div className='flex items-center gap-2 mb-2'>
-        <img src={assets.user_icon} alt='' className='w-6' />
-        <p className='font-medium'>{comment.name}</p>
+    <li className='flex gap-4 border-b border-line py-6 sm:gap-5'>
+      <span
+        aria-hidden='true'
+        className='flex h-11 w-11 shrink-0 items-center justify-center border border-ink bg-signal font-mono text-xs font-medium text-ink'
+      >
+        {getInitials(comment.name)}
+      </span>
+      <div className='min-w-0 flex-1'>
+        <div className='flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1'>
+          <p className='font-semibold text-ink'>{comment.name}</p>
+          <time
+            dateTime={comment.createdAt}
+            className='font-mono text-[11px] uppercase tracking-[0.14em] text-ink-muted'
+          >
+            {formatRelativeTime(comment.createdAt)}
+          </time>
+        </div>
+        <p className='mt-2 break-words leading-relaxed text-ink'>{comment.content}</p>
       </div>
-      <p className='text-sm max-w-md ml-8'>{comment.content}</p>
-      <div className='absolute right-4 bottom-3 flex items-center gap-2 text-xs'>
-        {formatRelativeTime(comment.createdAt)}
-      </div>
-    </div>
+    </li>
   )
 }
 
 export default CommentItem
-

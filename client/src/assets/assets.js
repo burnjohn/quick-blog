@@ -12,6 +12,7 @@ import facebook_icon from './facebook_icon.svg'
 import googleplus_icon from './googleplus_icon.svg'
 import twitter_icon from './twitter_icon.svg'
 import logo from './logo.svg'
+import logo_mark from './logo_mark.svg'
 import arrow from './arrow.svg'
 import logo_light from './logo_light.svg'
 import blog_icon from './blog_icon.png'
@@ -23,10 +24,8 @@ import user_icon from './user_icon.svg'
 import bin_icon from './bin_icon.svg'
 import comment_icon from './comment_icon.svg'
 import tick_icon from './tick_icon.svg'
-import star_icon from './star_icon.svg'
 import cross_icon from './cross_icon.svg'
 import home_icon from './home_icon.svg'
-import gradientBackground from './gradientBackground.png'
 import dashboard_icon_1 from './dashboard_icon_1.svg'
 import dashboard_icon_2 from './dashboard_icon_2.svg'
 import dashboard_icon_3 from './dashboard_icon_3.svg'
@@ -38,6 +37,7 @@ export const assets = {
     googleplus_icon,
     twitter_icon,
     logo,
+    logo_mark,
     arrow,
     logo_light,
     blog_icon,
@@ -48,9 +48,7 @@ export const assets = {
     bin_icon,
     comment_icon,
     tick_icon,
-    star_icon,
     home_icon,
-    gradientBackground,
     list_icon,
     cross_icon,
     dashboard_icon_1,
