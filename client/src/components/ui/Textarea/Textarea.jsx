@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useId } from 'react'
 import { classNames } from '../../../utils/helpers'
 
 function Textarea({
@@ -8,34 +8,44 @@ function Textarea({
   containerClassName = '',
   rows = 4,
   required = false,
+  id,
   ...props
 }) {
+  const generatedId = useId()
+  const textareaId = id || generatedId
+  const errorId = `${textareaId}-error`
+
   return (
     <div className={classNames('w-full', containerClassName)}>
       {label && (
-        <label className='block mb-2 text-sm font-medium text-gray-700'>
+        <label
+          htmlFor={textareaId}
+          className='block mb-2 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-ink'
+        >
           {label}
-          {required && <span className='text-red-500 ml-1'>*</span>}
+          {required && <span className='text-danger ml-1' aria-hidden='true'>*</span>}
         </label>
       )}
       <textarea
+        id={textareaId}
         rows={rows}
         required={required}
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={error ? errorId : undefined}
         className={classNames(
-          'w-full p-2 border rounded outline-none transition-colors resize-none',
-          error 
-            ? 'border-red-500 focus:border-red-600' 
-            : 'border-gray-300 focus:border-primary',
+          'w-full p-4 bg-surface border text-base text-ink placeholder:text-ink-muted/70 outline-none transition-colors resize-none',
+          error
+            ? 'border-danger focus:border-danger'
+            : 'border-line hover:border-ink focus:border-ink',
           className
         )}
         {...props}
       />
       {error && (
-        <p className='mt-1 text-sm text-red-500'>{error}</p>
+        <p id={errorId} role='alert' className='mt-1.5 text-sm text-danger'>{error}</p>
       )}
     </div>
   )
 }
 
 export default Textarea
-
