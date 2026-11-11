@@ -1,28 +1,54 @@
 import React from 'react'
 import { assets } from '../../../assets/assets'
 import { useAppContext } from '../../../context/AppContext'
-import Button from '../../ui/Button'
 import { ROUTES } from '../../../constants/routes'
 
 function Navbar() {
   const { navigate, token } = useAppContext()
 
   return (
-    <div className='flex justify-between items-center py-5 mx-8 sm:mx-20 xl:mx-32'>
-      <img 
-        onClick={() => navigate(ROUTES.HOME)} 
-        src={assets.logo} 
-        alt='logo' 
-        className='w-32 sm:w-44 cursor-pointer hover:opacity-80 transition-opacity' 
-      />
-      <button 
-        onClick={() => navigate(ROUTES.ADMIN)}  
-        className='flex items-center gap-2 rounded-full text-sm cursor-pointer bg-primary text-white px-10 py-2.5 hover:bg-primary/90 transition-colors'
+    <>
+      <a
+        href='#main'
+        className='sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-signal focus:px-4 focus:py-3 focus:font-mono focus:text-xs focus:uppercase focus:tracking-[0.14em] focus:text-ink'
       >
-        {token ? 'Dashboard' : 'Login'}
-        <img src={assets.arrow} className='w-3' alt='arrow' />
-      </button>
-    </div>
+        Skip to content
+      </a>
+
+      <header className='sticky top-0 z-40 border-b border-ink bg-paper/90 backdrop-blur-md'>
+        <div className='mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-5 sm:h-20 sm:px-8'>
+          <button
+            type='button'
+            onClick={() => navigate(ROUTES.HOME)}
+            aria-label='QuickBlog — go to home'
+            className='group flex min-h-11 items-center gap-3 cursor-pointer'
+          >
+            <img
+              src={assets.logo_mark}
+              alt='logo'
+              className='h-9 w-9 transition-transform duration-300 group-hover:-rotate-6 sm:h-10 sm:w-10'
+            />
+            <span className='font-serif text-2xl font-semibold tracking-tight text-ink sm:text-[1.75rem]'>
+              QuickBlog<span className='text-ink-muted'>.</span>
+            </span>
+          </button>
+
+          <div className='flex items-center gap-6'>
+            <span className='hidden font-mono text-[11px] uppercase tracking-[0.18em] text-ink-muted md:inline'>
+              Stories · Ideas · Notes
+            </span>
+            <button
+              type='button'
+              onClick={() => navigate(ROUTES.ADMIN)}
+              className='group inline-flex min-h-11 items-center gap-3 border border-ink bg-ink px-5 font-mono text-xs font-medium uppercase tracking-[0.14em] text-paper transition-colors duration-200 cursor-pointer hover:bg-signal hover:text-ink'
+            >
+              {token ? 'Dashboard' : 'Login'}
+              <span aria-hidden='true' className='transition-transform duration-200 group-hover:translate-x-1'>→</span>
+            </button>
+          </div>
+        </div>
+      </header>
+    </>
   )
 }
 

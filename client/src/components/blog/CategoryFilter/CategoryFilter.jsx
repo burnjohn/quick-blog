@@ -1,32 +1,42 @@
 import React from 'react'
 import { motion } from 'motion/react' // eslint-disable-line no-unused-vars
 import { BLOG_CATEGORIES } from '../../../constants/categories'
+import { classNames } from '../../../utils/helpers'
 
 function CategoryFilter({ activeCategory, onCategoryChange }) {
   return (
-    <div className='flex justify-center gap-4 sm:gap-8 my-10 relative'>
-      {BLOG_CATEGORIES.map((category) => (
-        <div key={category} className='relative'>
-          <button 
-            onClick={() => onCategoryChange(category)}
-            className={`cursor-pointer text-gray-500 ${
-              activeCategory === category && 'text-white px-4 pt-0.5'
-            }`}
-          >
-            {category}
-            {activeCategory === category && (
-              <motion.div 
-                layoutId='underline' 
-                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                className='absolute left-0 right-0 top-0 h-7 -z-1 bg-primary rounded-full'
-              />
-            )}
-          </button>
-        </div>
-      ))}
-    </div>
+    <nav aria-label='Filter by category' className='overflow-x-auto'>
+      <ul className='flex min-w-max items-stretch border-b border-ink'>
+        {BLOG_CATEGORIES.map((category) => {
+          const isActive = activeCategory === category
+
+          return (
+            <li key={category}>
+              <button
+                type='button'
+                onClick={() => onCategoryChange(category)}
+                aria-pressed={isActive}
+                className={classNames(
+                  'relative min-h-12 px-4 font-mono text-xs font-medium uppercase tracking-[0.14em] cursor-pointer transition-colors sm:px-6',
+                  isActive ? 'text-ink' : 'text-ink-muted hover:text-ink'
+                )}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId='category-indicator'
+                    aria-hidden='true'
+                    transition={{ type: 'spring', stiffness: 500, damping: 38 }}
+                    className='absolute inset-0 -z-0 bg-signal'
+                  />
+                )}
+                <span className='relative z-10'>{category}</span>
+              </button>
+            </li>
+          )
+        })}
+      </ul>
+    </nav>
   )
 }
 
 export default CategoryFilter
-

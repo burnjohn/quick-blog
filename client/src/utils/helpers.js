@@ -55,3 +55,11 @@ export const removeFromLocalStorage = (key) => {
   }
 }
 
+
+// Keyboard handler for non-anchor elements that behave like links (role="link")
+export const getLinkKeyHandler = (onActivate) => (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault()
+    onActivate()
+  }
+}

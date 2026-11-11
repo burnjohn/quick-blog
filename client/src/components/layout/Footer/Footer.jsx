@@ -1,42 +1,57 @@
 import React from 'react'
-import { assets, footer_data } from '../../../assets/assets'
+import { footer_data } from '../../../assets/assets'
+
+const CURRENT_YEAR = new Date().getFullYear()
 
 function Footer() {
   return (
-    <footer className='px-6 md:px-16 lg:px-24 xl:px-32 bg-primary/3'>
-      <div className='flex flex-col md:flex-row items-start justify-between gap-10 py-10 border-b border-gray-500/30 text-gray-500'>
-        
-        <div>
-          <img src={assets.logo} alt='logo' className='w-32 sm:w-44' />
-          <p className='max-w-[410px] mt-6'>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
-            Rerum unde quaerat eveniet cumque accusamus atque qui error quo enim fugiat?
-          </p>
+    <footer className='bg-ink text-paper'>
+      <div className='mx-auto max-w-7xl px-5 pt-16 sm:px-8 sm:pt-24'>
+        <div className='grid gap-12 border-b border-paper/20 pb-14 md:grid-cols-12'>
+          <div className='md:col-span-5'>
+            <p className='font-mono text-[11px] uppercase tracking-[0.18em] text-signal'>
+              About
+            </p>
+            <p className='mt-4 max-w-sm font-serif text-2xl leading-snug'>
+              An independent journal of essays and notes on technology, startups, lifestyle and money.
+            </p>
+          </div>
+
+          <nav aria-label='Footer' className='grid grid-cols-2 gap-8 sm:grid-cols-3 md:col-span-7'>
+            {footer_data.map((section) => (
+              <div key={section.title}>
+                <h3 className='mb-4 font-mono text-[11px] uppercase tracking-[0.18em] text-paper/60'>
+                  {section.title}
+                </h3>
+                <ul className='space-y-2.5 text-sm'>
+                  {section.links.map((link) => (
+                    <li key={link}>
+                      <a
+                        href='#'
+                        className='decoration-signal decoration-2 underline-offset-4 transition-colors hover:text-signal hover:underline'
+                      >
+                        {link}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
         </div>
 
-        <div className='flex flex-wrap justify-between w-full md:w-[45%] gap-5'>
-          {footer_data.map((section, index) => (
-            <div key={index}>
-              <h3 className='font-semibold text-base text-gray-900 md:mb-5 mb-2'>
-                {section.title}
-              </h3>
-              <ul className='text-sm space-y-1'>
-                {section.links.map((link, i) => (
-                  <li key={i}>
-                    <a href='#' className='hover:underline transition'>
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        <p
+          aria-hidden='true'
+          className='select-none overflow-hidden whitespace-nowrap pt-8 font-serif text-[16vw] font-semibold leading-[0.85] tracking-tighter text-paper xl:text-[13rem]'
+        >
+          QuickBlog<span className='text-signal'>.</span>
+        </p>
+
+        <div className='flex flex-col gap-2 border-t border-paper/20 py-6 font-mono text-[11px] uppercase tracking-[0.14em] text-paper/60 sm:flex-row sm:justify-between'>
+          <p>© {CURRENT_YEAR} QuickBlog. All rights reserved.</p>
+          <p>Made with ink &amp; signal</p>
         </div>
       </div>
-      
-      <p className='py-4 text-center text-sm md:text-base text-gray-500/80'>
-        Copyright 2025 © QuickBlog GreatStack - All Right Reserved.
-      </p>
     </footer>
   )
 }

@@ -20,40 +20,43 @@ function SearchBar({ onSearch, onClear, hasSearchTerm = false }) {
   }
 
   return (
-    <div>
-      <form 
-        onSubmit={handleSubmit} 
-        className='flex justify-between max-w-lg max-sm:scale-75 mx-auto border border-gray-300 bg-white rounded overflow-hidden'
+    <div className='w-full max-w-xl'>
+      <form
+        onSubmit={handleSubmit}
+        role='search'
+        className='flex w-full items-stretch border border-ink bg-surface shadow-[6px_6px_0_0_var(--color-ink)] transition-shadow focus-within:shadow-[6px_6px_0_0_var(--color-signal)]'
       >
-        <input 
+        <span aria-hidden='true' className='hidden items-center pl-4 font-mono text-sm text-ink-muted sm:flex'>
+          /
+        </span>
+        <input
           ref={inputRef}
-          type='text' 
-          placeholder='Search for blogs' 
-          required 
-          className='w-full pl-4 outline-none'
+          type='search'
+          aria-label='Search for blogs'
+          placeholder='Search for blogs'
+          required
+          className='min-h-14 w-full min-w-0 bg-transparent px-4 text-base text-ink outline-none placeholder:text-ink-muted/70 focus-visible:outline-none focus-visible:shadow-none'
         />
-        <Button 
-          type='submit' 
+        <Button
+          type='submit'
           variant='primary'
-          className='m-1.5'
+          className='m-1.5 shrink-0'
         >
           Search
         </Button>
       </form>
-      
+
       {hasSearchTerm && (
-        <div className='text-center mt-4'>
-          <button 
-            onClick={handleClear}
-            className='border font-light text-xs py-1 px-3 rounded-sm shadow-custom-sm cursor-pointer hover:bg-gray-50 transition-colors'
-          >
-            Clear Search
-          </button>
-        </div>
+        <button
+          type='button'
+          onClick={handleClear}
+          className='mt-4 inline-flex min-h-10 items-center gap-2 border-b-2 border-signal font-mono text-[11px] uppercase tracking-[0.14em] text-ink cursor-pointer hover:bg-signal transition-colors'
+        >
+          <span aria-hidden='true'>✕</span> Clear Search
+        </button>
       )}
     </div>
   )
 }
 
 export default SearchBar
-
