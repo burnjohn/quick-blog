@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import BlogDetail from '.'
 
 vi.mock('../../../assets/assets', () => ({
-  assets: { gradientBackground: '/gradient.png' },
+  assets: {},
 }))
 
 vi.mock('react-hot-toast', () => ({

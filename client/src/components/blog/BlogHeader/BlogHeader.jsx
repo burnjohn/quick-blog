@@ -1,14 +1,5 @@
 import React from 'react'
-import { formatDate } from '../../../utils/formatters'
-
-function getInitials(name) {
-  return name
-    .split(' ')
-    .map((part) => part[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase()
-}
+import { formatDate, getInitials } from '../../../utils/formatters'
 
 function BlogHeader({ blog, author = 'Michael Brown' }) {
   return (
