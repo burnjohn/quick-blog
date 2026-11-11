@@ -1,13 +1,19 @@
 import React from 'react'
 
-function BlogContent({ image, content }) {
+function BlogContent({ image, title = '', content }) {
   return (
-    <div className='mx-5 max-w-5xl md:mx-auto my-10 mt-6'>
+    <div className='mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16'>
       {image && (
-        <img src={image} alt='' className='rounded-3xl mb-5 w-full' />
+        <figure className='mb-14 border border-ink bg-surface sm:mb-20'>
+          <img
+            src={image}
+            alt={title ? `Cover image for “${title}”` : ''}
+            className='aspect-[16/9] w-full object-cover'
+          />
+        </figure>
       )}
-      <div 
-        className='rich-text max-w-3xl mx-auto' 
+      <div
+        className='rich-text mx-auto'
         dangerouslySetInnerHTML={{ __html: content }}
       />
     </div>
@@ -15,4 +21,3 @@ function BlogContent({ image, content }) {
 }
 
 export default BlogContent
-
