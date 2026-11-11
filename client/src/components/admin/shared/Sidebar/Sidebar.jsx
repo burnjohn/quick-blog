@@ -4,33 +4,39 @@ import { assets } from '../../../../assets/assets'
 import { ROUTES } from '../../../../constants/routes'
 import { classNames } from '../../../../utils/helpers'
 
+const NAV_ITEMS = [
+  { to: ROUTES.ADMIN_DASHBOARD, label: 'Dashboard', icon: assets.home_icon, end: true },
+  { to: ROUTES.ADMIN_ADD_BLOG, label: 'Add blogs', icon: assets.add_icon },
+  { to: ROUTES.ADMIN_LIST_BLOG, label: 'Blog lists', icon: assets.list_icon },
+  { to: ROUTES.ADMIN_COMMENTS, label: 'Comments', icon: assets.comment_icon },
+]
+
 function Sidebar() {
   const navLinkClass = ({ isActive }) => classNames(
-    'flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-64 cursor-pointer transition-colors hover:bg-primary/5',
-    isActive && 'bg-primary/10 border-r-4 border-primary'
+    'group flex min-h-12 items-center gap-3 px-4 font-mono text-xs uppercase tracking-[0.14em] transition-colors md:min-w-60 md:px-6',
+    isActive ? 'bg-signal text-ink' : 'text-paper/75 hover:bg-paper/10 hover:text-paper'
+  )
+
+  const iconClass = (isActive) => classNames(
+    'w-5 min-w-5',
+    !isActive && 'brightness-0 invert opacity-75 group-hover:opacity-100'
   )
 
   return (
-    <nav className='flex flex-col border-r border-gray-200 min-h-full pt-6'>
-      <NavLink end to={ROUTES.ADMIN_DASHBOARD} className={navLinkClass}>
-        <img src={assets.home_icon} alt='' className='min-w-4 w-5' />
-        <p className='hidden md:inline-block'>Dashboard</p>
-      </NavLink>
-
-      <NavLink to={ROUTES.ADMIN_ADD_BLOG} className={navLinkClass}>
-        <img src={assets.add_icon} alt='' className='min-w-4 w-5' />
-        <p className='hidden md:inline-block'>Add blogs</p>
-      </NavLink>
-
-      <NavLink to={ROUTES.ADMIN_LIST_BLOG} className={navLinkClass}>
-        <img src={assets.list_icon} alt='' className='min-w-4 w-5' />
-        <p className='hidden md:inline-block'>Blog lists</p>
-      </NavLink>
-
-      <NavLink to={ROUTES.ADMIN_COMMENTS} className={navLinkClass}>
-        <img src={assets.comment_icon} alt='' className='min-w-4 w-5' />
-        <p className='hidden md:inline-block'>Comments</p>
-      </NavLink>
+    <nav aria-label='Admin' className='flex min-h-full flex-col gap-1 bg-ink pt-6'>
+      <p className='mb-3 hidden px-6 font-mono text-[10px] uppercase tracking-[0.2em] text-paper/40 md:block'>
+        Menu
+      </p>
+      {NAV_ITEMS.map((item) => (
+        <NavLink key={item.to} end={item.end} to={item.to} className={navLinkClass} aria-label={item.label}>
+          {({ isActive }) => (
+            <>
+              <img src={item.icon} alt='' className={iconClass(isActive)} />
+              <span className='hidden md:inline'>{item.label}</span>
+            </>
+          )}
+        </NavLink>
+      ))}
     </nav>
   )
 }
