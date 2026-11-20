@@ -23,3 +23,14 @@ export const truncateHtml = (html, length = 80) => {
   return truncateText(stripped, length)
 }
 
+
+export const getInitials = (name = '') => {
+  return name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
+}

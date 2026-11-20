@@ -1,11 +1,13 @@
 import React from 'react'
-import { assets } from '../../../assets/assets'
+import { motion } from 'motion/react' // eslint-disable-line no-unused-vars
 import { useAppContext } from '../../../context/AppContext'
 import SearchBar from '../SearchBar'
-import Badge from '../../ui/Badge'
+import CategoryTicker from '../../blog/CategoryTicker'
+
+const EASE_OUT = [0.22, 1, 0.36, 1]
 
 function Header() {
-  const { setInput, input } = useAppContext()
+  const { setInput, input, blogs } = useAppContext()
 
   const handleSearch = (searchTerm) => {
     setInput(searchTerm)
@@ -16,36 +18,57 @@ function Header() {
   }
 
   return (
-    <div className='mx-8 sm:mx-16 xl:mx-24 relative'>
-      <div className='text-center mt-20 mb-8'>
-        
-        <Badge variant='primary' className='mb-4 inline-flex items-center gap-4 px-6 py-1.5'>
-          <span>New: AI feature integrated</span>
-          <img src={assets.star_icon} className='w-2.5' alt='' />
-        </Badge>
+    <section aria-labelledby='hero-title' className='relative'>
+      <div className='mx-auto max-w-7xl px-5 pt-12 pb-14 sm:px-8 sm:pt-20 sm:pb-20'>
+        <div className='flex flex-wrap items-center justify-between gap-3 border-b border-ink pb-4 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-muted'>
+          <span>Issue Nº01 — The QuickBlog Journal</span>
+          <span className='inline-flex items-center gap-2 text-ink'>
+            <span aria-hidden='true' className='inline-block h-2 w-2 bg-signal ring-1 ring-ink' />
+            {blogs?.length ? `${blogs.length} stories` : 'Fresh stories'} · AI-assisted writing
+          </span>
+        </div>
 
-        <h1 className='text-3xl sm:text-6xl font-semibold sm:leading-16 text-gray-700'>
-          Your own <span className='text-primary'>blogging</span> <br /> platform.
-        </h1>
+        <div className='mt-10 grid gap-10 lg:mt-14 lg:grid-cols-12 lg:items-end'>
+          <motion.h1
+            id='hero-title'
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: EASE_OUT }}
+            className='font-serif text-[3.5rem] font-semibold leading-[0.92] tracking-tight text-ink sm:text-8xl lg:col-span-8 xl:text-[8.5rem]'
+          >
+            Your own{' '}
+            <em className='relative inline-block font-normal'>
+              <span className='relative z-10'>blogging</span>
+              <span aria-hidden='true' className='absolute inset-x-0 bottom-[0.08em] -z-0 h-[0.28em] bg-signal' />
+            </em>
+            <br />
+            platform.
+          </motion.h1>
 
-        <p className='my-6 sm:my-8 max-w-2xl m-auto max-sm:text-xs text-gray-500'>
-          This is your space to think out loud, to share what matters, and to write without filters. 
-          Whether it's one word or a thousand, your story starts right here.
-        </p>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15, ease: EASE_OUT }}
+            className='lg:col-span-4 lg:pb-3'
+          >
+            <p className='max-w-md text-lg leading-relaxed text-ink-muted'>
+              This is your space to think out loud, to share what matters, and to write without filters.
+              Whether it's one word or a thousand, your story starts right here.
+            </p>
+          </motion.div>
+        </div>
 
-        <SearchBar 
-          onSearch={handleSearch}
-          onClear={handleClear}
-          hasSearchTerm={!!input}
-        />
+        <div className='mt-12 sm:mt-16'>
+          <SearchBar
+            onSearch={handleSearch}
+            onClear={handleClear}
+            hasSearchTerm={!!input}
+          />
+        </div>
       </div>
 
-      <img 
-        src={assets.gradientBackground} 
-        alt='' 
-        className='absolute -top-50 -z-1 opacity-50'
-      />
-    </div>
+      <CategoryTicker />
+    </section>
   )
 }
 

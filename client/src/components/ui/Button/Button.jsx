@@ -2,47 +2,49 @@ import React from 'react'
 import { classNames } from '../../../utils/helpers'
 
 const variants = {
-  primary: 'bg-primary text-white hover:scale-105 hover:bg-primary/90',
-  secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300',
-  outline: 'border border-gray-300 hover:bg-gray-50 text-gray-700',
-  danger: 'bg-red-500 text-white hover:bg-red-600',
-  ghost: 'hover:bg-gray-100 text-gray-700'
+  primary: 'bg-ink text-paper border border-ink hover:bg-signal hover:text-ink',
+  accent: 'bg-signal text-ink border border-ink hover:bg-ink hover:text-signal',
+  secondary: 'bg-surface text-ink border border-line hover:border-ink',
+  outline: 'bg-transparent text-ink border border-ink hover:bg-ink hover:text-paper',
+  danger: 'bg-danger text-surface border border-danger hover:bg-ink hover:border-ink',
+  ghost: 'bg-transparent text-ink border border-transparent hover:border-line'
 }
 
 const sizes = {
-  sm: 'px-4 py-1.5 text-sm',
-  md: 'px-8 py-2',
-  lg: 'px-10 py-2.5 text-lg'
+  sm: 'min-h-10 px-4 text-xs',
+  md: 'min-h-11 px-6 text-sm',
+  lg: 'min-h-13 px-8 text-base'
 }
 
-function Button({ 
-  children, 
-  variant = 'primary', 
-  size = 'md', 
+function Button({
+  children,
+  variant = 'primary',
+  size = 'md',
   className = '',
   disabled = false,
   loading = false,
   fullWidth = false,
   type = 'button',
-  ...props 
+  ...props
 }) {
   return (
     <button
       type={type}
       disabled={disabled || loading}
       className={classNames(
-        'rounded transition-all cursor-pointer font-medium',
+        'inline-flex items-center justify-center gap-2 font-mono font-medium uppercase tracking-[0.12em] cursor-pointer',
+        'transition-colors duration-200 active:translate-y-px',
         variants[variant],
         sizes[size],
         fullWidth && 'w-full',
-        (disabled || loading) && 'opacity-50 cursor-not-allowed',
+        (disabled || loading) && 'opacity-50 cursor-not-allowed pointer-events-none',
         className
       )}
       {...props}
     >
       {loading ? (
         <span className='flex items-center justify-center gap-2'>
-          <span className='inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin'></span>
+          <span className='inline-block w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin'></span>
           Loading...
         </span>
       ) : children}
@@ -51,4 +53,3 @@ function Button({
 }
 
 export default Button
-

@@ -1,44 +1,223 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Bodoni:ital,wght@0,400..700;1,400..700&family=Public+Sans:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
-*{
-  font-family: "Outfit", sans-serif;
+/* ---------------------------------------------------------------------------
+   Design tokens — "Ink & Signal"
+   paper / surface / ink / ink-muted / line / signal / danger / success
+--------------------------------------------------------------------------- */
+@theme {
+  --color-paper: #F4F1EA;
+  --color-surface: #FFFFFF;
+  --color-ink: #111111;
+  --color-ink-muted: #5E5A52;
+  --color-line: #D9D3C5;
+  --color-signal: #FFCE00;
+  --color-danger: #B42318;
+  --color-success: #1F7A3D;
+
+  --font-serif: "Libre Bodoni", Georgia, "Times New Roman", serif;
+  --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-reading: reading-progress linear both;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  @keyframes reading-progress {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
 }
 
-body {
-  background-color: white;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-signal);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-ink);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 6px var(--color-signal);
+  }
 }
 
 ::-webkit-scrollbar {
   display: none;
 }
 
-@theme {
-  --color-primary: #5044E5; 
+/* Reading progress bar: pure CSS scroll-driven animation.
+   Browsers without animation-timeline support never show it. */
+.reading-progress {
+  display: none;
 }
 
-.rich-text { font-size: 15px;  }
+@supports (animation-timeline: scroll()) {
+  .reading-progress {
+    display: block;
+    transform-origin: 0 50%;
+    animation: var(--animate-reading);
+    animation-timeline: scroll(root block);
+  }
+}
 
-.rich-text p { margin-bottom: 16px; color: #292929; }
+/* Reduced motion: no movement anywhere, except the reading-progress bar
+   (it tracks the user's own scroll, it does not move on its own). */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 
-.rich-text h1 { font-size: 36px; font-weight: 700; color: #252525 !important; margin: 32px 0; }
+  *:not(.reading-progress),
+  *:not(.reading-progress)::before,
+  *:not(.reading-progress)::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 
-.rich-text h2 { font-size: 22px; font-weight: 700; color: #252525 !important; margin: 24px 0; }
+  /* Hover / press transforms (image zoom, arrow nudges, logo tilt) */
+  .group:hover,
+  .group:hover *,
+  *:active {
+    transform: none !important;
+  }
 
-.rich-text h3 { font-size: 18px; font-weight: 600; color: #333333 !important; margin: 20px 0; }
+  .marquee-track {
+    animation: none !important;
+    transform: none !important;
+  }
 
-.rich-text h4 { font-size: 16px; font-weight: 500; color: #444444 !important; margin: 16px 0; }
+  .marquee-clone {
+    display: none !important;
+  }
+}
 
-.rich-text h5 { font-size: 14px; font-weight: 400; color: #555555 !important; margin: 12px 0; }
+/* ---------------------------------------------------------------------------
+   Article body (HTML from the editor)
+--------------------------------------------------------------------------- */
+.rich-text {
+  font-size: 1.125rem;
+  line-height: 1.75;
+  color: var(--color-ink);
+  max-width: 68ch;
+}
 
-.rich-text h6 { font-size: 12px; font-weight: 400; color: #666666 !important; margin: 8px 0; }
+.rich-text p { margin-bottom: 1.25rem; }
+
+.rich-text h1,
+.rich-text h2,
+.rich-text h3,
+.rich-text h4 {
+  font-family: var(--font-serif);
+  color: var(--color-ink) !important;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.rich-text h1 { font-size: 2.5rem; font-weight: 600; margin: 3rem 0 1.25rem; }
+.rich-text h2 { font-size: 1.875rem; font-weight: 600; margin: 2.5rem 0 1rem; }
+.rich-text h3 { font-size: 1.5rem; font-weight: 600; margin: 2rem 0 0.75rem; }
+.rich-text h4 { font-size: 1.25rem; font-weight: 500; margin: 1.75rem 0 0.75rem; }
+
+.rich-text h5,
+.rich-text h6 {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-ink-muted) !important;
+}
+
+.rich-text h5 { font-size: 0.875rem; margin: 1.5rem 0 0.5rem; }
+.rich-text h6 { font-size: 0.75rem; margin: 1.25rem 0 0.5rem; }
 
 .rich-text strong { font-weight: 700; }
 
-.rich-text ol { margin-left: 30px; list-style-type: decimal; }
+.rich-text ol { margin: 0 0 1.25rem 1.5rem; list-style-type: decimal; }
+.rich-text ul { margin: 0 0 1.25rem 1.5rem; list-style-type: disc; }
+.rich-text ol li[data-list="bullet"] { list-style-type: disc; }
+.rich-text li { margin-bottom: 0.5rem; padding-left: 0.25rem; }
+.rich-text li::marker { color: var(--color-ink-muted); }
+.rich-text .ql-indent-1 { margin-left: 1.5rem; }
 
-.rich-text ul { margin-left: 30px; list-style-type: disc; }
+.rich-text a {
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--color-signal);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 3px;
+}
 
-.rich-text li { margin-bottom: 8px; }
+.rich-text a:hover { background-color: var(--color-signal); }
 
-.rich-text a { color: #007AFF }
+.rich-text blockquote {
+  margin: 2rem 0;
+  padding-left: 1.5rem;
+  border-left: 4px solid var(--color-signal);
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.rich-text code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-line);
+  padding: 0.1em 0.35em;
+}
+
+.rich-text pre {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  overflow-x: auto;
+  background-color: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.rich-text pre code {
+  background: none;
+  border: 0;
+  color: inherit;
+}
+
+.rich-text img { margin: 2rem 0; }
+
+/* Drop cap on the first paragraph of an article */
+.rich-text > p:first-child::first-letter {
+  float: left;
+  font-family: var(--font-serif);
+  font-size: 4.5rem;
+  line-height: 0.85;
+  font-weight: 600;
+  padding: 0.35rem 0.6rem 0 0;
+}
+
+/* Quill editor inside the admin, framed in the new tokens */
+.ql-toolbar.ql-snow,
+.ql-container.ql-snow {
+  border-color: var(--color-line) !important;
+  background-color: var(--color-surface);
+}
+
+.ql-container.ql-snow {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+}

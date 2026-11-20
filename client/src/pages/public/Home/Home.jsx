@@ -6,13 +6,15 @@ import { NewsletterForm } from '../../../components/forms'
 
 function Home() {
   return (
-    <>
+    <div className='min-h-dvh bg-paper text-ink'>
       <Navbar />
-      <Header />
-      <BlogList />
-      <NewsletterForm />
+      <main id='main' tabIndex={-1} className='outline-none'>
+        <Header />
+        <BlogList />
+        <NewsletterForm />
+      </main>
       <Footer />
-    </>
+    </div>
   )
 }
 

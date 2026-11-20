@@ -1,6 +1,5 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { assets } from '../../../assets/assets'
 import { Navbar, Footer } from '../../../components/layout'
 import { BlogHeader, BlogContent, SocialShare } from '../../../components/blog'
 import { CommentList, CommentForm } from '../../../components/comment'
@@ -25,25 +24,34 @@ function BlogDetail() {
   }
 
   return (
-    <div className='relative'>
-      <img 
-        src={assets.gradientBackground} 
-        alt='' 
-        className='absolute -top-50 -z-1 opacity-50'
+    <div className='relative min-h-dvh bg-paper text-ink'>
+      <div
+        aria-hidden='true'
+        className='reading-progress fixed inset-x-0 top-0 z-50 h-1 bg-signal'
       />
-      
+
       <Navbar />
-      
-      <BlogHeader blog={blog} />
-      
-      <BlogContent image={blog.image} content={blog.description} />
-      
-      <CommentList comments={comments} />
-      
-      <CommentForm onSubmit={handleAddComment} />
-      
-      <SocialShare />
-      
+
+      <main id='main' tabIndex={-1} className='outline-none'>
+        <article>
+          <BlogHeader blog={blog} />
+          <BlogContent image={blog.image} title={blog.title} content={blog.description} />
+        </article>
+
+        <section
+          aria-label='Discussion'
+          className='mx-auto grid max-w-7xl gap-16 border-t border-ink px-5 py-16 sm:px-8 sm:py-24 lg:grid-cols-12'
+        >
+          <div className='lg:col-span-7'>
+            <CommentList comments={comments} />
+          </div>
+          <div className='lg:col-span-5'>
+            <CommentForm onSubmit={handleAddComment} />
+            <SocialShare />
+          </div>
+        </section>
+      </main>
+
       <Footer />
     </div>
   )

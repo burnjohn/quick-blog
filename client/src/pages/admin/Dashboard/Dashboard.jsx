@@ -1,8 +1,26 @@
 import React from 'react'
-import { assets } from '../../../assets/assets'
-import { BlogTableItem } from '../../../components/admin'
+import { AdminPageHeader, AdminTable, BlogTableItem } from '../../../components/admin'
 import { Loader } from '../../../components/ui'
 import { useAdminDashboard } from '../../../hooks'
+
+const BLOG_COLUMNS = [
+  { label: '#', className: 'w-14' },
+  { label: 'Blog Title' },
+  { label: 'Date', className: 'max-sm:hidden' },
+  { label: 'Status', className: 'max-sm:hidden' },
+  { label: 'Actions' },
+]
+
+function StatCard({ label, value, highlight = false }) {
+  return (
+    <div className={`flex flex-col justify-between border border-ink p-6 ${highlight ? 'bg-signal' : 'bg-surface'}`}>
+      <p className='font-mono text-[11px] uppercase tracking-[0.18em] text-ink'>{label}</p>
+      <p className='mt-8 font-mono text-5xl font-medium tabular-nums text-ink sm:text-6xl'>
+        {String(value ?? 0).padStart(2, '0')}
+      </p>
+    </div>
+  )
+}
 
 function Dashboard() {
   const { dashboardData, loading, refetch } = useAdminDashboard()
@@ -12,73 +30,35 @@ function Dashboard() {
   }
 
   return (
-    <div className='flex-1 p-4 md:p-10 bg-blue-50/50 h-full min-h-full'>
-      {/* Stats Cards */}
-      <div className='flex flex-wrap gap-4'>
-        <div className='flex items-center gap-4 bg-white p-4 min-w-58 rounded shadow cursor-pointer hover:scale-105 transition-all'>
-          <img src={assets.dashboard_icon_1} alt='' />
-          <div>
-            <p className='text-xl font-semibold text-gray-600'>{dashboardData.blogs}</p>
-            <p className='text-gray-400 font-light'>Blogs</p>
-          </div>
-        </div>
+    <div className='min-h-full bg-paper p-5 md:p-10'>
+      <AdminPageHeader eyebrow='Overview' title='Dashboard' />
 
-        <div className='flex items-center gap-4 bg-white p-4 min-w-58 rounded shadow cursor-pointer hover:scale-105 transition-all'>
-          <img src={assets.dashboard_icon_2} alt='' />
-          <div>
-            <p className='text-xl font-semibold text-gray-600'>{dashboardData.comments}</p>
-            <p className='text-gray-400 font-light'>Comments</p>
-          </div>
-        </div>
-
-        <div className='flex items-center gap-4 bg-white p-4 min-w-58 rounded shadow cursor-pointer hover:scale-105 transition-all'>
-          <img src={assets.dashboard_icon_3} alt='' />
-          <div>
-            <p className='text-xl font-semibold text-gray-600'>{dashboardData.drafts}</p>
-            <p className='text-gray-400 font-light'>Drafts</p>
-          </div>
-        </div>
+      <div className='grid gap-4 sm:grid-cols-3'>
+        <StatCard label='Blogs' value={dashboardData.blogs} highlight />
+        <StatCard label='Comments' value={dashboardData.comments} />
+        <StatCard label='Drafts' value={dashboardData.drafts} />
       </div>
 
-      {/* Latest Blogs */}
-      <div>
-        <div className='flex items-center gap-3 m-4 mt-6 text-gray-600'>
-          <img src={assets.dashboard_icon_4} alt='' />
-          <p className='font-semibold'>Latest Blogs</p>
-        </div>
+      <section aria-labelledby='latest-blogs' className='mt-12 max-w-5xl'>
+        <h2 id='latest-blogs' className='mb-4 font-serif text-3xl font-semibold tracking-tight text-ink'>
+          Latest Blogs
+        </h2>
 
-        <div className='relative max-w-4xl overflow-x-auto shadow rounded-lg scrollbar-hide bg-white'>
-          <table className='w-full text-sm text-gray-500'>
-            <thead className='text-xs text-gray-600 text-left uppercase bg-gray-50'>
-              <tr>
-                <th scope='col' className='px-2 py-4 xl:px-6'>#</th>
-                <th scope='col' className='px-2 py-4'>Blog Title</th>
-                <th scope='col' className='px-2 py-4 max-sm:hidden'>Date</th>
-                <th scope='col' className='px-2 py-4 max-sm:hidden'>Status</th>
-                <th scope='col' className='px-2 py-4'>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dashboardData.recentBlogs.length === 0 ? (
-                <tr>
-                  <td colSpan='5' className='text-center py-8 text-gray-400'>
-                    No blogs found
-                  </td>
-                </tr>
-              ) : (
-                dashboardData.recentBlogs.map((blog, index) => (
-                  <BlogTableItem 
-                    key={blog._id} 
-                    blog={blog} 
-                    onUpdate={refetch}
-                    index={index + 1}
-                  />
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+        <AdminTable
+          columns={BLOG_COLUMNS}
+          isEmpty={dashboardData.recentBlogs.length === 0}
+          emptyMessage='No blogs found'
+        >
+          {dashboardData.recentBlogs.map((blog, index) => (
+            <BlogTableItem
+              key={blog._id}
+              blog={blog}
+              onUpdate={refetch}
+              index={index + 1}
+            />
+          ))}
+        </AdminTable>
+      </section>
     </div>
   )
 }

@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom'
 import { assets } from '../../../assets/assets'
 import { Sidebar } from '../../../components/admin'
 import { useAppContext } from '../../../context/AppContext'
-import { Button } from '../../../components/ui'
 import { ROUTES } from '../../../constants/routes'
 import { MESSAGES } from '../../../constants/messages'
 import toast from 'react-hot-toast'
@@ -19,28 +18,35 @@ function Layout() {
   }
 
   return (
-    <>
-      <div className='flex items-center justify-between py-2 h-[70px] px-4 sm:px-12 border-b border-gray-200 bg-white'>
-        <img 
-          src={assets.logo} 
-          alt='logo' 
-          className='w-32 sm:w-40 cursor-pointer hover:opacity-80 transition-opacity' 
+    <div className='bg-paper text-ink'>
+      <header className='flex h-[70px] items-center justify-between border-b border-paper/15 bg-ink px-4 text-paper sm:px-8'>
+        <button
+          type='button'
           onClick={() => navigate(ROUTES.HOME)}
-        />
-        <button 
+          aria-label='QuickBlog — go to home'
+          className='group flex min-h-11 items-center gap-3 cursor-pointer'
+        >
+          <img src={assets.logo_mark} alt='' className='h-9 w-9 transition-transform duration-300 group-hover:-rotate-6' />
+          <span className='font-serif text-2xl font-semibold'>QuickBlog<span className='text-signal'>.</span></span>
+          <span className='hidden border border-paper/30 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-paper/70 sm:inline'>
+            Admin
+          </span>
+        </button>
+        <button
+          type='button'
           onClick={handleLogout}
-          className='text-sm px-8 py-2 bg-primary text-white rounded-full cursor-pointer hover:bg-primary/90 transition-colors'
+          className='min-h-11 border border-paper/40 px-5 font-mono text-xs font-medium uppercase tracking-[0.14em] text-paper cursor-pointer transition-colors hover:border-danger hover:bg-danger'
         >
           Logout
         </button>
-      </div>
-      <div className='flex h-[calc(100vh-70px)]'>
+      </header>
+      <div className='flex h-[calc(100dvh-70px)]'>
         <Sidebar />
-        <div className='flex-1 overflow-auto h-full'>
+        <main className='h-full flex-1 overflow-auto'>
           <Outlet />
-        </div>
+        </main>
       </div>
-    </>
+    </div>
   )
 }
 

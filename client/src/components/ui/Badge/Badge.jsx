@@ -2,31 +2,31 @@ import React from 'react'
 import { classNames } from '../../../utils/helpers'
 
 const variants = {
-  primary: 'bg-primary/20 text-primary border-primary/35',
-  secondary: 'bg-gray-200 text-gray-700 border-gray-300',
-  success: 'bg-green-100 text-green-700 border-green-300',
-  warning: 'bg-yellow-100 text-yellow-700 border-yellow-300',
-  danger: 'bg-red-100 text-red-700 border-red-300',
-  info: 'bg-blue-100 text-blue-700 border-blue-300'
+  primary: 'bg-signal text-ink border-ink',
+  secondary: 'bg-surface text-ink border-line',
+  success: 'bg-surface text-success border-success',
+  warning: 'bg-signal/30 text-ink border-ink',
+  danger: 'bg-surface text-danger border-danger',
+  info: 'bg-ink text-paper border-ink'
 }
 
 const sizes = {
-  sm: 'px-2 py-0.5 text-xs',
-  md: 'px-3 py-1 text-sm',
-  lg: 'px-4 py-1.5 text-base'
+  sm: 'px-2 py-0.5 text-[10px]',
+  md: 'px-2.5 py-1 text-[11px]',
+  lg: 'px-3 py-1.5 text-xs'
 }
 
-function Badge({ 
-  children, 
-  variant = 'primary', 
+function Badge({
+  children,
+  variant = 'primary',
   size = 'md',
   className = '',
-  ...props 
+  ...props
 }) {
   return (
     <span
       className={classNames(
-        'inline-block rounded-full font-medium border',
+        'inline-block border font-mono font-medium uppercase tracking-[0.14em]',
         variants[variant],
         sizes[size],
         className
@@ -39,4 +39,3 @@ function Badge({
 }
 
 export default Badge
-

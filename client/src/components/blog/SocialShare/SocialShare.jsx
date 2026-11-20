@@ -1,33 +1,29 @@
 import React from 'react'
-import { assets } from '../../../assets/assets'
+
+const SHARE_TARGETS = [
+  { label: 'Facebook', ariaLabel: 'Share on Facebook' },
+  { label: 'Twitter', ariaLabel: 'Share on Twitter' },
+  { label: 'Google+', ariaLabel: 'Share on Google Plus' },
+]
 
 function SocialShare({ title = 'Share this article on social media' }) {
   return (
-    <div className='my-24 max-w-3xl mx-auto'>
-      <p className='font-semibold my-4'>{title}</p>
-      <div className='flex gap-2'>
-        <button 
-          className='hover:scale-110 transition-transform'
-          aria-label='Share on Facebook'
-        >
-          <img src={assets.facebook_icon} width={50} alt='Facebook' />
-        </button>
-        <button 
-          className='hover:scale-110 transition-transform'
-          aria-label='Share on Twitter'
-        >
-          <img src={assets.twitter_icon} width={50} alt='Twitter' />
-        </button>
-        <button 
-          className='hover:scale-110 transition-transform'
-          aria-label='Share on Google Plus'
-        >
-          <img src={assets.googleplus_icon} width={50} alt='Google Plus' />
-        </button>
+    <div className='mt-10'>
+      <p className='mb-4 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-muted'>{title}</p>
+      <div className='flex flex-wrap gap-2'>
+        {SHARE_TARGETS.map((target) => (
+          <button
+            key={target.label}
+            type='button'
+            aria-label={target.ariaLabel}
+            className='min-h-11 border border-ink px-4 font-mono text-xs font-medium uppercase tracking-[0.14em] text-ink cursor-pointer transition-colors hover:bg-ink hover:text-signal'
+          >
+            {target.label} <span aria-hidden='true'>↗</span>
+          </button>
+        ))}
       </div>
     </div>
   )
 }
 
 export default SocialShare
-
