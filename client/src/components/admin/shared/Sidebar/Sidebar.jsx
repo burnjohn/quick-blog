@@ -1,43 +1,56 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
-import { assets } from '../../../../assets/assets'
-import { ROUTES } from '../../../../constants/routes'
+import { motion } from 'motion/react' // eslint-disable-line no-unused-vars
 import { classNames } from '../../../../utils/helpers'
+import { SLIDE_TRANSITION } from '../motion'
+import SidebarNav from './SidebarNav'
 
-const NAV_ITEMS = [
-  { to: ROUTES.ADMIN_DASHBOARD, label: 'Dashboard', icon: assets.home_icon, end: true },
-  { to: ROUTES.ADMIN_ADD_BLOG, label: 'Add blogs', icon: assets.add_icon },
-  { to: ROUTES.ADMIN_LIST_BLOG, label: 'Blog lists', icon: assets.list_icon },
-  { to: ROUTES.ADMIN_COMMENTS, label: 'Comments', icon: assets.comment_icon },
-]
-
-function Sidebar() {
-  const navLinkClass = ({ isActive }) => classNames(
-    'group flex min-h-12 items-center gap-3 px-4 font-mono text-xs uppercase tracking-[0.14em] transition-colors md:min-w-60 md:px-6',
-    isActive ? 'bg-signal text-ink' : 'text-paper/75 hover:bg-paper/10 hover:text-paper'
-  )
-
-  const iconClass = (isActive) => classNames(
-    'w-5 min-w-5',
-    !isActive && 'brightness-0 invert opacity-75 group-hover:opacity-100'
-  )
+// Desktop ink sidebar. Collapses to an icon rail; the size change is animated
+// with a layout (transform) animation, never by tweening width.
+function Sidebar({ collapsed, onToggle }) {
+  const toggleLabel = collapsed ? 'Expand sidebar' : 'Collapse sidebar'
 
   return (
-    <nav aria-label='Admin' className='flex min-h-full flex-col gap-1 bg-ink pt-6'>
-      <p className='mb-3 hidden px-6 font-mono text-[10px] uppercase tracking-[0.2em] text-paper/60 md:block'>
-        Menu
-      </p>
-      {NAV_ITEMS.map((item) => (
-        <NavLink key={item.to} end={item.end} to={item.to} className={navLinkClass} aria-label={item.label}>
-          {({ isActive }) => (
-            <>
-              <img src={item.icon} alt='' className={iconClass(isActive)} />
-              <span className='hidden md:inline'>{item.label}</span>
-            </>
-          )}
-        </NavLink>
-      ))}
-    </nav>
+    <motion.aside
+      layout
+      transition={SLIDE_TRANSITION}
+      className={classNames(
+        'relative z-10 hidden shrink-0 flex-col overflow-hidden bg-ink pt-6 md:flex',
+        collapsed ? 'w-[76px]' : 'w-64'
+      )}
+    >
+      <motion.p
+        layout='position'
+        aria-hidden='true'
+        className='mb-3 px-7 font-mono text-[10px] uppercase tracking-[0.2em] text-paper/60'
+      >
+        {collapsed ? '§' : 'Menu'}
+      </motion.p>
+
+      <nav aria-label='Admin'>
+        <SidebarNav collapsed={collapsed} indicatorId='sidebar-active' />
+      </nav>
+
+      <motion.div layout='position' className='mt-auto border-t border-paper/15'>
+        <button
+          type='button'
+          onClick={onToggle}
+          aria-label={toggleLabel}
+          aria-expanded={!collapsed}
+          title={toggleLabel}
+          className='flex min-h-14 w-full cursor-pointer items-center gap-4 px-7 font-mono text-[11px] uppercase tracking-[0.14em] text-paper/70 transition-colors duration-200 hover:bg-signal hover:text-ink'
+        >
+          <motion.span
+            aria-hidden='true'
+            animate={{ rotate: collapsed ? 180 : 0 }}
+            transition={SLIDE_TRANSITION}
+            className='inline-block w-5 text-center text-base leading-none'
+          >
+            «
+          </motion.span>
+          {!collapsed && <span className='whitespace-nowrap'>Collapse</span>}
+        </button>
+      </motion.div>
+    </motion.aside>
   )
 }
 

@@ -1,12 +1,13 @@
 import React from 'react'
 import { formatRelativeTime, getInitials } from '../../../utils/formatters'
+import Reveal from '../../ui/Reveal'
 
-function CommentItem({ comment }) {
+function CommentItem({ comment, index = 0 }) {
   return (
-    <li className='flex gap-4 border-b border-line py-6 sm:gap-5'>
+    <Reveal as='li' index={index} y={12} className='flex gap-4 border-b border-line py-6 sm:gap-5'>
       <span
         aria-hidden='true'
-        className='flex h-11 w-11 shrink-0 items-center justify-center border border-ink bg-signal font-mono text-xs font-medium text-ink'
+        className='flex h-11 w-11 shrink-0 items-center justify-center border border-ink bg-signal font-mono text-xs font-medium text-ink shadow-hard-sm'
       >
         {getInitials(comment.name)}
       </span>
@@ -20,9 +21,9 @@ function CommentItem({ comment }) {
             {formatRelativeTime(comment.createdAt)}
           </time>
         </div>
-        <p className='mt-2 break-words leading-relaxed text-ink'>{comment.content}</p>
+        <p className='mt-2 break-words font-serif text-lg leading-relaxed text-ink'>{comment.content}</p>
       </div>
-    </li>
+    </Reveal>
   )
 }
 

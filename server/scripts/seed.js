@@ -6,7 +6,7 @@ import Comment from '../src/models/Comment.js'
 import dbLogger from '../src/utils/dbLogger.js'
 import { users } from '../fixtures/users.js'
 import { blogs } from '../fixtures/blogs.js'
-import { comments } from '../fixtures/comments.js'
+import { comments, commentConfig } from '../fixtures/comments.js'
 
 // Connect to database
 const connectDB = async () => {
@@ -17,6 +17,14 @@ const connectDB = async () => {
     console.error('❌ MongoDB connection error:', error)
     process.exit(1)
   }
+}
+
+// Spread dates over the last N months (with slight random jitter)
+const spreadDate = (index, total, monthsBack = 6) => {
+  const now = new Date()
+  const msBack = monthsBack * 30 * 24 * 60 * 60 * 1000
+  const interval = msBack / total
+  return new Date(now.getTime() - msBack + interval * index + Math.random() * interval * 0.5)
 }
 
 // Seed database
@@ -30,44 +38,72 @@ const seedDatabase = async () => {
     await Comment.deleteMany({})
     console.log('🗑️  Cleared existing data\n')
 
-    // Create users
     const createdUsers = await User.create(users)
     console.log(`✅ Created ${createdUsers.length} users`)
     dbLogger.logEvent('SEED_USERS', `Created ${createdUsers.length} users`)
 
-    // Display credentials
     console.log('\n📝 Test Credentials:')
-    users.forEach(user => {
+    users.forEach((user) => {
       console.log(`   ${user.role.toUpperCase()}: ${user.email} / ${user.password}`)
     })
     console.log()
 
-    // Create blogs with alternating authors
     const createdBlogs = []
     for (let i = 0; i < blogs.length; i++) {
       const author = createdUsers[i % createdUsers.length]
+      const blogData = blogs[i]
       const blog = await Blog.create({
-        ...blogs[i],
+        ...blogData,
         author: author._id,
         authorName: author.name,
-        isPublished: true
+        isPublished: blogData.isPublished ?? true,
+        createdAt: spreadDate(i, blogs.length)
       })
       createdBlogs.push(blog)
       dbLogger.logCreate('blogs', blog)
     }
     console.log(`✅ Created ${createdBlogs.length} blog posts\n`)
 
-    // Create comments for first 3 blogs
+    const publishedBlogs = createdBlogs.filter((b) => b.isPublished)
+    const { min: minComments, max: maxComments } = commentConfig.total
+    const targetComments = minComments + Math.floor(Math.random() * (maxComments - minComments + 1))
+
+    // Prefer topic-specific templates (forTitle) for their post, never repeat a
+    // template on the same post while unused ones remain.
+    const genericTemplates = comments.filter((t) => !t.forTitle)
+    const usedTemplates = new Map()
+    const pickCommentTemplate = (blog, used) => {
+      const key = String(blog._id)
+      if (!used.has(key)) used.set(key, new Set())
+      const usedForBlog = used.get(key)
+      const specific = comments.filter((t) => t.forTitle === blog.title && !usedForBlog.has(t))
+      const generic = genericTemplates.filter((t) => !usedForBlog.has(t))
+      const pool = specific.length && (Math.random() < 0.6 || !generic.length)
+        ? specific
+        : generic.length ? generic : genericTemplates
+      const picked = pool[Math.floor(Math.random() * pool.length)]
+      usedForBlog.add(picked)
+      const { forTitle, ...template } = picked
+      return template
+    }
+
     let commentCount = 0
-    for (let i = 0; i < Math.min(3, createdBlogs.length); i++) {
-      for (const commentData of comments) {
-        const comment = await Comment.create({
-          ...commentData,
-          blog: createdBlogs[i]._id
-        })
-        dbLogger.logCreate('comments', comment)
-        commentCount++
-      }
+    for (let c = 0; c < targetComments; c++) {
+      const blog = publishedBlogs[Math.floor(Math.random() * publishedBlogs.length)]
+      const template = pickCommentTemplate(blog, usedTemplates)
+      const blogCreatedAt = blog.createdAt.getTime()
+      const now = Date.now()
+      const commentCreatedAt = new Date(
+        blogCreatedAt + Math.random() * (now - blogCreatedAt)
+      )
+
+      const comment = await Comment.create({
+        ...template,
+        blog: blog._id,
+        createdAt: commentCreatedAt
+      })
+      dbLogger.logCreate('comments', comment)
+      commentCount++
     }
     console.log(`✅ Created ${commentCount} comments\n`)
 

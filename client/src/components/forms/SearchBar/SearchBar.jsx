@@ -1,7 +1,14 @@
 import React, { useRef } from 'react'
 import Button from '../../ui/Button'
+import { classNames } from '../../../utils/helpers'
 
-function SearchBar({ onSearch, onClear, hasSearchTerm = false }) {
+// `compact`: slim masthead variant (44px tall, small hard shadow, clear button inline)
+const frames = {
+  default: 'shadow-[6px_6px_0_0_var(--color-ink)] focus-within:shadow-[6px_6px_0_0_var(--color-signal)]',
+  compact: 'shadow-hard-sm focus-within:shadow-[3px_3px_0_0_var(--color-signal)]'
+}
+
+function SearchBar({ onSearch, onClear, hasSearchTerm = false, compact = false }) {
   const inputRef = useRef()
 
   const handleSubmit = (e) => {
@@ -20,13 +27,16 @@ function SearchBar({ onSearch, onClear, hasSearchTerm = false }) {
   }
 
   return (
-    <div className='w-full max-w-xl'>
+    <div className={classNames('w-full', compact ? 'flex items-center gap-3' : 'max-w-xl')}>
       <form
         onSubmit={handleSubmit}
         role='search'
-        className='flex w-full items-stretch border border-ink bg-surface shadow-[6px_6px_0_0_var(--color-ink)] transition-shadow focus-within:shadow-[6px_6px_0_0_var(--color-signal)] focus-within:outline-3 focus-within:outline-offset-3 focus-within:outline-ink'
+        className={classNames(
+          'flex w-full min-w-0 items-stretch border border-ink bg-surface transition-shadow focus-within:outline-3 focus-within:outline-offset-3 focus-within:outline-ink',
+          frames[compact ? 'compact' : 'default']
+        )}
       >
-        <span aria-hidden='true' className='hidden items-center pl-4 font-mono text-sm text-ink-muted sm:flex'>
+        <span aria-hidden='true' className={classNames('items-center pl-4 font-mono text-sm text-ink-muted', compact ? 'hidden' : 'hidden sm:flex')}>
           /
         </span>
         <input
@@ -35,12 +45,16 @@ function SearchBar({ onSearch, onClear, hasSearchTerm = false }) {
           aria-label='Search for blogs'
           placeholder='Search for blogs'
           required
-          className='min-h-14 w-full min-w-0 bg-transparent px-4 text-base text-ink outline-none placeholder:text-ink-muted focus-visible:outline-none focus-visible:shadow-none'
+          className={classNames(
+            'w-full min-w-0 bg-transparent text-ink outline-none placeholder:text-ink-muted focus-visible:outline-none focus-visible:shadow-none',
+            compact ? 'min-h-11 px-3 text-sm' : 'min-h-14 px-4 text-base'
+          )}
         />
         <Button
           type='submit'
           variant='primary'
-          className='m-1.5 shrink-0'
+          size={compact ? 'sm' : 'md'}
+          className={compact ? 'm-0.5 shrink-0' : 'm-1.5 shrink-0'}
         >
           Search
         </Button>
@@ -50,7 +64,10 @@ function SearchBar({ onSearch, onClear, hasSearchTerm = false }) {
         <button
           type='button'
           onClick={handleClear}
-          className='mt-4 inline-flex min-h-10 items-center gap-2 border-b-2 border-signal font-mono text-[11px] uppercase tracking-[0.14em] text-ink cursor-pointer hover:bg-signal transition-colors'
+          className={classNames(
+            'inline-flex min-h-10 shrink-0 items-center gap-2 border-b-2 border-signal font-mono text-[11px] uppercase tracking-[0.14em] text-ink cursor-pointer hover:bg-signal transition-colors',
+            !compact && 'mt-4'
+          )}
         >
           <span aria-hidden='true'>✕</span> Clear Search
         </button>

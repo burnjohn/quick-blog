@@ -19,6 +19,15 @@
   --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
+  /* "Front page" depth: hard offset shadows, never blurred */
+  --shadow-hard-sm: 4px 4px 0 0 var(--color-ink);
+  --shadow-hard: 6px 6px 0 0 var(--color-ink);
+  --shadow-hard-lg: 9px 9px 0 0 var(--color-ink);
+  --shadow-hard-signal: 6px 6px 0 0 var(--color-signal);
+  --shadow-hard-signal-lg: 9px 9px 0 0 var(--color-signal);
+
+  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+
   --animate-marquee: marquee 40s linear infinite;
   --animate-reading: reading-progress linear both;
 
@@ -60,6 +69,43 @@
 
 ::-webkit-scrollbar {
   display: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Front-page utilities (see client/docs/design-system.md)
+--------------------------------------------------------------------------- */
+/* Print-style halftone: ink dots on signal */
+@utility halftone {
+  background-color: var(--color-signal);
+  background-image: radial-gradient(var(--color-ink) 1.1px, transparent 1.3px);
+  background-size: 7px 7px;
+}
+
+/* Signal dots on a transparent ground (use on ink panels) */
+@utility halftone-signal {
+  background-image: radial-gradient(var(--color-signal) 1.2px, transparent 1.4px);
+  background-size: 7px 7px;
+}
+
+/* Card that lifts on hover; pair with shadow-hard / shadow-hard-signal */
+@utility lift {
+  transition: transform 200ms var(--ease-editorial), box-shadow 200ms var(--ease-editorial);
+  &:hover {
+    transform: translate(-2px, -2px);
+  }
+}
+
+/* Auto-numbered section kickers: put .section-counter on a parent, .section-no on headings */
+@utility section-counter {
+  counter-reset: section;
+}
+
+@utility section-no {
+  &::before {
+    counter-increment: section;
+    content: counter(section, decimal-leading-zero) " — ";
+    color: var(--color-ink-muted);
+  }
 }
 
 /* Reading progress bar: pure CSS scroll-driven animation.

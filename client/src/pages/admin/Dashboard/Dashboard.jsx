@@ -1,7 +1,12 @@
 import React from 'react'
-import { AdminPageHeader, AdminTable, BlogTableItem } from '../../../components/admin'
+import { Link } from 'react-router-dom'
+import { motion } from 'motion/react' // eslint-disable-line no-unused-vars
+import { AdminPageHeader, AdminTable, BlogTableItem, Masthead, StatCard } from '../../../components/admin'
+import { revealOnScroll } from '../../../components/admin/shared/motion'
+import { longDateLabel, plural } from '../../../components/admin/shared/editorial'
 import { Loader } from '../../../components/ui'
 import { useAdminDashboard } from '../../../hooks'
+import { ROUTES } from '../../../constants/routes'
 
 const BLOG_COLUMNS = [
   { label: '#', className: 'w-14' },
@@ -11,45 +16,85 @@ const BLOG_COLUMNS = [
   { label: 'Actions' },
 ]
 
-function StatCard({ label, value, highlight = false }) {
-  return (
-    <div className={`flex flex-col justify-between border border-ink p-6 ${highlight ? 'bg-signal' : 'bg-surface'}`}>
-      <p className='font-mono text-[11px] uppercase tracking-[0.18em] text-ink'>{label}</p>
-      <p className='mt-8 font-mono text-5xl font-medium tabular-nums text-ink sm:text-6xl'>
-        {String(value ?? 0).padStart(2, '0')}
-      </p>
-    </div>
-  )
-}
+const buildInsights = ({ blogs, drafts, comments, blogsThisMonth, publishedThisMonth }) => [
+  {
+    kicker: 'Pipeline',
+    text: <><em className='bg-signal px-1 not-italic text-ink'>{blogs - drafts} of {blogs}</em> stories are live on the site.</>
+  },
+  {
+    kicker: 'On the spike',
+    text: `${plural(drafts, 'draft')} waiting for an editor's pass.`
+  },
+  {
+    kicker: 'This month',
+    text: `${plural(blogsThisMonth, 'story', 'stories')} written, ${publishedThisMonth} sent to press. ${plural(comments, 'comment')} on record.`
+  }
+]
 
 function Dashboard() {
   const { dashboardData, loading, refetch } = useAdminDashboard()
+  const { recentBlogs } = dashboardData
 
-  if (loading) {
+  // Only block the page on the first load; refetches keep the table mounted
+  // so rows can animate out after delete / publish.
+  if (loading && recentBlogs.length === 0 && !dashboardData.blogs) {
     return <Loader />
   }
 
   return (
-    <div className='min-h-full bg-paper p-5 md:p-10'>
-      <AdminPageHeader eyebrow='Overview' title='Dashboard' />
+    <div className='section-counter min-h-full bg-paper p-5 md:p-10'>
+      <AdminPageHeader eyebrow='Overview' title='Dashboard'>
+        <Link
+          to={ROUTES.ADMIN_ADD_BLOG}
+          className='lift inline-flex min-h-11 items-center gap-2 self-start border border-ink bg-signal px-5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-ink shadow-hard-sm hover:shadow-hard'
+        >
+          ✦ Write a story
+        </Link>
+      </AdminPageHeader>
 
-      <div className='grid gap-4 sm:grid-cols-3'>
-        <StatCard label='Blogs' value={dashboardData.blogs} highlight />
-        <StatCard label='Comments' value={dashboardData.comments} />
-        <StatCard label='Drafts' value={dashboardData.drafts} />
+      <Masthead
+        dateline={[`Vol. 1 · No. ${dashboardData.blogs}`, 'Quick Blog · Editor’s desk', longDateLabel()]}
+        label='Stories on file'
+        value={dashboardData.blogs}
+        sticker={`+${dashboardData.blogsThisMonth} this month`}
+        sub={`${plural(dashboardData.publishedThisMonth, 'story', 'stories')} went to press this month.`}
+        insights={buildInsights(dashboardData)}
+      />
+
+      <div className='grid gap-5 sm:grid-cols-2 xl:grid-cols-4'>
+        <StatCard index={0} label='Comments' value={dashboardData.comments} note='All time' />
+        <StatCard index={1} label='Drafts' value={dashboardData.drafts} tone='halftone' note='Unpublished' />
+        <StatCard index={2} label='Written this month' value={dashboardData.blogsThisMonth} />
+        <StatCard index={3} label='Published this month' value={dashboardData.publishedThisMonth} tone='signal' />
       </div>
 
-      <section aria-labelledby='latest-blogs' className='mt-12 max-w-5xl'>
-        <h2 id='latest-blogs' className='mb-4 font-serif text-3xl font-semibold tracking-tight text-ink'>
-          Latest Blogs
-        </h2>
+      <motion.section
+        aria-labelledby='latest-blogs'
+        {...revealOnScroll()}
+        className='mt-14'
+      >
+        <div className='mb-5 flex flex-wrap items-end justify-between gap-3'>
+          <div>
+            <p className='section-no font-mono text-[11px] uppercase tracking-[0.18em] text-ink'>Latest</p>
+            <h2 id='latest-blogs' className='mt-1 font-serif text-3xl font-semibold tracking-tight text-ink'>
+              Latest Blogs
+            </h2>
+          </div>
+          <Link
+            to={ROUTES.ADMIN_LIST_BLOG}
+            className='inline-flex min-h-11 items-center font-mono text-[11px] uppercase tracking-[0.14em] text-ink underline decoration-signal decoration-[3px] underline-offset-4 hover:bg-signal'
+          >
+            All blogs →
+          </Link>
+        </div>
 
         <AdminTable
           columns={BLOG_COLUMNS}
-          isEmpty={dashboardData.recentBlogs.length === 0}
+          isEmpty={recentBlogs.length === 0}
           emptyMessage='No blogs found'
+          emptyHint='Write your first story to see it here'
         >
-          {dashboardData.recentBlogs.map((blog, index) => (
+          {recentBlogs.map((blog, index) => (
             <BlogTableItem
               key={blog._id}
               blog={blog}
@@ -58,7 +103,7 @@ function Dashboard() {
             />
           ))}
         </AdminTable>
-      </section>
+      </motion.section>
     </div>
   )
 }

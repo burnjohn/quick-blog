@@ -31,7 +31,6 @@ import dashboard_icon_2 from './dashboard_icon_2.svg'
 import dashboard_icon_3 from './dashboard_icon_3.svg'
 import dashboard_icon_4 from './dashboard_icon_4.svg'
 
-
 export const assets = {
     facebook_icon,
     googleplus_icon,

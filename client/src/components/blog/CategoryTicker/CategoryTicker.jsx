@@ -15,7 +15,7 @@ function TickerRow({ hidden = false }) {
           className='flex items-center gap-8 px-4 font-serif text-3xl italic text-ink sm:text-5xl'
         >
           {category}
-          <span aria-hidden='true' className='inline-block h-3 w-3 rotate-45 bg-ink sm:h-4 sm:w-4' />
+          <span aria-hidden='true' className='font-mono text-base not-italic text-ink sm:text-xl'>§</span>
         </li>
       ))}
     </ul>
@@ -24,11 +24,19 @@ function TickerRow({ hidden = false }) {
 
 function CategoryTicker() {
   return (
-    <div className='overflow-hidden border-y border-ink bg-signal py-4 sm:py-5'>
+    <div className='relative flex items-stretch overflow-hidden border-y-2 border-ink bg-signal'>
       <p className='sr-only'>Topics: {TICKER_CATEGORIES.join(', ')}</p>
-      <div aria-hidden='true' className='marquee-track flex w-max animate-marquee'>
-        <TickerRow />
-        <TickerRow hidden />
+      <span
+        aria-hidden='true'
+        className='relative z-10 hidden shrink-0 items-center border-r-2 border-ink bg-ink px-5 font-mono text-[11px] uppercase tracking-[0.18em] text-signal sm:flex'
+      >
+        On the desks
+      </span>
+      <div className='min-w-0 flex-1 overflow-hidden py-4 sm:py-5'>
+        <div aria-hidden='true' className='marquee-track flex w-max animate-marquee'>
+          <TickerRow />
+          <TickerRow hidden />
+        </div>
       </div>
     </div>
   )

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <defs>
+    <pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="9" cy="9" r="4" fill="#111111"/></pattern>
+    <pattern id="dotsSm" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="6" cy="6" r="2.2" fill="#111111"/></pattern>
+    <pattern id="dotsY" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="9" cy="9" r="4.5" fill="#FFCE00"/></pattern>
+    <pattern id="dotsP" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="8" cy="8" r="3" fill="#F4F1EA"/></pattern>
+    <pattern id="stripes" width="28" height="28" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="28" fill="#111111"/></pattern>
+    <pattern id="stripesT" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><rect width="8" height="24" fill="#A39B88"/></pattern>
+    <pattern id="hlines" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="20" height="6" fill="#111111"/></pattern>
+    
+  </defs>
+  <rect width="1200" height="900" fill="#F4F1EA"/>
+  
+  <rect x="60" y="150" width="520" height="690" fill="#111111"/>
+  <rect x="620" y="150" width="520" height="690" fill="none" stroke="#111111" stroke-width="4"/>
+  <text x="320" y="610" text-anchor="middle" font-family="Georgia, 'Times New Roman', Times, serif" font-size="460" font-weight="bold" fill="#F4F1EA">{</text>
+  <text x="880" y="610" text-anchor="middle" font-family="Georgia, 'Times New Roman', Times, serif" font-size="460" font-weight="bold" fill="#111111">[</text>
+  <rect x="620" y="700" width="520" height="140" fill="url(#dots)"/>
+  <circle cx="580" cy="495" r="70" fill="#FFCE00" stroke="#111111" stroke-width="4"/>
+  <text x="580" y="515" text-anchor="middle" font-family="Menlo, 'SF Mono', 'Courier New', monospace" font-size="56" font-weight="bold" fill="#111111">/</text>
+
+  
+  <g font-family="Menlo, 'SF Mono', 'Courier New', monospace" font-size="20" letter-spacing="4" fill="#111111">
+    <text x="60" y="78">QUICK BLOG / TECHNOLOGY</text>
+    <text x="1140" y="78" text-anchor="end">NO. 20</text>
+  </g>
+  <rect x="60" y="96" width="1080" height="3" fill="#111111"/>
+</svg>

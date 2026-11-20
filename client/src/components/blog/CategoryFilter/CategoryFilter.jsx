@@ -3,9 +3,13 @@ import { motion } from 'motion/react' // eslint-disable-line no-unused-vars
 import { BLOG_CATEGORIES } from '../../../constants/categories'
 import { classNames } from '../../../utils/helpers'
 
-function CategoryFilter({ activeCategory, onCategoryChange }) {
+/**
+ * Category chips. `indicatorId` must be unique per instance on a page (it drives the
+ * shared-layout highlight), `label` names the nav landmark.
+ */
+function CategoryFilter({ activeCategory, onCategoryChange, indicatorId = 'category-indicator', label = 'Filter by category' }) {
   return (
-    <nav aria-label='Filter by category' className='overflow-x-auto'>
+    <nav aria-label={label} className='overflow-x-auto'>
       <ul className='flex min-w-max items-stretch border-b border-ink'>
         {BLOG_CATEGORIES.map((category) => {
           const isActive = activeCategory === category
@@ -23,7 +27,7 @@ function CategoryFilter({ activeCategory, onCategoryChange }) {
               >
                 {isActive && (
                   <motion.span
-                    layoutId='category-indicator'
+                    layoutId={indicatorId}
                     aria-hidden='true'
                     transition={{ type: 'spring', stiffness: 500, damping: 38 }}
                     className='absolute inset-0 -z-0 bg-signal'

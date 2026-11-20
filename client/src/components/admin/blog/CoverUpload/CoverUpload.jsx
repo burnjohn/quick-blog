@@ -1,31 +1,34 @@
 import React from 'react'
 
+// Cover picker styled for the ink publish panel.
 function CoverUpload({ image, onChange, disabled = false }) {
   return (
     <div>
-      <p className='mb-2 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-ink'>
-        Upload Thumbnail <span className='text-danger' aria-hidden='true'>*</span>
+      <p className='mb-2 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-paper'>
+        Upload Thumbnail <span className='text-signal' aria-hidden='true'>*</span>
       </p>
       <label
         htmlFor='image'
-        className='group flex cursor-pointer items-center gap-5 border border-dashed border-ink bg-paper p-4 transition-colors hover:bg-signal/30 has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-3 has-[:focus-visible]:outline-ink'
+        className='group block cursor-pointer border border-dashed border-paper/50 p-3 transition-colors hover:border-signal has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-3 has-[:focus-visible]:outline-signal'
       >
         {image ? (
           <img
             src={URL.createObjectURL(image)}
             alt='Upload preview'
-            className='h-24 w-36 border border-ink object-cover'
+            className='aspect-[16/10] w-full border border-paper object-cover'
           />
         ) : (
           <span
             aria-hidden='true'
-            className='flex h-24 w-36 items-center justify-center border border-ink bg-surface font-serif text-4xl text-ink transition-colors group-hover:bg-signal'
+            className='halftone-signal flex aspect-[16/10] w-full items-center justify-center border border-paper/30 transition-colors group-hover:bg-paper/5'
           >
-            +
+            <span className='flex h-14 w-14 items-center justify-center border-2 border-ink bg-signal font-serif text-4xl text-ink transition-transform duration-200 group-hover:-rotate-6'>
+              +
+            </span>
           </span>
         )}
-        <span className='text-sm text-ink-muted'>
-          <span className='block font-medium text-ink'>{image ? image.name : 'Choose a cover image'}</span>
+        <span className='mt-3 block text-sm text-paper/60'>
+          <span className='block truncate font-medium text-paper'>{image ? image.name : 'Choose a cover image'}</span>
           PNG, JPG or WebP
         </span>
         <input
