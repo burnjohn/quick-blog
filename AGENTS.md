@@ -1,7 +1,7 @@
 # AGENTS.md — QuickBlog
 
 Instructions for AI coding agents working in this repository. This is the canonical
-rules file: `CLAUDE.md` imports it, and the nested `client/AGENTS.md`,
+rules file (there is no `CLAUDE.md`; Claude Code reads `AGENTS.md` directly), and the nested `client/AGENTS.md`,
 `server/AGENTS.md`, `docs/AGENTS.md` and `specs/AGENTS.md` add rules for their folders.
 When rules conflict, the file closest to the code you are editing wins.
 
@@ -23,7 +23,7 @@ moderating. It is used for live demos of AI-assisted development (see `docs/demo
 
 ```
 quick-blog/
-├── AGENTS.md / CLAUDE.md / README.md
+├── AGENTS.md / README.md
 ├── client/      React SPA            → client/AGENTS.md, client/docs/
 ├── server/      Express API          → server/AGENTS.md, server/docs/
 ├── specs/       Feature specs (EARS) → specs/AGENTS.md, specs/README.md
@@ -66,7 +66,13 @@ Seeded logins: `admin@quickblog.com` / `admin123` (admin), `sarah@quickblog.com`
 7. **Design system is binding.** UI changes follow `client/docs/design-system.md` and
    `client/docs/motion.md` (no rounded corners, hard offset shadows, reduced-motion safe).
 8. **Git.** Use `/commit` and `/create-pr` (they load the `git-workflow` skill:
-   conventional commits, branch naming, PR format). Never push unless asked.
+   conventional commits, branch naming, PR format). Never run raw `git commit` or
+   `gh pr create`, and never push unless asked.
+9. **Load the matching skill before writing code.** Skills live in `.claude/skills/`:
+   `react-best-practices` for `client/`, `express-best-practices` for `server/`,
+   `security` for auth, uploads and input handling, and the testing skills for tests.
+   Subagents (`.claude/agents/`) and slash commands (`.claude/commands/`) are listed in
+   each folder's `README.md`.
 
 ## Feature status
 

@@ -25,7 +25,7 @@ Skills are modular packages that extend the AI agent with specialized knowledge 
 
 | Type | Scope | Loaded | Purpose |
 |------|-------|--------|---------|
-| **Rules** (`AGENTS.md` / `CLAUDE.md`) | Project conventions | Always, nested files per folder | Persistent guardrails |
+| **Rules** (`AGENTS.md`) | Project conventions | Always, nested files per folder | Persistent guardrails |
 | **Commands** (`.md`) | User actions | On `/command` invocation | Slash commands |
 | **Skills** (`.md`) | Domain knowledge | On-demand by agent | Specialized knowledge |
 | **Agents** (`.md`) | Workflows | Via Task tool | Subagent orchestration |

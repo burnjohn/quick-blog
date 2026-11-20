@@ -35,7 +35,7 @@ Full setup, environment variables and troubleshooting: [docs/getting-started.md]
 | [specs/](specs/README.md) | Feature specs with EARS acceptance criteria — the contract for every feature |
 | [client/docs/](client/docs/README.md) | UI: design system, motion, components, pages, data layer, testing |
 | [server/docs/](server/docs/README.md) | Backend: API reference, data model, auth & security, seeding, uploads, testing |
-| `AGENTS.md` (root and each package) | Rules for AI coding agents; `CLAUDE.md` imports the root one |
+| `AGENTS.md` (root and each folder) | Rules for AI coding agents, read by Claude Code and other agents |
 
 ## Demos
 
