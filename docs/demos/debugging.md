@@ -1,6 +1,6 @@
-# Demo: Debugging with Systematic Debugging Skill (Claude Code / Cursor)
+# Demo: Debugging with Systematic Debugging Skill (Claude Code)
 
-This guide demonstrates how to investigate and fix two real bugs in QuickBlog using Claude Code / Cursor's `systematic-debugging` skill. The bugs are pre-planted on a dedicated branch — your job is to find the root cause using structured debugging, not guessing.
+This guide demonstrates how to investigate and fix two real bugs in QuickBlog using Claude Code's `systematic-debugging` skill. The bugs are pre-planted on a dedicated branch — your job is to find the root cause using structured debugging, not guessing.
 
 ## The Bugs
 
@@ -94,31 +94,6 @@ Use /systematic-debugging to investigate.
 - Identifies the one-character fix
 - Verifies by deleting a blog and confirming comments are cleaned up
 
-### Debug with Cursor
-
-1. **Open Cursor chat** and describe the bug:
-
-```
-Bug: deleting a blog doesn't remove its comments.
-Steps to reproduce:
-1. Delete a blog with comments via admin
-2. Check admin comments page — orphaned comments remain
-3. No errors in server logs
-
-Help me debug this step by step.
-```
-
-2. **Cursor traces the code path:**
-   - Opens `blogController.js` → `deleteBlogById`
-   - Highlights the `Comment.deleteMany()` call
-   - Cross-references with `Comment` model to check field names
-
-3. **Use Cursor's Debug Mode** (`Cmd+.` → Debug) to add instrumentation:
-   - Add a `console.log` before and after the `deleteMany` call
-   - Log the query filter and the result's `deletedCount`
-   - Observe: `deletedCount: 0` — confirms the query matches nothing
-
-4. **Root cause identified** — Cursor highlights the field name mismatch
 
 ---
 
@@ -178,33 +153,6 @@ Use /systematic-debugging to investigate.
 - Adds a `useEffect` to keep the ref in sync, OR removes the ref entirely and passes `blogId` directly
 - Verifies by navigating between blogs and confirming comments land on the correct post
 
-### Debug with Cursor
-
-1. **Open Cursor chat** and describe the bug:
-
-```
-Bug: comments are posted to the wrong blog when navigating directly between
-blog detail pages via URL.
-
-Steps to reproduce:
-1. Visit /blog/A
-2. Change URL to /blog/B (don't go through blog list)
-3. Submit a comment — it appears on Blog A, not Blog B
-
-This only happens on direct navigation, not when going through the list.
-```
-
-2. **Cursor narrows the scope:**
-   - The symptom is "wrong blog ID sent to API" → traces how blog ID reaches the API call
-   - Opens `BlogDetail.jsx` → `handleAddComment` → `addComment`
-   - Opens `useComments.js` → finds `blogIdRef`
-
-3. **Use Cursor's Debug Mode** to add instrumentation:
-   - Add `console.log('blogId prop:', blogId, 'ref:', blogIdRef.current)` inside `addComment`
-   - Navigate between blogs and observe: `blogId prop: <new-id>` but `ref: <old-id>`
-   - The ref never updates after initial mount
-
-4. **Root cause identified** — `useRef(blogId)` only sets the initial value; there's no effect to sync it
 
 ---
 
@@ -251,7 +199,6 @@ This demo showcased:
 
 ## Related Documents
 
-- [Systematic Debugging Skill](/.claude/skills/systematic-debugging/SKILL.md) — The full debugging methodology
-- [DEMO: Analytics Feature](DEMO-ANALYTICS-FEATURE.md) — Multi-agent implementation demo
-- [DEMO: Comments Feature](DEMO-COMMENTS-FEATURE.md) — Single-agent implementation demo
-- [QuickBlog README](README.md)
+- [Systematic Debugging Skill](../../.claude/skills/systematic-debugging/SKILL.md) — The full debugging methodology
+- [Demo: comments feature](comments-feature.md) — Single-agent implementation demo
+- [QuickBlog README](../../README.md)

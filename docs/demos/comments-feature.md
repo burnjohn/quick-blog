@@ -1,11 +1,11 @@
-# Demo: Implementing Comments Feature with Claude Code / Cursor
+# Demo: Implementing Comments Feature with Claude Code
 
-This guide demonstrates how to implement a complete comments management feature in QuickBlog using Claude Code / Cursor's AI capabilities and Figma integration.
+This guide demonstrates how to implement a complete comments management feature in QuickBlog using Claude Code's AI capabilities and Figma integration.
 
 ## Overview
 
 In this demo, you'll learn how to:
-- Use Claude Code / Cursor's planning mode to analyze Figma designs
+- Use Claude Code's planning mode to analyze Figma designs
 - Generate a complete admin comments page with UI
 - Integrate with existing backend APIs
 - Test the full comment workflow (create → approve → display)
@@ -28,6 +28,8 @@ Create and switch to a new feature branch for this work:
 git checkout -b feat/implement-comments-page
 ```
 
+> **Design source.** The site now uses the editorial "Ink & Signal" design. Treat [`client/docs/design-system.md`](../../client/docs/design-system.md) and the existing `client/src/components/admin/shared/*` components as the source of truth. The Figma file linked below holds the original pre-redesign wireframes: use it for layout and fields, not for styling.
+
 ### 2. Open Figma Design
 
 Navigate to the QuickBlog Figma design file:
@@ -35,11 +37,11 @@ Navigate to the QuickBlog Figma design file:
 - Locate the **Comments Management Page** design
 - Take a screenshot of the comments page design
 
-### 3. Use Claude Code / Cursor's Planning Mode
+### 3. Use Claude Code's Plan Mode
 
-1. **Open a new Cursor chat**
-2. **Enable Planning Mode** (toggle at the top of chat)
-3. **Paste the Figma screenshot** into the chat
+1. **Start Claude Code** in the repo root (`claude`).
+2. **Switch to plan mode** with `Shift+Tab` until the prompt shows *plan mode*.
+3. **Paste the Figma screenshot** into the prompt (drag-and-drop or `Ctrl+V`).
 4. **Add the following prompt:**
 
 ```
@@ -67,7 +69,8 @@ Backend Integration:
 - Show success/error notifications using React Hot Toast
 
 Design & Styling:
-- Follow the provided Figma design
+- Follow the provided Figma design for layout; follow @client/docs/design-system.md for styling
+- Reuse AdminPageHeader, AdminTable, SegmentedControl and EmptyState from components/admin/shared
 - Use Tailwind CSS utility classes
 - Ensure responsive design for mobile/tablet/desktop
 - Match the existing admin panel style and layout
@@ -75,7 +78,7 @@ Design & Styling:
 
 ### 4. Review the Plan
 
-Cursor will generate a detailed implementation plan. Review it and ensure:
+Claude Code will present a detailed implementation plan. Review it and ensure:
 - ✅ All required components are listed
 - ✅ API integration points are identified
 - ✅ Routing changes are included
@@ -86,8 +89,8 @@ If the plan looks good, proceed to the next step.
 
 ### 5. Execute the Plan
 
-Click **"Run Plan"** or **"Start Building"** to let Cursor implement the feature:
-- Cursor will create/modify the necessary files
+Accept the plan (choose *auto-accept edits* or *manually approve edits*) and let Claude Code implement the feature:
+- It will create/modify the necessary files
 - It will integrate with existing API functions
 - It will add the route to the admin section
 - It will update the sidebar navigation
@@ -101,7 +104,7 @@ Once implementation is complete, test the full workflow:
 #### 6.1 Login as Admin
 
 1. Navigate to: `http://localhost:5173/admin`
-2. Get admin credentials from [`server/fixtures/users.js`](server/fixtures/users.js):
+2. Get admin credentials from [`server/fixtures/users.js`](../../server/fixtures/users.js):
    - **Email**: `admin@quickblog.com`
    - **Password**: `admin123`
 3. Log in to the admin panel
@@ -111,7 +114,7 @@ Once implementation is complete, test the full workflow:
 1. Click on **"Comments"** in the sidebar navigation
 2. Navigate to: `http://localhost:5173/admin/comments`
 3. You should see a list of existing comments (seeded data)
-4. Verify the UI matches the Figma design
+4. Verify the UI follows the editorial admin style (masthead header, hard-shadow table, segmented filter)
 
 #### 6.3 Create a New Comment (Public Side)
 
@@ -177,15 +180,15 @@ After completing all steps, you should have:
 - Verify token hasn't expired (re-login if needed)
 
 ### UI Not Matching Design
-- Review the Figma design again
+- Re-read `client/docs/design-system.md` and compare with an existing admin page such as `ListBlog`
 - Check Tailwind classes are correctly applied
 - Verify responsive breakpoints work on different screen sizes
 
 ## What You Learned
 
 This demo showcased:
-1. **Claude Code / Cursor + Figma Integration**: Using design screenshots to generate UI components
-2. **Planning Mode**: Breaking down complex features into manageable steps
+1. **Claude Code + Figma Integration**: Using design screenshots to generate UI components
+2. **plan mode**: Breaking down complex features into manageable steps
 3. **Full-Stack Development**: Integrating frontend with existing backend APIs
 4. **React Best Practices**: Components, hooks, state management, error handling
 5. **End-to-End Testing**: Testing the complete user flow from creation to display
@@ -202,8 +205,9 @@ Consider extending this feature with:
 
 ## Resources
 
-- [QuickBlog README](README.md)
-- [Server API Documentation](server/README.md)
-- [Client Documentation](client/README.md)
+- [QuickBlog README](../../README.md)
+- [Server API reference](../../server/docs/api.md)
+- [Client docs](../../client/docs/README.md)
+- [Spec: comments moderation](../../specs/admin/comments-moderation.md) — the as-built result of this demo
 - [Figma Design](https://www.figma.com/design/b0ILCMLfSEsx7NUclZAg3E/QuickBlog?node-id=0-1&m=dev&t=Jo8qI7kBgrtOqFZT-1)
 

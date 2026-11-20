@@ -1,182 +1,54 @@
-## QuickBlog — Demo Project
+# QuickBlog
 
-![QuickBlog Hero](hero-image.png)
+![QuickBlog front page](docs/images/site-front-page.png)
 
-QuickBlog is a simple full‑stack blog demo used to showcase Claude Code / Cursor capabilities in web development. It includes a React + Vite client and an Express + MongoDB server, with local image storage and Google Gemini for optional AI‑assisted content generation.
+QuickBlog is a full-stack demo blog with an editorial, newspaper-style design: a public
+front page (cover story, latest, gallery, desks, editor's picks, archive),
+long-form article pages with comments, and an admin "Editor's desk" for writing,
+publishing and moderating — with optional AI drafting through Google Gemini.
 
----
+It is the reference project for live demos of AI-assisted development with Claude Code:
+spec-driven work, subagents, skills and systematic debugging.
 
-**[📚 Implementing Comments Feature Demo](DEMO-COMMENTS-FEATURE.md)** — Complete hands-on walkthrough showing how to use Claude Code / Cursor planning mode with Figma designs to build a full admin comments management page.
+| | |
+|---|---|
+| **Client** | React 19, Vite 6, Tailwind CSS 4, React Router 7, motion — [`client/`](client/README.md) |
+| **Server** | Express 5, MongoDB 7 (Mongoose 8, Docker), JWT, Multer, Gemini — [`server/`](server/README.md) |
 
-**[✍️ Implementing Blog Creation Demo](DEMO-BLOG-CREATION.md)** — Step-by-step guide to building a feature-rich blog creation page with Quill editor, local image uploads, and AI content generation using Claude Code / Cursor planning mode.
-
-**[📊 Implementing Analytics Dashboard Demo (Multi-Agent)](DEMO-ANALYTICS-FEATURE.md)** — Advanced tutorial demonstrating how to build a full analytics dashboard using Claude Code / Cursor multi-agent orchestration: requirements-planner, parallel implementors, plan-verifier, and dual code reviewers working simultaneously.
-
-**[🐞 Debugging Demo (Systematic Debugging Skill)](DEMO-DEBUGGING.md)** — Guided walkthrough for investigating two pre-planted bugs on the `demo-debugging` branch using the `systematic-debugging` skill — root-cause analysis over guessing.
-
----
-
-### Monorepo Structure
-- [`client/`](client/README.md) — React 19 app (Vite, Tailwind, React Router, Quill editor, Marked, React Hot Toast)
-- [`server/`](server/README.md) — Express 5 API (MongoDB/Mongoose via Docker, JWT auth, Multer, local image storage, Gemini)
-
-### Design
-Figma reference: `https://www.figma.com/design/b0ILCMLfSEsx7NUclZAg3E/QuickBlog?node-id=0-1&m=dev&t=Jo8qI7kBgrtOqFZT-1`
-
-For the full feature list and API documentation, see [`server/README.md`](server/README.md).
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-- **Node.js** 18+ installed
-- **Docker** installed and running
-- **npm** package manager
-
-### First Run Order
-1. Start the Server first (starts local MongoDB via Docker + seeds data)
-2. Then start the Client
-
----
-
-### Step 1: Setup Server
+## Quick start
 
 ```bash
-# Navigate to server directory
-cd server
-
-# Install dependencies
-npm install
-
-# Create environment file from example
-cp .env.example .env
-
-# Start MongoDB (Docker) + seed database with test data
-npm run setup
-
-# Start the API server (runs on port 5001)
-npm run server
+cd server && npm i && cp .env.example .env && npm run setup && npm run server
+cd client && npm i && cp .env.example .env && npm run dev
 ```
 
-> **Note:** The `npm run setup` command starts Docker containers and seeds the database with sample users, blogs, and comments.
+Open http://localhost:5173 (admin at `/admin`, `admin@quickblog.com` / `admin123`).
+Full setup, environment variables and troubleshooting: [docs/getting-started.md](docs/getting-started.md).
 
-### Step 2: Setup Client
+![Editor's desk](docs/images/site-admin-dashboard.png)
 
-Open a **new terminal** and run:
+## Documentation
 
-```bash
-# Navigate to client directory
-cd client
+| Where | What |
+|-------|------|
+| [docs/](docs/README.md) | Map of all docs, architecture, getting started, image prompts, flows |
+| [specs/](specs/README.md) | Feature specs with EARS acceptance criteria — the contract for every feature |
+| [client/docs/](client/docs/README.md) | UI: design system, motion, components, pages, data layer, testing |
+| [server/docs/](server/docs/README.md) | Backend: API reference, data model, auth & security, seeding, uploads, testing |
+| `AGENTS.md` (root and each package) | Rules for AI coding agents; `CLAUDE.md` imports the root one |
 
-# Install dependencies
-npm install
+## Demos
 
-# Create environment file from example
-cp .env.example .env
+Step-by-step workshop scenarios in [docs/demos/](docs/demos/):
 
-# Start the dev server (runs on port 5173)
-npm run dev
-```
+| Demo | Shows |
+|------|-------|
+| [Blog creation](docs/demos/blog-creation.md) | Plan mode + design reference → editor page with Quill, uploads and AI drafting |
+| [Comments feature](docs/demos/comments-feature.md) | Plan mode from a screenshot → admin moderation page |
+| [Debugging](docs/demos/debugging.md) | `systematic-debugging` skill on two bugs planted on the `demo-debugging` branch |
 
-### Step 3: Access the Application
+## Contributing
 
-- **Public Blog**: http://localhost:5173
-- **Admin Panel**: http://localhost:5173/admin
-
-**Admin Login** (created by seed script):
-- Email: `admin@quickblog.com`
-- Password: `admin123`
-
----
-
-## 📁 Environment Configuration
-
-### Server (`server/.env`)
-The server requires these environment variables (defaults work out of the box):
-
-```bash
-# Database (Docker)
-MONGODB_USER=quickblog
-MONGODB_PASSWORD=quickblog123
-MONGODB_DATABASE=quickblog
-MONGODB_URI=mongodb://quickblog:quickblog123@localhost:27017/quickblog
-
-# Server
-PORT=5001
-CLIENT_URL=http://localhost:5173
-NODE_ENV=development
-
-# Authentication
-JWT_SECRET=your_jwt_secret_key_change_this_in_production
-
-# AI Content Generation (optional)
-GEMINI_API_KEY=your_gemini_api_key_here
-```
-
-### Client (`client/.env`)
-The client only needs the backend URL:
-
-```bash
-VITE_BASE_URL=http://localhost:5001
-```
-
----
-
-## 🗄️ Database
-
-This project uses a **local MongoDB database** running in Docker (no cloud database needed).
-
-### Database Commands
-```bash
-cd server
-
-npm run db:start    # Start MongoDB containers
-npm run db:stop     # Stop containers (data persists)
-npm run db:restart  # Restart containers
-npm run db:clean    # Stop and DELETE all data
-npm run seed        # Re-seed database with test data
-```
-
-### View Your Data
-- **Mongo Express** (Web UI): http://localhost:8081
-  - Login: `quickblog` / `quickblog123`
-- **MongoDB Compass** (Desktop): Connect to `mongodb://quickblog:quickblog123@localhost:27017`
-
----
-
-## 🖼️ Image Storage
-
-Blog images are stored **locally** on the server in `server/public/uploads/`:
-- `uploads/blogs/` — User-uploaded blog images
-- `uploads/seed/` — Seed data images
-
-Images are served via the `/uploads` endpoint (e.g., `http://localhost:5001/uploads/seed/blog_pic_1.png`).
-
----
-
-## 🔧 Troubleshooting
-
-### Images not loading?
-1. Make sure the server is running on port 5001
-2. Check that `VITE_BASE_URL=http://localhost:5001` is set in `client/.env`
-3. Verify images exist: `ls server/public/uploads/seed/`
-
-### Database connection failed?
-1. Ensure Docker is running: `docker ps`
-2. Clean and restart: `cd server && npm run db:clean && npm run setup`
-
-### Port already in use?
-1. Kill the process: `lsof -ti:5001 | xargs kill -9` (for server)
-2. Or change the port in `.env`
-
----
-
-## 📚 More Documentation
-
-- [`server/README.md`](server/README.md) — Full API documentation, database setup, and architecture
-- [`client/README.md`](client/README.md) — Frontend setup and component documentation
-- [`DEMO-COMMENTS-FEATURE.md`](DEMO-COMMENTS-FEATURE.md) — Tutorial on implementing comments
-- [`DEMO-BLOG-CREATION.md`](DEMO-BLOG-CREATION.md) — Tutorial on implementing blog creation
-- [`DEMO-ANALYTICS-FEATURE.md`](DEMO-ANALYTICS-FEATURE.md) — Multi-agent tutorial on implementing analytics dashboard
-- [`DEMO-DEBUGGING.md`](DEMO-DEBUGGING.md) — Tutorial on investigating bugs with the `systematic-debugging` skill (uses `demo-debugging` branch)
+Read [AGENTS.md](AGENTS.md) first. In short: update the spec with the behavior, keep
+`client/` and `server/` separate, follow the design system, and use `/commit` and
+`/create-pr` for git.

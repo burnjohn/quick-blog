@@ -1,11 +1,11 @@
-# Demo: Implementing Blog Creation Page with Claude Code / Cursor
+# Demo: Implementing Blog Creation Page with Claude Code
 
-This guide demonstrates how to implement a complete blog creation feature in QuickBlog using Claude Code / Cursor's AI capabilities, Figma integration, and local image uploads.
+This guide demonstrates how to implement a complete blog creation feature in QuickBlog using Claude Code's AI capabilities, Figma integration, and local image uploads.
 
 ## Overview
 
 In this demo, you'll learn how to:
-- Use Claude Code / Cursor's **Planning Mode** to analyze and implement Figma designs
+- Use Claude Code's **plan mode** to analyze and implement Figma designs
 - Create a full-featured blog creation page with rich text editor
 - Handle image uploads with local storage
 - Build backend API endpoints for blog creation
@@ -30,6 +30,8 @@ Create and switch to the feature branch for this work:
 git checkout -b feature/implement-post-creation
 ```
 
+> **Design source.** The site now uses the editorial "Ink & Signal" design. Treat [`client/docs/design-system.md`](../../client/docs/design-system.md) and the existing `client/src/components/admin/shared/*` components as the source of truth. The Figma file linked below holds the original pre-redesign wireframes: use it for layout and fields, not for styling.
+
 ### 2. Review Figma Design
 
 Navigate to the QuickBlog Figma design file and review the blog creation page:
@@ -37,13 +39,13 @@ Navigate to the QuickBlog Figma design file and review the blog creation page:
 - Go through the layout, form fields, and interaction patterns
 - Note the required fields: thumbnail, title, subtitle, description (rich text), category, publish status
 
-### 3. Use Claude Code / Cursor's Agent Mode in Planning Mode
+### 3. Use Claude Code in Plan Mode
 
 This is where the magic happens! Follow these steps carefully:
 
-1. **Open a new chat**
-2. **Switch to Planning Mode** within Agent Mode
-3. **Attach relevant folders** using `@` mention:
+1. **Start Claude Code** in the repo root (`claude`)
+2. **Switch to plan mode** with `Shift+Tab`
+3. **Reference relevant folders** with `@` mentions:
    - `@client/src` (for UI implementation)
    - `@server/src` (for backend implementation)
    - `@server/src/routes` (for API routes)
@@ -61,7 +63,7 @@ We have to implement UI @client/src and server functionality @server/src
 For UI:
 - It should be a separate page
 - Check current pages and components structure
-- Follow the code style guidelines
+- Follow the code style guidelines (@client/AGENTS.md) and the design system (@client/docs/design-system.md)
 - Use the rich text editor from our @package.json (Quill)
 - Use local file upload for images
 
@@ -69,12 +71,12 @@ For the backend:
 - Check existing routes structure @server/src/routes
 - Follow the code style guidelines
 - Use existing DB methods
-- Images are stored locally in public/uploads/blogs
+- Images are stored locally (see @server/docs/uploads-and-images.md)
 
 Make sure to handle all loading states, form validation, and error cases properly.
 ```
 
-> **Tip**: Attach a screenshot or the Figma design link along with your prompt. Claude Code / Cursor's AI will understand the design and implement accordingly. The more context you provide through attached files (`@client/src`, `@server/src`), the better the results!
+> **Tip**: Attach a screenshot or the Figma design link along with your prompt. Claude Code's AI will understand the design and implement accordingly. The more context you provide through attached files (`@client/src`, `@server/src`), the better the results!
 
 ### 4. Review the Plan
 
@@ -90,25 +92,14 @@ The AI will generate a detailed implementation plan. Carefully review it and ens
 
 If you notice any gaps or want to adjust the approach, provide feedback before proceeding.
 
-### 5. Compare AI Models (Recommended)
+### 5. Compare Models (Optional)
 
-For the best results, it's recommended to test this feature implementation with multiple AI models:
-
-**Recommended Models**:
-1. **Claude 4.5 Sonnet** - Excellent at understanding complex requirements and generating clean, well-structured code
-2. **Composer-1** - Great at following project conventions and maintaining consistency
-
-**How to Compare**:
-1. Run the same prompt with both models (create separate branches if needed)
-2. Compare the generated code quality
-3. Check which model better follows your project's code style
-4. Evaluate error handling and edge cases
-5. Choose the implementation you prefer or combine the best parts
+Run the same prompt on two branches with different models (`/model` switches the model in Claude Code), then compare code quality, adherence to `client/AGENTS.md`, and error handling. Keep the better result or combine the best parts.
 
 ### 6. Execute the Plan
 
 Once you're satisfied with the plan:
-1. Click **"Run Plan"** or **"Start Building"**
+1. Accept the plan to leave plan mode
 2. The AI will create/modify the necessary files
 3. Monitor the progress and review changes as they're made
 4. Approve file changes when prompted
