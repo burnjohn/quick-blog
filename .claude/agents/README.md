@@ -1,30 +1,12 @@
 # Agents
 
-Specialized AI agents for specific development workflows. Works with both **Cursor** and **Claude Code**.
+Specialized subagents for Claude Code. Canonical location: `.claude/agents/`.
 
-## Dual-Tool Setup
+Frontmatter fields used by Claude Code:
+- `skills:` — skills auto-loaded into the agent's context
+- `tools:` — restricts the tools available to the agent
 
-All skills, agents, and commands live in `.claude/` (single source of truth). Symlinks in `.cursor/` provide Cursor compatibility:
-
-```
-.claude/skills/          ← canonical (10 skills)
-.claude/agents/          ← canonical (8 agents)
-.claude/commands/        ← canonical (5 commands)
-.cursor/skills → ../.claude/skills     ← symlink
-.cursor/agents → ../.claude/agents     ← symlink
-.cursor/commands → ../.claude/commands ← symlink
-.cursor/rules/           ← Cursor-only (.mdc files)
-```
-
-**Claude Code** uses:
-- `skills:` frontmatter field to auto-load skills into agent context
-- `tools:` frontmatter field to restrict available tools per agent
-
-**Cursor** uses:
-- Body instructions that reference `.claude/skills/*/SKILL.md` file paths
-- Ignores unknown frontmatter fields (`tools`, `skills`)
-
-To verify the setup is working: use the `verify-setup` agent.
+Project conventions the reviewers check against live in [`client/AGENTS.md`](../../client/AGENTS.md) and [`server/AGENTS.md`](../../server/AGENTS.md).
 
 ## Catalog
 
@@ -37,7 +19,6 @@ To verify the setup is working: use the `verify-setup` agent.
 | [plan-verifier](plan-verifier.md) | Full-stack | Validates completed implementations against plans and standards |
 | [test-writer](test-writer.md) | Full-stack | Writes tests for components, hooks, controllers, and middleware |
 | [refactoring-planner](refactoring-planner.md) | Full-stack | Creates structured refactoring plans with risk assessment |
-| [verify-setup](verify-setup.md) | Config | Verifies dual-tool setup (Cursor + Claude Code) is working |
 
 ## Usage
 

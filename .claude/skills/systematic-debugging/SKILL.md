@@ -11,8 +11,6 @@ A structured approach to finding and fixing bugs. No guessing, no random changes
 
 **No fixes without root cause first.** If you can't explain WHY the bug happens, you don't understand it well enough to fix it.
 
-> **Tip:** For bugs that need runtime instrumentation (race conditions, timing issues, memory leaks), also consider Cursor's Debug Mode (`Cmd+.` → Debug). This skill defines the *reasoning process*; Debug Mode provides the *runtime tooling*.
-
 ## When This Activates
 
 - Something is broken or behaving unexpectedly

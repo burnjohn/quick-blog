@@ -34,7 +34,7 @@ These MUST be checked even if the skill files fail to load:
 3. Read the `react-best-practices` skill files
 4. Run `git diff` on the React files to see actual changes
 5. Analyze each change against the skill's rules (use severity levels)
-6. Also verify project-specific rules from `.cursor/rules/react-frontend.mdc`
+6. Also verify project-specific rules from `client/AGENTS.md`
 7. Output structured feedback using the format below
 
 ## Output Format

@@ -34,7 +34,7 @@ These MUST be checked even if the skill files fail to load:
 3. Read the `express-best-practices` skill files
 4. Run `git diff` on the server files to see actual changes
 5. Analyze each change against the skill's rules (use severity levels)
-6. Also verify project-specific rules from `.cursor/rules/express-backend.mdc`
+6. Also verify project-specific rules from `server/AGENTS.md`
 7. Output structured feedback using the format below
 
 ## Output Format
