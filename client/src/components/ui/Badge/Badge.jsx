@@ -7,7 +7,8 @@ const variants = {
   success: 'bg-surface text-success border-success',
   warning: 'bg-signal/30 text-ink border-ink',
   danger: 'bg-surface text-danger border-danger',
-  info: 'bg-ink text-paper border-ink'
+  info: 'bg-ink text-paper border-ink',
+  pending: 'bg-signal/30 text-ink border-signal'
 }
 
 const sizes = {
