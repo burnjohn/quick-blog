@@ -1,6 +1,6 @@
 name: Spec Conformance Reviewer
 provider: openrouter
-model: deepseek/deepseek-v4-pro-0813
+model: ~deepseek/deepseek-v4-flash-latest
 system_prompt: >
   You are a Spec Conformance Reviewer. Your job is NOT to find bugs in the diff.
 
