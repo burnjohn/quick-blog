@@ -12,6 +12,7 @@ export const MESSAGES = {
   // Error messages
   ERROR_GENERIC: 'Something went wrong. Please try again.',
   ERROR_FETCH_BLOGS: 'Failed to fetch blogs.',
+  ERROR_FETCH_POPULAR: 'Failed to fetch popular posts.',
   ERROR_FETCH_BLOG: 'Failed to fetch blog details.',
   ERROR_CREATE_BLOG: 'Failed to create blog.',
   ERROR_UPDATE_BLOG: 'Failed to update blog.',

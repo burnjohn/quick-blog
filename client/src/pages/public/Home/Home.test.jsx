@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeAll, afterEach, afterAll } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { setupServer } from 'msw/node'
 import { http, HttpResponse } from 'msw'
@@ -20,9 +20,22 @@ const mockBlog = {
   isPublished: true,
 }
 
+const popularPost = {
+  _id: '1',
+  title: 'Test Blog Post',
+  category: 'Technology',
+  excerpt: 'Test content',
+  image: '/test-image.jpg',
+  views: 12,
+  comments: 3,
+}
+
 const server = setupServer(
   http.get('http://localhost:5001/api/blog/all', () =>
     HttpResponse.json({ success: true, blogs: [mockBlog] })
+  ),
+  http.get('http://localhost:5001/api/blog/popular', () =>
+    HttpResponse.json({ success: true, count: 1, range: 'window', blogs: [popularPost] })
   )
 )
 
@@ -56,5 +69,27 @@ describe('Home', () => {
 
     // A single post is also in "Latest" (fewer than a row would remain without it)
     expect(screen.getByRole('link', { name: 'Test Blog Post' })).toBeInTheDocument()
+  })
+
+  it('renders the most-read ranking with reads and comments', async () => {
+    renderHome()
+
+    expect(await screen.findByRole('heading', { name: 'What everyone is reading' }, { timeout: 2000 })).toBeInTheDocument()
+    expect(await screen.findByText('12')).toBeInTheDocument()
+    expect(screen.getByText(/ranked by reader views · last 30 days/i)).toBeInTheDocument()
+  })
+
+  it('hides the most-read section when the ranking fails to load', async () => {
+    server.use(
+      http.get('http://localhost:5001/api/blog/popular', () =>
+        HttpResponse.json({ success: false, message: 'boom' }, { status: 500 })
+      )
+    )
+    renderHome()
+
+    await screen.findByRole('heading', { level: 2, name: 'Test Blog Post' }, { timeout: 2000 })
+    await waitFor(() =>
+      expect(screen.queryByRole('heading', { name: 'What everyone is reading' })).not.toBeInTheDocument()
+    )
   })
 })

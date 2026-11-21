@@ -5,6 +5,8 @@ import Comment from '../models/Comment.js'
 import main from '../configs/gemini.js'
 import { transformBlogImage, transformBlogsImages } from '../utils/imageUrl.js'
 import { asyncHandler } from '../helpers/asyncHandler.js'
+import { sendData } from '../helpers/response.js'
+import { getPopularPosts } from '../helpers/popularPosts.js'
 
 // Helper to get image URL from filename (relative path for storage)
 const getImagePath = (filename) => {
@@ -64,6 +66,12 @@ export const getAllBlogs = asyncHandler(async (req, res) => {
     count: blogs.length,
     blogs: transformBlogsImages(blogs, req)
   })
+})
+
+export const getPopularBlogs = asyncHandler(async (req, res) => {
+  const { limit, days } = req.popularQuery
+  const { posts, range } = await getPopularPosts({ limit, days })
+  sendData(res, { range, days, blogs: transformBlogsImages(posts, req) }, posts.length)
 })
 
 export const getBlogById = asyncHandler(async (req, res) => {

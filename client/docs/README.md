@@ -10,6 +10,7 @@ Documentation for `client/`. It describes the code as it currently is. Where the
 | [pages.md](pages.md) | Every route and what it renders, top to bottom |
 | [data-layer.md](data-layer.md) | Axios config, API wrappers, endpoints, core and API hooks, `AppContext` |
 | [testing.md](testing.md) | Vitest + React Testing Library setup, layout, conventions |
+| [analytics-ui.md](analytics-ui.md) | Admin Analytics page, charts, filters, drill-down, export |
 
 Related:
 

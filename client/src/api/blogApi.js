@@ -7,6 +7,11 @@ export const blogApi = {
     return await axios.get(API_ENDPOINTS.BLOGS_ALL)
   },
 
+  // Most-read published posts ({ limit, days } — server falls back to all-time)
+  getPopular: async (params = {}) => {
+    return await axios.get(API_ENDPOINTS.BLOGS_POPULAR, { params })
+  },
+
   // Get blog by ID
   getById: async (id) => {
     return await axios.get(API_ENDPOINTS.BLOG_BY_ID(id))

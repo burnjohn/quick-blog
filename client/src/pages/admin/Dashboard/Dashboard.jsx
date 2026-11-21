@@ -61,11 +61,12 @@ function Dashboard() {
         insights={buildInsights(dashboardData)}
       />
 
-      <div className='grid gap-5 sm:grid-cols-2 xl:grid-cols-4'>
+      <div className='grid gap-5 sm:grid-cols-2 xl:grid-cols-5'>
         <StatCard index={0} label='Comments' value={dashboardData.comments} note='All time' />
         <StatCard index={1} label='Drafts' value={dashboardData.drafts} tone='halftone' note='Unpublished' />
         <StatCard index={2} label='Written this month' value={dashboardData.blogsThisMonth} />
         <StatCard index={3} label='Published this month' value={dashboardData.publishedThisMonth} tone='signal' />
+        <StatCard index={4} label='Views this month' value={dashboardData.viewsThisMonth ?? 0} note='Readers' />
       </div>
 
       <motion.section

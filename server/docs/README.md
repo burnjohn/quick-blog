@@ -10,6 +10,7 @@ Reference docs for the QuickBlog API (`server/`). Each page describes the code a
 | [uploads-and-images.md](./uploads-and-images.md) | Multer, upload directories, static serving, absolute image URLs, `SERVER_URL` |
 | [seeding-and-fixtures.md](./seeding-and-fixtures.md) | Docker Compose, init scripts, seed script, fixtures, demo content, cover images, demo credentials |
 | [testing.md](./testing.md) | Vitest, Supertest and `mongodb-memory-server` setup, helpers, what is covered |
+| [analytics-api.md](./analytics-api.md) | Analytics endpoints, `BlogView` model and migration, view recording, popular posts data source |
 
 Related:
 

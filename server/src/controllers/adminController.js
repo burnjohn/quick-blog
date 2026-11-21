@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken'
 import Blog from '../models/Blog.js'
 import Comment from '../models/Comment.js'
 import User from '../models/User.js'
+import BlogView from '../models/BlogView.js'
 import { transformBlogImage, transformBlogsImages } from '../utils/imageUrl.js'
 import { asyncHandler } from '../helpers/asyncHandler.js'
 
@@ -89,14 +90,15 @@ export const getDashboard = asyncHandler(async (req, res) => {
   const now = new Date()
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
 
-  const [recentComments, blogs, comments, drafts, blogsThisMonth, publishedThisMonth] =
+  const [recentComments, blogs, comments, drafts, blogsThisMonth, publishedThisMonth, viewsThisMonth] =
     await Promise.all([
       Comment.find({}).sort({ createdAt: -1 }).limit(6),
       Blog.countDocuments(),
       Comment.countDocuments(),
       Blog.countDocuments({ isPublished: false }),
       Blog.countDocuments({ createdAt: { $gte: startOfMonth } }),
-      Blog.countDocuments({ isPublished: true, createdAt: { $gte: startOfMonth } })
+      Blog.countDocuments({ isPublished: true, createdAt: { $gte: startOfMonth } }),
+      BlogView.countDocuments({ viewedAt: { $gte: startOfMonth } })
     ])
 
   const dashboardData = {
@@ -105,6 +107,7 @@ export const getDashboard = asyncHandler(async (req, res) => {
     drafts,
     blogsThisMonth,
     publishedThisMonth,
+    viewsThisMonth,
     recentBlogs: blogsWithCounts,
     recentComments
   }

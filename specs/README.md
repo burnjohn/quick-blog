@@ -23,6 +23,12 @@ Feature specifications with EARS acceptance criteria. Format and rules:
 | [Blog list](admin/blog-list.md) — publish/unpublish, delete | SPEC-LIST-1 | AC-LIST-01…24 | As-built |
 | [Comments moderation](admin/comments-moderation.md) | SPEC-MOD-1 | AC-MOD-01…25 | As-built |
 
+## Analytics — `analytics/`
+
+| Spec | ID | Status |
+|------|----|--------|
+| [Analytics dashboard](analytics/analytics-dashboard.md) — KPIs, charts, tables, filters, export, view tracking | SPEC-ANALYTICS-1 | Approved |
+
 ## Cross-cutting known gaps
 
 The most severe defects found while writing these specs. Each one is detailed in the

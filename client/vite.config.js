@@ -8,6 +8,10 @@ export default defineConfig({
     react(), 
     tailwindcss()
   ],
+  // expose env to analytics config
+  define: {
+    'process.env': JSON.stringify(process.env)
+  },
   test: {
     globals: true,
     environment: 'jsdom',

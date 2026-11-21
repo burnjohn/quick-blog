@@ -263,6 +263,7 @@ system_prompt: >
   secrets
 
   or data integrity. A wrong number on a dashboard card is a WARNING.
-skills: []
+skills:
+  - analytics-dashboard-spec
 strategy: single-pass
 ci_fail_on: critical

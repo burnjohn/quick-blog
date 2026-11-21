@@ -6,6 +6,7 @@ export const NAV_ITEMS = [
   { to: ROUTES.ADMIN_ADD_BLOG, label: 'Add blogs', icon: assets.add_icon },
   { to: ROUTES.ADMIN_LIST_BLOG, label: 'Blog lists', icon: assets.list_icon },
   { to: ROUTES.ADMIN_COMMENTS, label: 'Comments', icon: assets.comment_icon },
+  { to: ROUTES.ADMIN_ANALYTICS, label: 'Analytics', icon: assets.chart_icon },
 ]
 
 export const getNavLabel = (pathname) => {
