@@ -80,6 +80,7 @@ Seeded logins: `admin@quickblog.com` / `admin123` (admin), `sarah@quickblog.com`
 |------|--------|------|
 | Public front page, article page, comments, newsletter | Shipped | `specs/public/` |
 | Admin auth, shell, dashboard, authoring, blog list, comment moderation | Shipped | `specs/admin/` |
+| Analytics dashboard, view tracking | In review | `specs/analytics/` |
 
 ## Where to look
 

@@ -5,6 +5,7 @@ import PageTransition from '../../../components/layout/PageTransition'
 import { Header, NewsletterForm } from '../../../components/forms'
 import { BlogList } from '../../../components/blog'
 import FrontCover from '../../../components/blog/FrontCover'
+import MostRead from '../../../components/blog/MostRead'
 import Gallery from '../../../components/blog/Gallery'
 import CategoryDesks from '../../../components/blog/CategoryDesks'
 import EditorsPicks from '../../../components/blog/EditorsPicks'
@@ -51,6 +52,7 @@ function Home() {
           </Header>
           <div className='section-counter'>
             <BlogList excludeIds={latestExcludes} />
+            {!input && <MostRead />}
             {showSections && <Gallery blogs={offCover} />}
             {showSections && <CategoryDesks blogs={newest} excludeIds={coverIds} />}
             {picks.length > 1 && <EditorsPicks picks={picks} />}
