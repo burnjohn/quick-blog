@@ -7,7 +7,7 @@ import BlogView from '../src/models/BlogView.js'
 import dbLogger from '../src/utils/dbLogger.js'
 import { users } from '../fixtures/users.js'
 import { blogs } from '../fixtures/blogs.js'
-import { comments } from '../fixtures/comments.js'
+import { comments, commentConfig } from '../fixtures/comments.js'
 import { viewConfig } from '../fixtures/views.js'
 
 // Connect to database
@@ -142,12 +142,32 @@ const seedDatabase = async () => {
     console.log(`✅ Created ${createdBlogs.length} blog posts\n`)
 
     const publishedBlogs = createdBlogs.filter((b) => b.isPublished)
-    const targetComments = 80 + Math.floor(Math.random() * 41)
+    const { min: minComments, max: maxComments } = commentConfig.total
+    const targetComments = minComments + Math.floor(Math.random() * (maxComments - minComments + 1))
+
+    // Prefer topic-specific templates (forTitle) for their post, never repeat a
+    // template on the same post while unused ones remain.
+    const genericTemplates = comments.filter((t) => !t.forTitle)
+    const usedTemplates = new Map()
+    const pickCommentTemplate = (blog, used) => {
+      const key = String(blog._id)
+      if (!used.has(key)) used.set(key, new Set())
+      const usedForBlog = used.get(key)
+      const specific = comments.filter((t) => t.forTitle === blog.title && !usedForBlog.has(t))
+      const generic = genericTemplates.filter((t) => !usedForBlog.has(t))
+      const pool = specific.length && (Math.random() < 0.6 || !generic.length)
+        ? specific
+        : generic.length ? generic : genericTemplates
+      const picked = pool[Math.floor(Math.random() * pool.length)]
+      usedForBlog.add(picked)
+      const { forTitle, ...template } = picked
+      return template
+    }
 
     let commentCount = 0
     for (let c = 0; c < targetComments; c++) {
       const blog = publishedBlogs[Math.floor(Math.random() * publishedBlogs.length)]
-      const template = comments[Math.floor(Math.random() * comments.length)]
+      const template = pickCommentTemplate(blog, usedTemplates)
       const blogCreatedAt = blog.createdAt.getTime()
       const now = Date.now()
       const commentCreatedAt = new Date(

@@ -8,6 +8,7 @@ vi.mock('../../assets/assets', () => ({
 
 vi.mock('../../utils/formatters', () => ({
   formatRelativeTime: vi.fn(() => '2 hours ago'),
+  getInitials: vi.fn((name = '') => name.slice(0, 2).toUpperCase()),
 }))
 
 const mockComments = [

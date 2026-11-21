@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <defs>
+    <pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="9" cy="9" r="4" fill="#111111"/></pattern>
+    <pattern id="dotsSm" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="6" cy="6" r="2.2" fill="#111111"/></pattern>
+    <pattern id="dotsY" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="9" cy="9" r="4.5" fill="#FFCE00"/></pattern>
+    <pattern id="dotsP" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="8" cy="8" r="3" fill="#F4F1EA"/></pattern>
+    <pattern id="stripes" width="28" height="28" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="28" fill="#111111"/></pattern>
+    <pattern id="stripesT" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><rect width="8" height="24" fill="#A39B88"/></pattern>
+    <pattern id="hlines" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="20" height="6" fill="#111111"/></pattern>
+    
+  </defs>
+  <rect width="1200" height="900" fill="#F4F1EA"/>
+  
+  <rect x="110" y="800" width="90" height="40" fill="#5E5A52"/><rect x="235" y="782" width="90" height="58" fill="#111111"/><rect x="360" y="756" width="90" height="84" fill="#5E5A52"/><rect x="485" y="718" width="90" height="122" fill="#111111"/><rect x="610" y="663" width="90" height="177" fill="#5E5A52"/><rect x="735" y="584" width="90" height="256" fill="#111111"/><rect x="860" y="468" width="90" height="372" fill="#5E5A52"/><rect x="985" y="301" width="90" height="539" fill="#FFCE00"/>
+  <text x="100" y="420" font-family="Georgia, 'Times New Roman', Times, serif" font-size="280" font-style="italic" fill="#111111">%</text>
+
+  
+  <g font-family="Menlo, 'SF Mono', 'Courier New', monospace" font-size="20" letter-spacing="4" fill="#111111">
+    <text x="60" y="78">QUICK BLOG / FINANCE</text>
+    <text x="1140" y="78" text-anchor="end">NO. 38</text>
+  </g>
+  <rect x="60" y="96" width="1080" height="3" fill="#111111"/>
+</svg>

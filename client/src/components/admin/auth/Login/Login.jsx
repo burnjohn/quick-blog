@@ -4,6 +4,67 @@ import { adminApi } from '../../../../api'
 import { Button, Input } from '../../../ui'
 import toast from 'react-hot-toast'
 import { MESSAGES } from '../../../../constants/messages'
+import { assets } from '../../../../assets/assets'
+import { motion } from 'motion/react' // eslint-disable-line no-unused-vars
+import { EASE_EDITORIAL, riseIn } from '../../shared/motion'
+
+const HEADLINE = ['Write.', 'Edit.', 'Publish.']
+
+const headlineLine = {
+  hidden: { opacity: 0, y: 28 },
+  show: (index) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: EASE_EDITORIAL, delay: 0.1 + index * 0.08 }
+  })
+}
+
+function LoginAside() {
+  return (
+    <aside className='relative flex flex-col justify-between gap-10 overflow-hidden bg-ink px-6 py-8 text-paper sm:px-10 md:w-1/2 md:p-12 lg:p-16'>
+      <div aria-hidden='true' className='halftone-signal pointer-events-none absolute -right-16 bottom-0 h-2/3 w-2/3 opacity-50 [mask-image:radial-gradient(circle_at_70%_80%,#000,transparent_70%)]' />
+
+      <div className='relative flex flex-wrap items-center justify-between gap-4 border-b border-paper/15 pb-4'>
+        <div className='flex items-center gap-3'>
+          <img src={assets.logo_mark} alt='' className='h-10 w-10' />
+          <span className='font-serif text-2xl font-semibold'>QuickBlog<span className='text-signal'>.</span></span>
+        </div>
+        <p className='font-mono text-[10px] uppercase tracking-[0.2em] text-paper/60'>Editor&apos;s desk · Vol. 1</p>
+      </div>
+
+      <div className='relative'>
+        <p className='font-mono text-[11px] uppercase tracking-[0.18em] text-signal'>§ Restricted edition</p>
+        <motion.p
+          initial='hidden'
+          animate='show'
+          className='mt-6 font-serif text-[clamp(64px,9vw,148px)] font-semibold leading-[0.85] tracking-tight'
+        >
+          {HEADLINE.map((word, index) => (
+            <motion.span
+              key={word}
+              custom={index}
+              variants={headlineLine}
+              className={index === HEADLINE.length - 1 ? 'block italic font-normal text-signal' : 'block'}
+            >
+              {word}
+            </motion.span>
+          ))}
+        </motion.p>
+        <motion.span
+          initial={{ opacity: 0, scale: 0.7, rotate: -14 }}
+          animate={{ opacity: 1, scale: 1, rotate: -3, transition: { delay: 0.6, type: 'spring', stiffness: 380, damping: 18 } }}
+          className='mt-8 inline-block border-2 border-paper bg-signal px-3 py-1.5 font-mono text-sm font-medium uppercase tracking-[0.14em] text-ink'
+        >
+          Staff only
+        </motion.span>
+      </div>
+
+      <p className='relative max-w-sm font-serif text-lg italic text-paper/70 max-md:hidden'>
+        Manage stories, comments and drafts in one place.
+      </p>
+    </aside>
+  )
+}
 
 function Login() {
   const { setToken } = useAppContext()
@@ -14,7 +75,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
-    
+
     try {
       const response = await adminApi.login({ email, password })
 
@@ -33,49 +94,53 @@ function Login() {
   }
 
   return (
-    <div className='flex items-center justify-center h-screen'>
-      <div className='w-full max-w-sm p-6 max-md:m-6 border border-primary/30 shadow-xl shadow-primary/15 rounded-lg'>
-        <div className='flex flex-col items-center justify-center'>
-          <div className='w-full py-6 text-center'>
-            <h1 className='text-3xl font-bold'>
-              <span className='text-primary'>Admin</span> Login
-            </h1>
-            <p className='font-light'>Enter your credentials to access the admin panel</p>
-          </div>
-          
-          <form onSubmit={handleSubmit} className='mt-6 w-full sm:max-w-md text-gray-600'>
+    <div className='flex min-h-dvh flex-col bg-paper text-ink md:flex-row'>
+      <LoginAside />
+
+      <main className='flex flex-1 items-center justify-center px-5 py-12 sm:px-10'>
+        <motion.div initial='hidden' animate='show' variants={riseIn} custom={2} className='w-full max-w-md'>
+          <p className='font-mono text-[11px] uppercase tracking-[0.18em] text-ink-muted'>
+            Restricted area
+          </p>
+          <h1 className='mt-4 font-serif text-5xl font-semibold leading-none tracking-tight sm:text-6xl'>
+            <span className='bg-signal px-1'>Admin</span> Login
+          </h1>
+          <p className='mt-4 text-ink-muted'>Enter your credentials to access the admin panel</p>
+
+          <form onSubmit={handleSubmit} className='mt-10 flex w-full flex-col gap-6 border border-ink bg-surface p-6 shadow-hard sm:p-8'>
             <Input
               label='Email'
               type='email'
+              autoComplete='email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder='your email id'
               required
-              className='border-b-2 border-gray-300 mb-6 rounded-none border-x-0 border-t-0'
             />
-            
+
             <Input
               label='Password'
               type='password'
+              autoComplete='current-password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder='your password'
               required
-              className='border-b-2 border-gray-300 mb-6 rounded-none border-x-0 border-t-0'
             />
-            
-            <Button 
-              type='submit' 
+
+            <Button
+              type='submit'
               variant='primary'
+              size='lg'
               fullWidth
               loading={loading}
-              className='py-3'
+              className='mt-2'
             >
               Login
             </Button>
           </form>
-        </div>
-      </div>
+        </motion.div>
+      </main>
     </div>
   )
 }

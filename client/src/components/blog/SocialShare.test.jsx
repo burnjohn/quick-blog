@@ -28,10 +28,10 @@ describe('SocialShare', () => {
     expect(screen.getByRole('button', { name: /share on google plus/i })).toBeInTheDocument()
   })
 
-  it('renders social media icons', () => {
+  it('renders visible network labels', () => {
     render(<SocialShare />)
-    expect(screen.getByAltText('Facebook')).toBeInTheDocument()
-    expect(screen.getByAltText('Twitter')).toBeInTheDocument()
-    expect(screen.getByAltText('Google Plus')).toBeInTheDocument()
+    expect(screen.getByText('Facebook')).toBeInTheDocument()
+    expect(screen.getByText('Twitter')).toBeInTheDocument()
+    expect(screen.getByText('Google+')).toBeInTheDocument()
   })
 })

@@ -1,7 +1,34 @@
 import React from 'react'
-import { assets } from '../../../../assets/assets'
+import { AnimatePresence, motion } from 'motion/react' // eslint-disable-line no-unused-vars
 import { useBlogActions } from '../../../../hooks'
 import { formatDate } from '../../../../utils/formatters'
+import { classNames } from '../../../../utils/helpers'
+import { AdminTableRow } from '../../shared/AdminTable'
+import { EASE_EDITORIAL } from '../../shared/motion'
+
+const STATUS_MOTION = {
+  initial: { opacity: 0, y: 8 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: EASE_EDITORIAL } },
+  exit: { opacity: 0, y: -8, transition: { duration: 0.18 } }
+}
+
+function StatusPill({ isPublished }) {
+  return (
+    <AnimatePresence mode='wait' initial={false}>
+      <motion.span
+        key={isPublished ? 'published' : 'draft'}
+        {...STATUS_MOTION}
+        className={classNames(
+          'inline-flex items-center gap-2 border px-2 py-1 font-mono text-[11px] uppercase tracking-[0.14em]',
+          isPublished ? 'border-ink bg-ink text-signal' : 'border-dashed border-ink-muted text-ink-muted'
+        )}
+      >
+        <span aria-hidden='true' className={classNames('h-2 w-2', isPublished ? 'bg-signal' : 'border border-ink-muted')} />
+        {isPublished ? 'Published' : 'Unpublished'}
+      </motion.span>
+    </AnimatePresence>
+  )
+}
 
 function BlogTableItem({ blog, onUpdate, index }) {
   const { title, createdAt } = blog
@@ -22,35 +49,37 @@ function BlogTableItem({ blog, onUpdate, index }) {
   }
 
   return (
-    <tr className='border-y border-gray-300 hover:bg-gray-50 transition-colors'>
-      <th className='px-2 py-4 font-normal'>{index}</th>
-      <td className='px-2 py-4'>{title}</td>
-      <td className='px-2 py-4 max-sm:hidden'>{formatDate(createdAt)}</td>
-      <td className='px-2 py-4 max-sm:hidden'>
-        <span className={blog.isPublished ? 'text-green-600' : 'text-orange-700'}>
-          {blog.isPublished ? 'Published' : 'Unpublished'}
-        </span>
+    <AdminTableRow index={index - 1}>
+      <th scope='row' className='px-4 py-4 font-mono text-xs font-normal text-ink-muted'>
+        {String(index).padStart(2, '0')}
+      </th>
+      <td className='px-4 py-4 font-serif text-base font-semibold leading-snug text-ink'>{title}</td>
+      <td className='px-4 py-4 font-mono text-xs text-ink-muted max-sm:hidden'>{formatDate(createdAt)}</td>
+      <td className='px-4 py-4 max-sm:hidden'>
+        <StatusPill isPublished={blog.isPublished} />
       </td>
-      <td className='px-2 py-4'>
-        <div className='flex items-center text-xs gap-3'>
-          <button 
+      <td className='px-4 py-4'>
+        <div className='flex items-center gap-2'>
+          <button
+            type='button'
             onClick={handleTogglePublish}
             disabled={inProgress}
-            className='border px-2 py-1 rounded cursor-pointer hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+            className='min-h-11 cursor-pointer border border-ink bg-surface px-2 sm:min-w-28 sm:px-3 font-mono text-[11px] uppercase tracking-[0.12em] text-ink shadow-hard-sm transition-[transform,box-shadow,background-color,color] duration-200 hover:-translate-x-px hover:-translate-y-px hover:bg-ink hover:text-signal active:translate-x-0 active:translate-y-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-50'
           >
             {blog.isPublished ? 'Unpublish' : 'Publish'}
           </button>
           <button
+            type='button'
             onClick={handleDelete}
             disabled={inProgress}
-            className='hover:scale-110 transition-transform disabled:opacity-50 disabled:cursor-not-allowed'
-            aria-label='Delete blog'
+            className='flex h-11 w-11 cursor-pointer items-center justify-center border border-line text-lg text-danger transition-colors hover:border-danger hover:bg-danger hover:text-surface disabled:cursor-not-allowed disabled:opacity-50'
+            aria-label={`Delete blog "${title}"`}
           >
-            <img src={assets.cross_icon} className='w-8' alt='' />
+            <span aria-hidden='true'>✕</span>
           </button>
         </div>
       </td>
-    </tr>
+    </AdminTableRow>
   )
 }
 

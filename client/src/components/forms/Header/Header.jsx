@@ -1,51 +1,38 @@
 import React from 'react'
-import { assets } from '../../../assets/assets'
 import { useAppContext } from '../../../context/AppContext'
 import SearchBar from '../SearchBar'
-import Badge from '../../ui/Badge'
 
-function Header() {
+/**
+ * Slim front-page masthead: the tagline as a small kicker, compact search,
+ * and the cover (`children`) right underneath so stories own the first screen.
+ * Search sits in the masthead on lg and in a slim bar under the cover below lg.
+ */
+function Header({ children }) {
   const { setInput, input } = useAppContext()
 
-  const handleSearch = (searchTerm) => {
-    setInput(searchTerm)
-  }
-
-  const handleClear = () => {
-    setInput('')
-  }
+  const search = (
+    <SearchBar
+      compact
+      onSearch={setInput}
+      onClear={() => setInput('')}
+      hasSearchTerm={!!input}
+    />
+  )
 
   return (
-    <div className='mx-8 sm:mx-16 xl:mx-24 relative'>
-      <div className='text-center mt-20 mb-8'>
-        
-        <Badge variant='primary' className='mb-4 inline-flex items-center gap-4 px-6 py-1.5'>
-          <span>New: AI feature integrated</span>
-          <img src={assets.star_icon} className='w-2.5' alt='' />
-        </Badge>
-
-        <h1 className='text-3xl sm:text-6xl font-semibold sm:leading-16 text-gray-700'>
-          Your own <span className='text-primary'>blogging</span> <br /> platform.
+    <section aria-labelledby='hero-title' className='mx-auto max-w-7xl px-5 pt-4 sm:px-8 sm:pt-6'>
+      <div className='flex items-center justify-between gap-6 border-b-2 border-ink pb-3'>
+        <h1 id='hero-title' className='font-mono text-[11px] uppercase tracking-[0.18em] text-ink'>
+          The QuickBlog Journal
+          <span className='hidden text-ink-muted sm:inline'> — your own blogging platform</span>
         </h1>
-
-        <p className='my-6 sm:my-8 max-w-2xl m-auto max-sm:text-xs text-gray-500'>
-          This is your space to think out loud, to share what matters, and to write without filters. 
-          Whether it's one word or a thousand, your story starts right here.
-        </p>
-
-        <SearchBar 
-          onSearch={handleSearch}
-          onClear={handleClear}
-          hasSearchTerm={!!input}
-        />
+        <div className='hidden w-full max-w-md lg:block'>{search}</div>
       </div>
 
-      <img 
-        src={assets.gradientBackground} 
-        alt='' 
-        className='absolute -top-50 -z-1 opacity-50'
-      />
-    </div>
+      {children}
+
+      <div className='mt-8 lg:hidden'>{search}</div>
+    </section>
   )
 }
 

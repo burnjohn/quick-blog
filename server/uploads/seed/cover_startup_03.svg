@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <defs>
+    <pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="9" cy="9" r="4" fill="#111111"/></pattern>
+    <pattern id="dotsSm" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="6" cy="6" r="2.2" fill="#111111"/></pattern>
+    <pattern id="dotsY" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="9" cy="9" r="4.5" fill="#FFCE00"/></pattern>
+    <pattern id="dotsP" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="8" cy="8" r="3" fill="#F4F1EA"/></pattern>
+    <pattern id="stripes" width="28" height="28" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="28" fill="#111111"/></pattern>
+    <pattern id="stripesT" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><rect width="8" height="24" fill="#A39B88"/></pattern>
+    <pattern id="hlines" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="20" height="6" fill="#111111"/></pattern>
+    
+  </defs>
+  <rect width="1200" height="900" fill="#111111"/>
+  
+  <rect width="1200" height="900" fill="#111111"/>
+  <rect x="60" y="150" width="1080" height="690" fill="url(#stripesT)" opacity="0.5"/>
+  <rect x="300" y="250" width="600" height="500" fill="#F4F1EA"/>
+  <path d="M300 250 L600 520 L900 250" fill="none" stroke="#111111" stroke-width="10"/>
+  <rect x="540" y="600" width="120" height="60" fill="#FFCE00"/>
+
+  
+  <g font-family="Menlo, 'SF Mono', 'Courier New', monospace" font-size="20" letter-spacing="4" fill="#F4F1EA">
+    <text x="60" y="78">QUICK BLOG / STARTUP</text>
+    <text x="1140" y="78" text-anchor="end">NO. 35</text>
+  </g>
+  <rect x="60" y="96" width="1080" height="3" fill="#F4F1EA"/>
+</svg>

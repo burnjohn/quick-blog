@@ -1,28 +1,40 @@
 import React from 'react'
-import { assets } from '../../../assets/assets'
+import toast from 'react-hot-toast'
+
+const SHARE_TARGETS = [
+  { label: 'Facebook', ariaLabel: 'Share on Facebook' },
+  { label: 'Twitter', ariaLabel: 'Share on Twitter' },
+  { label: 'Google+', ariaLabel: 'Share on Google Plus' },
+]
+
+const BUTTON_BASE = 'group lift inline-flex min-h-11 items-center justify-between gap-3 border border-ink px-4 font-mono text-xs font-medium uppercase tracking-[0.14em] text-ink shadow-hard-sm cursor-pointer hover:bg-ink hover:text-signal'
+
+async function copyCurrentUrl() {
+  try {
+    await navigator.clipboard.writeText(window.location.href)
+    toast.success('Link copied')
+  } catch {
+    toast.error('Could not copy the link')
+  }
+}
 
 function SocialShare({ title = 'Share this article on social media' }) {
   return (
-    <div className='my-24 max-w-3xl mx-auto'>
-      <p className='font-semibold my-4'>{title}</p>
-      <div className='flex gap-2'>
-        <button 
-          className='hover:scale-110 transition-transform'
-          aria-label='Share on Facebook'
-        >
-          <img src={assets.facebook_icon} width={50} alt='Facebook' />
-        </button>
-        <button 
-          className='hover:scale-110 transition-transform'
-          aria-label='Share on Twitter'
-        >
-          <img src={assets.twitter_icon} width={50} alt='Twitter' />
-        </button>
-        <button 
-          className='hover:scale-110 transition-transform'
-          aria-label='Share on Google Plus'
-        >
-          <img src={assets.googleplus_icon} width={50} alt='Google Plus' />
+    <div>
+      <p className='mb-4 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-muted'>{title}</p>
+      <div className='flex flex-wrap gap-3 lg:flex-col lg:items-stretch'>
+        {SHARE_TARGETS.map((target) => (
+          <button
+            key={target.label}
+            type='button'
+            aria-label={target.ariaLabel}
+            className={`${BUTTON_BASE} bg-surface`}
+          >
+            {target.label} <span aria-hidden='true' className='transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5'>↗</span>
+          </button>
+        ))}
+        <button type='button' onClick={copyCurrentUrl} className={`${BUTTON_BASE} bg-signal`}>
+          Copy link <span aria-hidden='true'>⧉</span>
         </button>
       </div>
     </div>
@@ -30,4 +42,3 @@ function SocialShare({ title = 'Share this article on social media' }) {
 }
 
 export default SocialShare
-

@@ -1,42 +1,56 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
-import { assets } from '../../../../assets/assets'
-import { ROUTES } from '../../../../constants/routes'
+import { motion } from 'motion/react' // eslint-disable-line no-unused-vars
 import { classNames } from '../../../../utils/helpers'
+import { SLIDE_TRANSITION } from '../motion'
+import SidebarNav from './SidebarNav'
 
-function Sidebar() {
-  const navLinkClass = ({ isActive }) => classNames(
-    'flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-64 cursor-pointer transition-colors hover:bg-primary/5',
-    isActive && 'bg-primary/10 border-r-4 border-primary'
-  )
+// Desktop ink sidebar. Collapses to an icon rail; the size change is animated
+// with a layout (transform) animation, never by tweening width.
+function Sidebar({ collapsed, onToggle }) {
+  const toggleLabel = collapsed ? 'Expand sidebar' : 'Collapse sidebar'
 
   return (
-    <nav className='flex flex-col border-r border-gray-200 min-h-full pt-6'>
-      <NavLink end to={ROUTES.ADMIN_DASHBOARD} className={navLinkClass}>
-        <img src={assets.home_icon} alt='' className='min-w-4 w-5' />
-        <p className='hidden md:inline-block'>Dashboard</p>
-      </NavLink>
+    <motion.aside
+      layout
+      transition={SLIDE_TRANSITION}
+      className={classNames(
+        'relative z-10 hidden shrink-0 flex-col overflow-hidden bg-ink pt-6 md:flex',
+        collapsed ? 'w-[76px]' : 'w-64'
+      )}
+    >
+      <motion.p
+        layout='position'
+        aria-hidden='true'
+        className='mb-3 px-7 font-mono text-[10px] uppercase tracking-[0.2em] text-paper/60'
+      >
+        {collapsed ? '§' : 'Menu'}
+      </motion.p>
 
-      <NavLink to={ROUTES.ADMIN_ADD_BLOG} className={navLinkClass}>
-        <img src={assets.add_icon} alt='' className='min-w-4 w-5' />
-        <p className='hidden md:inline-block'>Add blogs</p>
-      </NavLink>
+      <nav aria-label='Admin'>
+        <SidebarNav collapsed={collapsed} indicatorId='sidebar-active' />
+      </nav>
 
-      <NavLink to={ROUTES.ADMIN_LIST_BLOG} className={navLinkClass}>
-        <img src={assets.list_icon} alt='' className='min-w-4 w-5' />
-        <p className='hidden md:inline-block'>Blog lists</p>
-      </NavLink>
-
-      <NavLink to={ROUTES.ADMIN_COMMENTS} className={navLinkClass}>
-        <img src={assets.comment_icon} alt='' className='min-w-4 w-5' />
-        <p className='hidden md:inline-block'>Comments</p>
-      </NavLink>
-
-      <NavLink to={ROUTES.ADMIN_ANALYTICS} className={navLinkClass}>
-        <img src={assets.chart_icon} alt='' className='min-w-4 w-5' />
-        <p className='hidden md:inline-block'>Analytics</p>
-      </NavLink>
-    </nav>
+      <motion.div layout='position' className='mt-auto border-t border-paper/15'>
+        <button
+          type='button'
+          onClick={onToggle}
+          aria-label={toggleLabel}
+          aria-expanded={!collapsed}
+          title={toggleLabel}
+          className='flex min-h-14 w-full cursor-pointer items-center gap-4 px-7 font-mono text-[11px] uppercase tracking-[0.14em] text-paper/70 transition-colors duration-200 hover:bg-signal hover:text-ink'
+        >
+          <motion.span
+            aria-hidden='true'
+            animate={{ rotate: collapsed ? 180 : 0 }}
+            transition={SLIDE_TRANSITION}
+            className='inline-block w-5 text-center text-base leading-none'
+          >
+            «
+          </motion.span>
+          {!collapsed && <span className='whitespace-nowrap'>Collapse</span>}
+        </button>
+      </motion.div>
+    </motion.aside>
   )
 }
 

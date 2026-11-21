@@ -1,40 +1,48 @@
-## Client — QuickBlog Web App
+# QuickBlog client
 
-React + Vite single‑page app for browsing blogs, reading posts, commenting, and administering content.
+React 19 + Vite 6 single-page app: the public blog ("front page") and the `/admin` panel.
+Styling is Tailwind CSS 4 with the "Ink & Signal" editorial tokens; animation uses `motion/react`.
 
-### Tech
-- React 19, React Router, Axios, Tailwind, Quill editor, Marked, React‑Hot‑Toast
+## Run
 
-### Environment
-Copy `.env.example` to `.env` and set:
-
-```
-VITE_BASE_URL=http://localhost:5001
-```
-
-### Run
-```
+```bash
 cd client
+cp .env.example .env      # VITE_BASE_URL=http://localhost:5001
 npm install
-npm run dev
+npm run dev               # http://localhost:5173
 ```
 
-For the full feature list and endpoints, see `../server/README.md`.
+The API must be running (see [`../server/README.md`](../server/README.md)). After `npm run seed` on the server, log in at `/admin` with `admin@quickblog.com` / `admin123`.
 
-### Notes
-- Axios `baseURL` is `import.meta.env.VITE_BASE_URL`
-- On login, JWT is stored and attached to `Authorization` header
-- Rich text HTML is stored in the database; Quill renders/edit
+| Script | Purpose |
+|---|---|
+| `npm run dev` | Dev server |
+| `npm run build` / `npm run preview` | Production build / serve it |
+| `npm run lint` | ESLint |
+| `npm test` / `npm run test:watch` / `npm run test:coverage` | Vitest |
 
-# React + Vite
+## Routes
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+| Path | Page |
+|---|---|
+| `/` | Front page |
+| `/blog/:id` | Article |
+| `/admin` | Login, or the dashboard when a token is stored |
+| `/admin/addBlog`, `/admin/listBlog`, `/admin/comments` | Admin pages |
 
-Currently, two official plugins are available:
+## Documentation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Start at [docs/README.md](docs/README.md).
 
-## Expanding the ESLint configuration
+- [Design system](docs/design-system.md): tokens, typography, utilities, layout, accessibility
+- [Motion](docs/motion.md): presets, reveals, transitions, reduced motion
+- [Components](docs/components.md): catalog by folder
+- [Pages](docs/pages.md): what each route renders
+- [Data layer](docs/data-layer.md): Axios, API wrappers, hooks, context
+- [Testing](docs/testing.md): Vitest + React Testing Library
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Agents should read [AGENTS.md](AGENTS.md) first.
+
+## Notes
+
+- Deployed as a static SPA; `vercel.json` rewrites every path to `/`.

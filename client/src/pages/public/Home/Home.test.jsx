@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeAll, afterEach, afterAll } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { setupServer } from 'msw/node'
@@ -40,14 +40,21 @@ const renderHome = () =>
   )
 
 describe('Home', () => {
-  it('renders page structure with blog cards after loading', async () => {
+  it('leads with the cover story and renders the latest grid', async () => {
     renderHome()
 
     // Navbar should be present (logo images in navbar and footer)
     const logos = screen.getAllByAltText('logo')
     expect(logos.length).toBeGreaterThanOrEqual(1)
 
-    // Wait for blog data to load and render
-    expect(await screen.findByText('Test Blog Post')).toBeInTheDocument()
+    // Tagline survives only as the small masthead kicker
+    expect(screen.getByRole('heading', { level: 1, name: /the quickblog journal/i })).toBeInTheDocument()
+
+    // Cover story headline + photo (alt = title)
+    expect(await screen.findByRole('heading', { level: 2, name: 'Test Blog Post' }, { timeout: 2000 })).toBeInTheDocument()
+    expect(screen.getAllByAltText('Test Blog Post').length).toBeGreaterThanOrEqual(2)
+
+    // A single post is also in "Latest" (fewer than a row would remain without it)
+    expect(screen.getByRole('link', { name: 'Test Blog Post' })).toBeInTheDocument()
   })
 })

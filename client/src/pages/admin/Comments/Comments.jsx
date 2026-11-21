@@ -1,7 +1,23 @@
 import React, { useState, useMemo } from 'react'
-import { CommentTableItem } from '../../../components/admin'
+import { AnimatePresence, motion } from 'motion/react' // eslint-disable-line no-unused-vars
+import { AdminPageHeader, AdminTable, CommentTableItem, SegmentedControl } from '../../../components/admin'
+import { EASE_EDITORIAL } from '../../../components/admin/shared/motion'
 import { Loader } from '../../../components/ui'
 import { useAdminComments } from '../../../hooks'
+
+const FILTERS = ['Approved', 'Not Approved']
+
+const COMMENT_COLUMNS = [
+  { label: 'Details' },
+  { label: 'Date', className: 'max-sm:hidden' },
+  { label: 'Actions' },
+]
+
+const PANEL_MOTION = {
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.35, ease: EASE_EDITORIAL } },
+  exit: { opacity: 0, y: -6, transition: { duration: 0.2 } }
+}
 
 function Comments() {
   const { comments, loading, refetch } = useAdminComments()
@@ -13,66 +29,50 @@ function Comments() {
       : comments.filter((comment) => !comment.isApproved)
   }, [comments, filter])
 
-  if (loading) {
+  const approvedCount = comments.filter((comment) => comment.isApproved).length
+  const filterOptions = FILTERS.map((item) => ({
+    value: item,
+    label: item,
+    count: item === 'Approved' ? approvedCount : comments.length - approvedCount,
+  }))
+
+  // Only block on the first load; refetches keep rows mounted so approve /
+  // delete can animate the row out of the current tab.
+  if (loading && comments.length === 0) {
     return <Loader />
   }
 
   return (
-    <div className='flex-1 pt-5 px-5 sm:pt-12 sm:pl-16 bg-blue-50/50 h-full min-h-full'>
-      <div className='flex justify-between items-center max-w-3xl mb-4'>
-        <h1 className='text-2xl font-semibold'>Comments</h1>
-        <div className='flex gap-4'>
-          <button
-            onClick={() => setFilter('Approved')}
-            className={`shadow-custom-sm border rounded-full px-4 py-1 cursor-pointer text-xs transition-colors ${
-              filter === 'Approved' 
-                ? 'text-primary border-primary bg-primary/10' 
-                : 'text-gray-700 hover:bg-gray-50'
-            }`}
-          >
-            Approved
-          </button>
-          <button
-            onClick={() => setFilter('Not Approved')}
-            className={`shadow-custom-sm border rounded-full px-4 py-1 cursor-pointer text-xs transition-colors ${
-              filter === 'Not Approved' 
-                ? 'text-primary border-primary bg-primary/10' 
-                : 'text-gray-700 hover:bg-gray-50'
-            }`}
-          >
-            Not Approved
-          </button>
-        </div>
-      </div>
+    <div className='min-h-full bg-paper p-5 md:p-10'>
+      <AdminPageHeader eyebrow='Moderation' title='Comments'>
+        <SegmentedControl
+          label='Filter comments'
+          layoutId='comment-filter'
+          options={filterOptions}
+          value={filter}
+          onChange={setFilter}
+        />
+      </AdminPageHeader>
 
-      <div className='relative h-4/5 max-w-3xl overflow-x-auto mt-4 bg-white shadow rounded-lg scrollbar-hide'>
-        <table className='w-full text-sm text-gray-500'>
-          <thead className='text-xs text-gray-700 text-left uppercase bg-gray-50'>
-            <tr>
-              <th scope='col' className='px-6 py-3'>Details</th>
-              <th scope='col' className='px-6 py-3 max-sm:hidden'>Date</th>
-              <th scope='col' className='px-6 py-3'>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredComments.length === 0 ? (
-              <tr>
-                <td colSpan='3' className='text-center py-8 text-gray-400'>
-                  No {filter.toLowerCase()} comments found
-                </td>
-              </tr>
-            ) : (
-              filteredComments.map((comment) => (
-                <CommentTableItem 
-                  key={comment._id} 
-                  comment={comment} 
-                  onUpdate={refetch}
-                />
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      <AnimatePresence mode='wait' initial={false}>
+        <motion.div key={filter} {...PANEL_MOTION}>
+          <AdminTable
+            columns={COMMENT_COLUMNS}
+            isEmpty={filteredComments.length === 0}
+            emptyMessage={`No ${filter.toLowerCase()} comments found`}
+            emptyHint={filter === 'Approved' ? 'Approve a comment to publish it' : 'The moderation queue is clear'}
+          >
+            {filteredComments.map((comment, index) => (
+              <CommentTableItem
+                key={comment._id}
+                comment={comment}
+                onUpdate={refetch}
+                index={index}
+              />
+            ))}
+          </AdminTable>
+        </motion.div>
+      </AnimatePresence>
     </div>
   )
 }

@@ -12,11 +12,9 @@ vi.mock('../../assets/assets', () => ({
 }))
 
 describe('Footer', () => {
-  it('renders logo image', () => {
+  it('renders the about blurb', () => {
     render(<Footer />)
-    const logo = screen.getByAltText('logo')
-    expect(logo).toBeInTheDocument()
-    expect(logo).toHaveAttribute('src', 'logo.svg')
+    expect(screen.getByText(/independent journal of essays/i)).toBeInTheDocument()
   })
 
   it('renders all section titles as headings', () => {
@@ -37,7 +35,7 @@ describe('Footer', () => {
   it('renders copyright text', () => {
     render(<Footer />)
     expect(
-      screen.getByText(/Copyright 2025 © QuickBlog GreatStack - All Right Reserved\./i)
+      screen.getByText(new RegExp(`© ${new Date().getFullYear()} QuickBlog\\. All rights reserved\\.`, 'i'))
     ).toBeInTheDocument()
   })
 })

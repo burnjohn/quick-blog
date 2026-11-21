@@ -6,3 +6,5 @@ export { default as CategoryFilter } from './CategoryFilter'
 export { default as BlogGrid } from './BlogGrid'
 export { default as SocialShare } from './SocialShare'
 
+export { default as CategoryTicker } from './CategoryTicker'
+export { default as LeadCard } from './LeadCard'

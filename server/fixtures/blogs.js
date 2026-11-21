@@ -1,6 +1,13 @@
 // Blog post fixtures based on design mockups
-// Images are stored locally in public/uploads/seed/
-export const blogs = [
+// Images are stored locally in server/uploads/seed/
+import { existsSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { technologyPosts } from './archive/technology.js'
+import { lifestylePosts } from './archive/lifestyle.js'
+import { startupPosts } from './archive/startup.js'
+import { financePosts } from './archive/finance.js'
+
+const originalBlogs = [
   {
     title: 'A detailed step by step guide to manage your lifestyle',
     subTitle: 'A Simple Step-by-Step Guide to Managing Your Lifestyle',
@@ -141,3 +148,34 @@ export const blogs = [
     isPublished: false
   }
 ]
+
+// Interleave archive posts round-robin by category so that seed's date spread
+// (which is index-based) mixes categories across the timeline.
+const interleave = (...lists) => {
+  const out = []
+  const max = Math.max(...lists.map((l) => l.length))
+  for (let i = 0; i < max; i++) {
+    for (const list of lists) {
+      if (list[i]) out.push(list[i])
+    }
+  }
+  return out
+}
+
+const archiveBlogs = interleave(technologyPosts, lifestylePosts, startupPosts, financePosts)
+
+// Generated photo covers (see docs/design/image-prompts.md) override the default
+// image when a file named after the post's slug exists in uploads/seed/photos/.
+const PHOTO_DIR = fileURLToPath(new URL('../uploads/seed/photos/', import.meta.url))
+const PHOTO_EXTENSIONS = ['webp', 'jpg', 'jpeg', 'png']
+
+export const slugify = (title) =>
+  title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60).replace(/-+$/g, '')
+
+const withPhotoCover = (post) => {
+  const slug = slugify(post.title)
+  const ext = PHOTO_EXTENSIONS.find((e) => existsSync(`${PHOTO_DIR}${slug}.${e}`))
+  return ext ? { ...post, image: `/uploads/seed/photos/${slug}.${ext}` } : post
+}
+
+export const blogs = [...originalBlogs, ...archiveBlogs].map(withPhotoCover)

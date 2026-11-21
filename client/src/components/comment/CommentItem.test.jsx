@@ -9,6 +9,7 @@ vi.mock('../../assets/assets', () => ({
 
 vi.mock('../../utils/formatters', () => ({
   formatRelativeTime: vi.fn(() => '2 hours ago'),
+  getInitials: vi.fn((name = '') => name.slice(0, 2).toUpperCase()),
 }))
 
 describe('CommentItem', () => {
@@ -42,11 +43,10 @@ describe('CommentItem', () => {
     expect(formatRelativeTime).toHaveBeenCalledWith(mockComment.createdAt)
   })
 
-  it('renders user avatar icon image', () => {
+  it('renders author initials as a decorative avatar', () => {
     render(<CommentItem comment={mockComment} />)
 
-    const img = screen.getByRole('presentation')
-    expect(img).toBeInTheDocument()
-    expect(img).toHaveAttribute('src', 'user_icon.svg')
+    const avatar = screen.getByText('AL')
+    expect(avatar).toHaveAttribute('aria-hidden', 'true')
   })
 })

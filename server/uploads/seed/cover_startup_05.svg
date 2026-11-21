@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <defs>
+    <pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="9" cy="9" r="4" fill="#111111"/></pattern>
+    <pattern id="dotsSm" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="6" cy="6" r="2.2" fill="#111111"/></pattern>
+    <pattern id="dotsY" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="9" cy="9" r="4.5" fill="#FFCE00"/></pattern>
+    <pattern id="dotsP" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="8" cy="8" r="3" fill="#F4F1EA"/></pattern>
+    <pattern id="stripes" width="28" height="28" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="28" fill="#111111"/></pattern>
+    <pattern id="stripesT" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><rect width="8" height="24" fill="#A39B88"/></pattern>
+    <pattern id="hlines" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="20" height="6" fill="#111111"/></pattern>
+    
+  </defs>
+  <rect width="1200" height="900" fill="#F4F1EA"/>
+  
+  <rect x="60" y="150" width="1080" height="690" fill="#FFCE00"/>
+  <rect x="200" y="220" width="640" height="440" fill="#111111" stroke="#111111" stroke-width="5"/><rect x="240" y="260" width="640" height="440" fill="#111111" stroke="#111111" stroke-width="5"/><rect x="280" y="300" width="640" height="440" fill="#111111" stroke="#111111" stroke-width="5"/><rect x="320" y="340" width="640" height="440" fill="#F4F1EA" stroke="#111111" stroke-width="5"/>
+  <path d="M400 560 L520 460 L620 520 L780 380" fill="none" stroke="#111111" stroke-width="12" stroke-linejoin="round"/>
+  <path d="M780 380 l-50 6 l34 38 z" fill="#111111"/>
+  <path d="M60 840 L1140 150" stroke="#111111" stroke-width="5" stroke-dasharray="18 14"/>
+
+  
+  <g font-family="Menlo, 'SF Mono', 'Courier New', monospace" font-size="20" letter-spacing="4" fill="#111111">
+    <text x="60" y="78">QUICK BLOG / STARTUP</text>
+    <text x="1140" y="78" text-anchor="end">NO. 37</text>
+  </g>
+  <rect x="60" y="96" width="1080" height="3" fill="#111111"/>
+</svg>

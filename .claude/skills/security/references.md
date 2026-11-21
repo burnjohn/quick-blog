@@ -100,35 +100,12 @@ All sources used to build this security skill, organized by category.
 ### Hardening Claude Code (Security Review Framework)
 - **URL**: https://medium.com/@emergentcap/hardening-claude-code-a-security-review-framework-and-the-prompt-that-does-it-for-you-c546831f2cec
 
-### CSA: Secure Vibe Coding with Cursor Rules
-- **URL**: https://cloudsecurityalliance.org/blog/2025/05/06/secure-vibe-coding-level-up-with-cursor-rules-and-the-r-a-i-l-g-u-a-r-d-framework
-- **Framework**: R.A.I.L.G.U.A.R.D. for securing AI-assisted development
-
 ### OWASP Top 10 2025 Developer Guide
 - **URL**: https://www.aikido.dev/blog/owasp-top-10-2025-changes-for-developers
 - **Focus**: What changed and what developers should know
 
 ---
 
-## Cursor Security Resources
-
-### Cursor Security Rules Repository
-- **Repository**: https://github.com/matank001/cursor-security-rules
-- **Coverage**: Safe coding practices, sensitive operation control, AI agent risk reduction
-
-### Cursor Directory: Security Rules
-- **URL**: https://cursor.directory/rules/security
-- **Collection**: Community-contributed security-focused cursor rules
-
-### Cursor Security Complete Guide
-- **URL**: https://www.mintmcp.com/blog/cursor-security
-- **Coverage**: Risks, vulnerabilities, and best practices
-
-### Cursor Security Risks (CVEs)
-- **URL**: https://ship-safe.co/blog/cursor-security-risks
-- **Notable CVE**: CurXecute (CVE-2025-54135) — malicious Slack messages could rewrite MCP config
-
----
 
 ## Additional Community Resources
 

@@ -113,5 +113,4 @@ All sources used in creating the `safe-ui-refactoring` skill, organized by categ
 | 40 | React Best Practices: Building Apps That Don't Fall Apart (Medium, 2026) | https://yakhil25.medium.com/react-best-practices-building-apps-that-dont-fall-apart-b973ab2f2d73 | Folder structure, code splitting, lazy loading |
 | 41 | Building Reusable React Components in 2026 (Medium) | https://medium.com/@romko.kozak/building-reusable-react-components-in-2026-a461d30f8ce4 | SOLID in React, component documentation, styling strategies |
 | 42 | Clean React + TypeScript Code (Clean Code Guy) | https://cleancodeguy.com/blog/clean-code-principles | DRY, YAGNI, naming conventions for React + TS |
-| 43 | Refactoring Strategies (Developer Toolkit / Cursor) | https://developertoolkit.ai/en/cursor-ide/productivity-patterns/refactoring-strategies/ | Git checkpoints, one structural change at a time, test after each step |
 | 44 | Redux to Context API Migration Guide (Auth0) | https://auth0.com/blog/redux-to-context-practical-migration-guide | Incremental state management migration with test coverage |

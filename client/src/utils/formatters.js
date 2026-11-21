@@ -41,3 +41,14 @@ export const truncate = (text, length = 80) => {
   if (!text) return ''
   return text.length > length ? text.slice(0, length) + '…' : text
 }
+
+export const getInitials = (name = '') => {
+  return name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
+}

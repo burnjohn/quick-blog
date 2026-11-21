@@ -1,10 +1,8 @@
 # Commands
 
-Slash commands for common workflows. Works with both **Claude Code** and **Cursor**.
+Slash commands for common workflows in Claude Code. Canonical location: `.claude/commands/`.
 
-Canonical location: `.claude/commands/` with a symlink at `.cursor/commands/ → ../.claude/commands`.
-
-Invoke with `/command-name` in either tool's chat.
+Invoke with `/command-name` in the chat.
 
 ## Catalog
 
@@ -26,4 +24,4 @@ All Git commands follow conventions from the **git-workflow** skill (`.claude/sk
 
 ## Usage
 
-Type `/commit`, `/create-branch`, `/create-pr`, `/brainstorm`, or `/plan` in Claude Code / Cursor chat.
+Type `/commit`, `/create-branch`, `/create-pr`, `/brainstorm`, or `/plan` in the Claude Code chat.
