@@ -19252,6 +19252,8 @@ const BlastCaller = objectType({
     line: numberType().int(),
     /** file_rank.rank of the caller file; `0` = no rank data (degraded path). */
     rank: numberType().int(),
+    /** specs/18 (additive): true when the caller reaches the symbol only through type-only edges. */
+    type_only: booleanType().optional(),
 });
 const DownstreamImpact = objectType({
     symbol: stringType(),
@@ -20220,6 +20222,8 @@ const PrMeta = objectType({
     branch: stringType(),
     base: stringType(),
     head_sha: stringType(),
+    /** specs/18 (additive): GitHub base.sha at sync time; absent for PRs synced before 0027. */
+    base_sha: stringType().nullish(),
     additions: numberType().int(),
     deletions: numberType().int(),
     files_count: numberType().int(),
@@ -20242,6 +20246,10 @@ const PrFile = objectType({
     additions: numberType().int(),
     deletions: numberType().int(),
     patch: stringType().nullish(),
+    /** specs/18 (additive): GitHub file status (added|removed|modified|renamed|…). */
+    status: stringType().nullish(),
+    /** specs/18 (additive): previous path for renamed files. */
+    previous_filename: stringType().nullish(),
 });
 const PrCommit = objectType({
     sha: stringType(),
@@ -21346,6 +21354,362 @@ const DigestRunRequest = objectType({
     period_end: stringType().optional(),
 });
 
+;// CONCATENATED MODULE: ../server/src/vendor/shared/contracts/dependency-graph.ts
+
+/**
+ * Dependency graph / PR impact graph contracts (specs/18-dependency-graph.md).
+ *
+ * Owned by plan 19 task P1-A. Additive only: nothing here changes an existing
+ * contract's required fields, so old `BlastRadius` payloads keep validating
+ * (AC-34). The server and client copies of this file MUST stay byte-identical
+ * (`test/dependency-graph-contract-parity.test.ts`).
+ */
+// ---- Index coverage & reindexing (AC-5, AC-15, AC-16a) ----
+/** Resolution share for one binding class (value or type imports). */
+const IndexCoverageShare = objectType({
+    resolved: numberType().int().nonnegative(),
+    total: numberType().int().nonnegative(),
+});
+const UnresolvedReason = enumType([
+    'missing',
+    'cycle',
+    'ambiguous',
+    'tsconfig',
+    'non_literal',
+    'outside_clone',
+]);
+/** One tsconfig that could not be read/parsed (resolution fell back to default). */
+const TsconfigFailure = objectType({
+    path: stringType(),
+    message: stringType(),
+});
+const IndexCoverage = objectType({
+    value: IndexCoverageShare,
+    type: IndexCoverageShare,
+    /** Count of unresolved specifiers by reason (`external`/`builtin` excluded, AC-5). */
+    unresolvedBySpecifier: numberType().int().nonnegative(),
+    unresolvedByReason: recordType(stringType(), numberType().int().nonnegative()).optional(),
+    tsconfigFailures: arrayType(TsconfigFailure),
+    /** Share of symbol edges with `confidence: 'inferred'`, 0..1. */
+    inferredShare: numberType().min(0).max(1),
+});
+/**
+ * Re-index progress — a field SEPARATE from the index `status` enum (AC-16a),
+ * also for the "queued" phase. Absent/null when no reindex is pending.
+ */
+const IndexReindexing = objectType({
+    state: enumType(['queued', 'running']),
+    done: numberType().int().nonnegative(),
+    total: numberType().int().nonnegative(),
+});
+/** Additive fields of the `GET /repos/:id/index-state` response. */
+const IndexStateGraphFields = objectType({
+    coverage: IndexCoverage.nullish(),
+    reindexing: IndexReindexing.nullish(),
+});
+// ---- Overlay (AC-25a…f) ----
+const OverlayInfo = objectType({
+    /** `indexedSha !== pull_requests.base_sha`; also true when base_sha is NULL. */
+    staleOverlay: booleanType(),
+    /** True when at least one changed file fell back to base-only data. */
+    overlayDegraded: booleanType(),
+    /** First 50 degraded files; `degradedCount` carries the full number. */
+    degradedFiles: arrayType(stringType()),
+    degradedCount: numberType().int().nonnegative(),
+    baseSha: stringType().nullable(),
+    headSha: stringType(),
+    /** Persisted index SHA the overlay was applied on top of. */
+    indexedSha: stringType().nullable(),
+});
+// ---- Blast graph (nodes / edges) ----
+const BlastNodeRole = enumType(['changed', 'impacted', 'entry_point', 'test']);
+const BlastNodeKind = enumType(['symbol', 'file']);
+const BlastEdgeKind = enumType(['call', 'type', 'value', 'extends', 'implements', 're-export']);
+const BlastConfidence = enumType(['exact', 'inferred']);
+const BlastGraphNode = objectType({
+    /** Stable id: `<path>#<name>` for symbols, `<path>` for file nodes. */
+    id: stringType(),
+    kind: BlastNodeKind,
+    name: stringType(),
+    path: stringType(),
+    role: BlastNodeRole,
+    /** Hops from the nearest changed node; 0 for changed nodes. */
+    depth: numberType().int().nonnegative(),
+    /** Symbol kind (function/class/const/enum/module…), when `kind === 'symbol'`. */
+    symbolKind: stringType().nullish(),
+    rank: numberType().nullish(),
+    /** Changed symbol/file removed by the PR (AC-26); rendered as deleted. */
+    deleted: booleanType().optional(),
+    /** Reached only through type-only edges. */
+    typeOnly: booleanType().optional(),
+    /** Entry-point label, e.g. `GET /users` or `cron 0 * * * *`. */
+    entryLabel: stringType().nullish(),
+    /**
+     * 1-based declaration line at the PR head (AC-42 `file:line` link). Head
+     * declarations for overlay-parsed files, the indexed line otherwise; absent
+     * for deleted nodes (nothing to link to at head).
+     */
+    line: numberType().int().positive().optional(),
+});
+const BlastGraphEdge = objectType({
+    /** Dependent (caller/importer) node id. */
+    from: stringType(),
+    /** Depended-upon node id (towards the changed node). */
+    to: stringType(),
+    kind: BlastEdgeKind,
+    confidence: BlastConfidence,
+    /** Runtime vs type-only (AC-31). */
+    typeOnly: booleanType(),
+    line: numberType().int().nullish(),
+});
+const BlastTruncation = objectType({
+    truncated: booleanType(),
+    nodesDropped: numberType().int().nonnegative(),
+    edgesDropped: numberType().int().nonnegative(),
+    /** Traversal visited-cap hit: all counts are lower bounds. */
+    totalsCapped: booleanType(),
+    maxDepth: numberType().int().min(1).max(6),
+    maxNodes: numberType().int().positive(),
+    maxEdges: numberType().int().positive(),
+});
+// ---- Entry points & tests (AC-27a) ----
+const BlastEntryPoint = objectType({
+    path: stringType(),
+    /** `endpoint` / `cron` facts, or an app-router `page|route|layout` file. */
+    type: enumType(['endpoint', 'cron', 'page', 'route', 'layout']),
+    label: stringType(),
+    depth: numberType().int().nonnegative(),
+});
+const BlastAffectedTest = objectType({
+    path: stringType(),
+    depth: numberType().int().nonnegative(),
+});
+/** Lists are capped (50 / 100); `*Total` carries the full count. */
+const BlastEntryPoints = objectType({
+    items: arrayType(BlastEntryPoint),
+    total: numberType().int().nonnegative(),
+});
+const BlastAffectedTests = objectType({
+    items: arrayType(BlastAffectedTest),
+    total: numberType().int().nonnegative(),
+});
+// ---- Envelope graph payload ----
+const BlastGraph = objectType({
+    nodes: arrayType(BlastGraphNode),
+    edges: arrayType(BlastGraphEdge),
+    truncation: BlastTruncation,
+    entryPoints: BlastEntryPoints,
+    tests: BlastAffectedTests,
+});
+/**
+ * Index metadata attached to a blast response. `reindexing` set => the graph
+ * is empty and no data/fallback is returned (AC-16a).
+ */
+const BlastIndexInfo = objectType({
+    status: enumType(['full', 'partial', 'degraded', 'failed']).nullable(),
+    indexedSha: stringType().nullable(),
+    lowConfidence: booleanType(),
+    coverage: IndexCoverage.nullish(),
+    reindexing: IndexReindexing.nullish(),
+});
+/** Additive envelope fields next to the (unchanged) `BlastRadius` `data`. */
+const BlastGraphEnvelope = objectType({
+    index: BlastIndexInfo,
+    overlay: OverlayInfo,
+    graph: BlastGraph,
+});
+
+;// CONCATENATED MODULE: ../server/src/vendor/shared/contracts/project-graph.ts
+
+
+/**
+ * Project (whole-repo) dependency graph contracts (specs/18-dependency-graph.md,
+ * plan 19 task P4-A). Server and client copies MUST stay byte-identical
+ * (`test/dependency-graph-contract-parity.test.ts`).
+ *
+ * Every response is bounded (`MAX_GRAPH_NODES` / `MAX_GRAPH_EDGES`, page sizes)
+ * and carries an explicit `state` so the UI never has to guess between
+ * "no data", "reindexing" and "ready".
+ */
+const MAX_GRAPH_NODES = 400;
+const MAX_GRAPH_EDGES = 1200;
+const MAX_SYMBOL_PAGE = 200;
+const DEFAULT_FILE_PAGE_SIZE = 100;
+const MAX_FILE_PAGE_SIZE = 500;
+const DEFAULT_UNRESOLVED_PAGE_SIZE = 50;
+const MAX_UNRESOLVED_PAGE_SIZE = 200;
+const MAX_CYCLES = 100;
+const MAX_CYCLE_MEMBERS = 50;
+const MAX_HOT_FILES = 20;
+// ---- Index header (shared by every response) ----
+const ProjectGraphEmptyReason = enumType(['never_indexed', 'indexing', 'failed']);
+const ProjectGraphIndex = objectType({
+    status: enumType(['full', 'partial', 'degraded', 'failed']),
+    indexedSha: stringType(),
+    indexerVersion: numberType().int(),
+    coverage: IndexCoverage.nullish(),
+});
+/** No index yet / in progress / failed: explicit reason, no data (AC-47). */
+const ProjectGraphEmpty = objectType({
+    state: literalType('empty'),
+    reason: ProjectGraphEmptyReason,
+});
+/** Stored indexer version is stale or a reindex is running: progress, no data (AC-16a). */
+const ProjectGraphReindexing = objectType({
+    state: literalType('reindexing'),
+    reindexing: IndexReindexing,
+});
+// ---- LoD graph ----
+const ProjectGraphNodeKind = enumType(['directory', 'file', 'symbol']);
+const ProjectGraphNode = objectType({
+    /** Stable id: directory path, file path, or `<path>#<name>` for symbols. */
+    id: stringType(),
+    kind: ProjectGraphNodeKind,
+    label: stringType(),
+    path: stringType(),
+    /** Number of indexed files aggregated into a directory node (1 for files). */
+    fileCount: numberType().int().nonnegative(),
+    /** True for the single aggregate node standing in for a neighbour directory. */
+    aggregate: booleanType(),
+    rank: numberType(),
+    hot: booleanType(),
+    inCycle: booleanType(),
+    symbolKind: stringType().nullish(),
+    exported: booleanType().nullish(),
+});
+const ProjectGraphEdge = objectType({
+    from: stringType(),
+    to: stringType(),
+    /** Number of underlying file edges (file/directory graphs) or symbol edges. */
+    weight: numberType().int().positive(),
+    kind: stringType().nullish(),
+    confidence: enumType(['exact', 'inferred']).nullish(),
+});
+const ProjectGraphTruncation = objectType({
+    truncated: booleanType(),
+    nodesDropped: numberType().int().nonnegative(),
+    edgesDropped: numberType().int().nonnegative(),
+    maxNodes: numberType().int().positive(),
+    maxEdges: numberType().int().positive(),
+});
+const ProjectGraphCycle = objectType({
+    size: numberType().int().positive(),
+    /** First 50 members (sorted); `size` carries the full count. */
+    members: arrayType(stringType()),
+    membersTruncated: booleanType(),
+});
+const ProjectGraphCycles = objectType({
+    items: arrayType(ProjectGraphCycle),
+    /** Total SCCs of size > 1 (items is capped at 100). */
+    total: numberType().int().nonnegative(),
+    /** Files that belong to any cycle. */
+    filesInCycles: numberType().int().nonnegative(),
+});
+const ProjectGraphHotFile = objectType({
+    path: stringType(),
+    rank: numberType(),
+    hotness: numberType(),
+});
+const ProjectGraphFocus = objectType({
+    mode: enumType(['overview', 'dir', 'file']),
+    /** Directory depth used for `overview`; null otherwise. */
+    depth: numberType().int().nullable(),
+    dir: stringType().nullable(),
+    file: stringType().nullable(),
+});
+const ProjectGraphReady = objectType({
+    state: literalType('ready'),
+    index: ProjectGraphIndex,
+    focus: ProjectGraphFocus,
+    nodes: arrayType(ProjectGraphNode),
+    edges: arrayType(ProjectGraphEdge),
+    truncation: ProjectGraphTruncation,
+    cycles: ProjectGraphCycles,
+    hotFiles: arrayType(ProjectGraphHotFile),
+    /** File focus only: symbol paging (200 per page). */
+    symbolPage: objectType({
+        page: numberType().int().positive(),
+        pageSize: numberType().int().positive(),
+        total: numberType().int().nonnegative(),
+    })
+        .nullish(),
+});
+const ProjectGraph = discriminatedUnionType('state', [
+    ProjectGraphEmpty,
+    ProjectGraphReindexing,
+    ProjectGraphReady,
+]);
+// ---- File table (non-visual equivalent) ----
+const ProjectGraphFileSort = enumType(['path', 'rank', 'in', 'out', 'hotness']);
+const ProjectGraphFileRow = objectType({
+    path: stringType(),
+    inCount: numberType().int().nonnegative(),
+    outCount: numberType().int().nonnegative(),
+    rank: numberType(),
+    hotness: numberType(),
+    hot: booleanType(),
+    inCycle: booleanType(),
+});
+const ProjectGraphFilesReady = objectType({
+    state: literalType('ready'),
+    index: ProjectGraphIndex,
+    dir: stringType().nullable(),
+    items: arrayType(ProjectGraphFileRow),
+    page: numberType().int().positive(),
+    pageSize: numberType().int().positive(),
+    total: numberType().int().nonnegative(),
+});
+const ProjectGraphFiles = discriminatedUnionType('state', [
+    ProjectGraphEmpty,
+    ProjectGraphReindexing,
+    ProjectGraphFilesReady,
+]);
+// ---- Unresolved specifiers (AC-50) ----
+const ProjectGraphUnresolvedItem = objectType({
+    file: stringType(),
+    specifier: stringType(),
+    importedName: stringType(),
+    line: numberType().int(),
+    reason: stringType(),
+});
+const ProjectGraphUnresolvedReady = objectType({
+    state: literalType('ready'),
+    index: ProjectGraphIndex,
+    items: arrayType(ProjectGraphUnresolvedItem),
+    page: numberType().int().positive(),
+    pageSize: numberType().int().positive(),
+    total: numberType().int().nonnegative(),
+});
+const ProjectGraphUnresolved = discriminatedUnionType('state', [
+    ProjectGraphEmpty,
+    ProjectGraphReindexing,
+    ProjectGraphUnresolvedReady,
+]);
+// ---- Symbols of one file ----
+const ProjectGraphSymbol = objectType({
+    name: stringType(),
+    kind: stringType(),
+    line: numberType().int().nullable(),
+    endLine: numberType().int().nullable(),
+    exported: booleanType(),
+    inCount: numberType().int().nonnegative(),
+    outCount: numberType().int().nonnegative(),
+});
+const ProjectGraphSymbolsReady = objectType({
+    state: literalType('ready'),
+    index: ProjectGraphIndex,
+    file: stringType(),
+    items: arrayType(ProjectGraphSymbol),
+    page: numberType().int().positive(),
+    pageSize: numberType().int().positive(),
+    total: numberType().int().nonnegative(),
+});
+const ProjectGraphSymbols = discriminatedUnionType('state', [
+    ProjectGraphEmpty,
+    ProjectGraphReindexing,
+    ProjectGraphSymbolsReady,
+]);
+
 ;// CONCATENATED MODULE: ../server/src/vendor/shared/adapters.ts
 
 /**
@@ -21382,6 +21746,8 @@ const ModelInfo = objectType({
  * Feature agents (A1–A6) and F2 import everything from here. The barrel is
  * stable — feature agents EXTEND with new files, they do not edit existing ones.
  */
+
+
 
 
 
@@ -35416,6 +35782,7 @@ class OpenRouterProvider {
         let tokensOut = 0;
         let costFromApi = null;
         let lastRaw = '';
+        let lastError = '';
         for (let attempt = 1; attempt <= maxRetries + 1; attempt++) {
             const res = await this.client.chat.completions.create({
                 model: req.model,
@@ -35459,10 +35826,24 @@ class OpenRouterProvider {
                     attempts: attempt,
                 };
             }
+            // Cut off by the output-token cap: "fix your JSON" just reproduces the
+            // same truncation, so ask for a shorter answer instead.
+            const truncated = choice.finish_reason === 'length';
+            lastError = truncated ? `Output truncated at the token limit (${parsed.error})` : parsed.error;
             messages.push({ role: 'assistant', content: lastRaw });
-            messages.push({ role: 'user', content: parsed.repromptMessage });
+            messages.push({
+                role: 'user',
+                content: truncated
+                    ? 'Your previous answer was cut off by the output length limit and is not valid JSON. ' +
+                        'Return the COMPLETE JSON object again, but keep every text field much shorter.'
+                    : parsed.repromptMessage,
+            });
         }
-        throw new Error(`OpenRouter structured output failed schema validation for ${req.schemaName}`);
+        // The zod issue list names field paths + constraint messages only (never
+        // the model's prose), so it is safe to log — without it a failed
+        // generation is undiagnosable from the server log.
+        throw new Error(`OpenRouter structured output failed schema validation for ${req.schemaName}` +
+            (lastError ? `:\n${lastError.slice(0, 1000)}` : ''));
     }
     /**
      * List models with pricing from the OpenRouter `/models` endpoint (the OpenAI
